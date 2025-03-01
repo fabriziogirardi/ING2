@@ -1,0 +1,7 @@
+/.fleet
+/.idea
+/.vscode
+/Laravel/public/storage
+/Laravel/vendor
+/Laravel/node_modules
+/.env

@@ -1,0 +1,352 @@
+networks:
+  ing2-development-network:
+    driver: bridge
+    name: ING2-Development-Network
+    attachable: true
+
+services:
+  nginx:
+    build:
+      context: ./Docker
+      dockerfile: nginx.dockerfile
+      target: local
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+        - APP_DOMAIN=${APP_DOMAIN}
+    restart: unless-stopped
+    container_name: ${APP_NAME}-nginx
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./Laravel:/var/www/html
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      php:
+        condition: service_started
+      laravel-queue:
+        condition: service_started
+      laravel-cron:
+        condition: service_started
+    networks:
+      - ing2-development-network
+
+  php:
+    build:
+      context: ./
+      dockerfile: Docker/php.dockerfile
+      target: local
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-php
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    depends_on:
+      redis:
+        condition: service_started
+      php-init:
+        condition: service_completed_successfully
+        restart: false
+    networks:
+      - ing2-development-network
+
+  php-init:
+    build:
+      context: ./
+      dockerfile: Docker/php.dockerfile
+      target: init
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-php-init
+    env_file:
+      - .env
+    volumes:
+      - ./Laravel:/var/www/html
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      composer-init:
+        condition: service_completed_successfully
+        restart: false
+      npm-init:
+        condition: service_completed_successfully
+        restart: false
+    working_dir: /var/www/html
+    networks:
+      - ing2-development-network
+
+  composer-init:
+    build:
+      context: ./
+      dockerfile: Docker/composer.dockerfile
+      target: init
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-composer-init
+    environment:
+      APP_ENV: ${APP_ENV}
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - ing2-development-network
+
+  npm-init:
+    build:
+      context: ./
+      dockerfile: Docker/node.dockerfile
+      target: init
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-npm-init
+    environment:
+      APP_ENV: ${APP_ENV}
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - ing2-development-network
+
+  mariadb:
+    image: mariadb:11.6.2-ubi9
+    container_name: ${APP_NAME}-mariadb
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_RANDOM_ROOT_PASSWORD: "yes"
+      TZ: America/Argentina/Buenos_Aires
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - ing2-development-network
+
+  redis:
+    image: redis:alpine
+    container_name: ${APP_NAME}-redis
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - ing2-development-network
+
+  laravel-cron:
+    build:
+      context: ./Docker
+      dockerfile: php.dockerfile
+      target: clean
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-laravel-cron
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    depends_on:
+      php:
+        condition: service_started
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan', 'schedule:work']
+    networks:
+      - ing2-development-network
+
+  laravel-queue:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      target: clean
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-laravel-queue
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    depends_on:
+      php:
+        condition: service_started
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
+    networks:
+      - ing2-development-network
+
+  vite:
+    build:
+      context: ./docker
+      dockerfile: node.dockerfile
+      target: local
+    container_name: ${APP_NAME}-vite-local
+    ports:
+      - "5173:5173"
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      nginx:
+        condition: service_started
+    entrypoint: ['npm', 'run', 'dev']
+    networks:
+      - ing2-development-network
+
+  composer:
+    build:
+      context: ./docker
+      dockerfile: composer.dockerfile
+      target: base
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-composer
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["composer"]
+    entrypoint: ['composer', '--ignore-platform-reqs']
+    networks:
+      - ing2-development-network
+
+  artisan:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      target: clean
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-artisan
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    working_dir: /var/www/html
+    profiles: ["artisan"]
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - ing2-development-network
+
+  pint:
+    build:
+      context: ./
+      dockerfile: Docker/php.dockerfile
+      target: local
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-tests
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["pint"]
+    entrypoint: ['/var/www/html/vendor/bin/pint']
+    networks:
+      - ing2-development-network
+
+  tests:
+    build:
+      context: ./
+      dockerfile: Docker/php.dockerfile
+      target: local
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+        - PHP_IDE_CONFIG=${PHP_IDE_CONFIG:-serverName=${APP_DOMAIN}}
+    container_name: ${APP_NAME}-tests
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+      PHP_IDE_CONFIG: serverName=${APP_DOMAIN}
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["test"]
+    entrypoint: ['php', '/var/www/html/artisan', 'test']
+    networks:
+      - ing2-development-network
+
+  npm:
+    build:
+      context: ./docker
+      dockerfile: node.dockerfile
+      target: base
+    container_name: ${APP_NAME}-npm
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "5173:5173"
+    environment:
+      APP_ENV: ${APP_ENV}
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./Laravel:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["npm"]
+    entrypoint: ['npm']
+    networks:
+      - ing2-development-network
+
+  npx:
+    build:
+      context: ./docker
+      dockerfile: node.dockerfile
+      target: base
+    container_name: ${APP_NAME}-npx
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./Laravel:/var/www/html
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "5173:5173"
+    working_dir: /var/www/html
+    profiles: ["npx"]
+    entrypoint: ['npx']
+    networks:
+      - ing2-development-network

@@ -1,0 +1,313 @@
+networks:
+  default:
+
+services:
+  nginx:
+    build:
+      context: ./docker
+      dockerfile: nginx.dockerfile
+      target: ${APP_ENV}
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+        - APP_DOMAIN=${APP_DOMAIN}
+    restart: unless-stopped
+    container_name: ${APP_NAME}-nginx
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5173:5173"
+    depends_on:
+      php:
+        condition: service_started
+      laravel-queue:
+        condition: service_started
+      laravel-cron:
+        condition: service_started
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  php:
+    build:
+      context: ./
+      dockerfile: Docker/php.dockerfile
+      target: ${APP_ENV}
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-php
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    depends_on:
+      mariadb:
+        condition: service_started
+      redis:
+        condition: service_started
+      php-init:
+        condition: service_completed_successfully
+        restart: false
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  php-init:
+    build:
+      context: ./
+      dockerfile: Docker/php.dockerfile
+      target: init
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-php-init
+    env_file:
+      - .env
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    depends_on:
+      composer-init:
+        condition: service_completed_successfully
+        restart: false
+      npm-init:
+        condition: service_completed_successfully
+        restart: false
+    working_dir: /var/www/html
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  composer-init:
+    build:
+      context: ./
+      dockerfile: Docker/composer.dockerfile
+      target: init
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-composer-init
+    env_file:
+      - .env
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  npm-init:
+    build:
+      context: ./
+      dockerfile: Docker/node.dockerfile
+      target: init
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-npm-init
+    env_file:
+      - .env
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  mariadb:
+    image: mariadb:11.6.2-ubi9
+    container_name: ${APP_NAME}-mariadb
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+      TZ: America/Buenos_Aires
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  redis:
+    image: redis:alpine
+    container_name: ${APP_NAME}-redis
+    environment:
+      - TZ=America/Buenos_Aires
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  laravel-cron:
+    build:
+      context: ./Docker
+      dockerfile: php.dockerfile
+      target: clean
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-laravel-cron
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    depends_on:
+      php:
+        condition: service_started
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan', 'schedule:work']
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  laravel-queue:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      target: clean
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-laravel-queue
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    depends_on:
+      php:
+        condition: service_started
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
+    profiles: ["local", "production"]
+    networks:
+      - default
+
+  vite:
+    build:
+      context: ./docker
+      dockerfile: node.dockerfile
+      target: ${APP_ENV}
+    container_name: ${APP_NAME}-vite-local
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["local"]
+    depends_on:
+      nginx:
+        condition: service_started
+    networks:
+      - default
+
+  composer:
+    build:
+      context: ./docker
+      dockerfile: composer.dockerfile
+      target: base
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-composer
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["composer"]
+    entrypoint: ['composer', '--ignore-platform-reqs']
+    networks:
+      - default
+
+  artisan:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      target: clean
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: ${APP_NAME}-artisan
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    depends_on:
+      - mariadb
+    working_dir: /var/www/html
+    profiles: ["artisan"]
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - default
+
+  npm:
+    build:
+      context: ./docker
+      dockerfile: node.dockerfile
+      target: base
+    container_name: ${APP_NAME}-npm
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "5173:5173"
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    working_dir: /var/www/html
+    profiles: ["npm"]
+    entrypoint: ['npm']
+    networks:
+      - default
+
+  npx:
+    build:
+      context: ./docker
+      dockerfile: node.dockerfile
+      target: base
+    container_name: ${APP_NAME}-npx
+    environment:
+      - TZ=America/Buenos_Aires
+    volumes:
+      - data-${APP_ENV}:/var/www/html
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "5173:5173"
+    working_dir: /var/www/html
+    profiles: ["npx"]
+    entrypoint: ['npx']
+    networks:
+      - default
+
+volumes:
+  data-local:
+    name: data-local
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./Laravel
+  data-production:
+    name: data-production
+    external: true

@@ -1,0 +1,5 @@
+Laravel/node_modules/
+Laravel/vendor/
+Laravel/bootstrap/cache/**/*.php
+Laravel/storage/debugbar/
+Laravel/storage/framework/cache
