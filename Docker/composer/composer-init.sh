@@ -9,15 +9,12 @@ if [ "$APP_ENV" != "local" ] && [ "$APP_ENV" != "production" ]; then
   exit 1
 fi
 
-# Check if environment variable APP_ENV is set
-if [ -d "vendor" ]; then
-  echo "Composer dependencies are already installed. To update them, do it manually."
+# Install composer dependencies
+if [ "$APP_ENV" = "local" ]; then
+  composer install --no-interaction --no-progress
+  echo "Composer dependencies installed for development"
 else
-  if [ "$APP_ENV" = "local" ]; then
-    composer install --no-interaction --no-progress --no-suggest
-    echo "Composer dependencies installed for development"
-  else
-    composer install --no-interaction --no-progress --no-suggest --no-dev
-    echo "Composer dependencies installed for production"
-  fi
+  rm -rf /var/www/html/vendor
+  composer install --no-interaction --no-progress --no-dev
+  echo "Composer dependencies installed for production"
 fi

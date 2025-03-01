@@ -5,3 +5,4 @@
 /Laravel/vendor
 /Laravel/node_modules
 /.env
+/Docker/mariadb/data

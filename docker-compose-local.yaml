@@ -136,6 +136,8 @@ services:
       MARIADB_PASSWORD: ${DB_PASSWORD}
       MARIADB_RANDOM_ROOT_PASSWORD: "yes"
       TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - ./Docker/mariadb/data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 10s

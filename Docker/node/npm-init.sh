@@ -11,14 +11,10 @@ fi
 
 # Check if APP_ENV is set to local
 if [ "$APP_ENV" = "local" ]; then
-  if [ -d "node_modules" ]; then
-    echo "Npm dependencies are already installed, to update them, do it manually."
-  else
-    npm install
-    echo "Npm dependencies installed"
-  fi
+  npm install
+  echo "Npm dependencies installed for local environment"
 else
   rm -rf node_modules
-  npm install --omit=dev
-  echo "Npm dependencies installed"
+  npm install --production
+  echo "Npm dependencies installed for production environment"
 fi
