@@ -204,6 +204,20 @@ services:
     networks:
       - ing2-development-network
 
+  mailpit:
+    image: axllent/mailpit
+    container_name: ${APP_NAME}-mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - ing2-development-network
+
   vite:
     build:
       context: ./docker

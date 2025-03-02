@@ -8,5 +8,12 @@
         "=": "align_single_space_minimal"
       }
     }
-  }
+  },
+  "exclude": [
+    "bootstrap/cache",
+    "node_modules",
+    "storage",
+    "public",
+    "vendor"
+  ]
 }
