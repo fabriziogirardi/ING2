@@ -97,4 +97,14 @@ if [ "$APP_ENV" = "production" ]; then
   php artisan config:cache
 fi
 
+# Permission denied fix?
+# Make the application files owned by the new user
+echo "Fixing permissions"
+chown -R ${USER}:${USER} /var/www/html
+
+# Set permissions for directories
+chmod -R 755 /var/www/html
+chmod -R 776 /var/www/html/storage
+chmod -R 776 /var/www/html/bootstrap/cache
+
 echo "Laravel initialization script completed successfully"
