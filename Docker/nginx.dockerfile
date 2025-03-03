@@ -28,7 +28,7 @@ RUN apk upgrade && \
 RUN rm -rf /var/cache/apk/*
 
 # Modify nginx configuration to use the new user's priviledges for starting it.
-RUN sed -i "s/user nginx/user '${USER}'/g" /etc/nginx/nginx.conf
+RUN sed -i "s/user  nginx/user  ${USER}/g" /etc/nginx/nginx.conf
 
 # Copy configuration files
 RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
