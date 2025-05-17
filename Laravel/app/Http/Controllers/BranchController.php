@@ -30,7 +30,6 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         //
-
     }
 
     /**
