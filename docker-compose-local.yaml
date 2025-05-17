@@ -11,9 +11,8 @@ services:
       dockerfile: nginx.dockerfile
       target: local
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
         - APP_DOMAIN=${APP_DOMAIN}
     restart: unless-stopped
     container_name: ${APP_NAME}-nginx
@@ -40,9 +39,8 @@ services:
       dockerfile: Docker/php.dockerfile
       target: local
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-php
     environment:
       TZ: America/Argentina/Buenos_Aires
@@ -54,7 +52,7 @@ services:
         condition: service_started
       php-init:
         condition: service_completed_successfully
-        restart: false
+        required: false
     networks:
       - ing2-development-network
 
@@ -64,9 +62,8 @@ services:
       dockerfile: Docker/php.dockerfile
       target: init
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-php-init
     env_file:
       - .env
@@ -91,9 +88,8 @@ services:
       dockerfile: Docker/composer.dockerfile
       target: init
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-composer-init
     environment:
       APP_ENV: ${APP_ENV}
@@ -111,9 +107,8 @@ services:
       dockerfile: Docker/node.dockerfile
       target: init
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-npm-init
     environment:
       APP_ENV: ${APP_ENV}
@@ -162,9 +157,8 @@ services:
       dockerfile: php.dockerfile
       target: clean
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-laravel-cron
     environment:
       TZ: America/Argentina/Buenos_Aires
@@ -185,9 +179,8 @@ services:
       dockerfile: php.dockerfile
       target: clean
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-laravel-queue
     environment:
       TZ: America/Argentina/Buenos_Aires
@@ -242,9 +235,8 @@ services:
       dockerfile: composer.dockerfile
       target: base
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-composer
     environment:
       TZ: America/Argentina/Buenos_Aires
@@ -253,7 +245,7 @@ services:
       - ./Laravel:/var/www/html
     working_dir: /var/www/html
     profiles: ["composer"]
-    entrypoint: ['composer', '--ignore-platform-reqs']
+    entrypoint: ['composer']
     networks:
       - ing2-development-network
 
@@ -263,9 +255,8 @@ services:
       dockerfile: php.dockerfile
       target: clean
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-artisan
     environment:
       TZ: America/Argentina/Buenos_Aires
@@ -287,9 +278,8 @@ services:
       dockerfile: Docker/php.dockerfile
       target: local
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-tests
     environment:
       TZ: America/Argentina/Buenos_Aires
@@ -308,9 +298,8 @@ services:
       dockerfile: Docker/php.dockerfile
       target: local
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+        - UID=${UID:-0}
+        - GID=${GID:-0}
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG:-serverName=${APP_DOMAIN}}
     container_name: ${APP_NAME}-tests
     environment:

@@ -40,6 +40,18 @@ return [
             'driver'   => 'session',
             'provider' => 'users',
         ],
+        'manager' => [
+            'driver'   => 'session',
+            'provider' => 'managers',
+        ],
+        'employee' => [
+            'driver'   => 'session',
+            'provider' => 'employees',
+        ],
+        'customer' => [
+            'driver'   => 'session',
+            'provider' => 'customers',
+        ],
     ],
 
     /*
@@ -63,6 +75,18 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model'  => env('AUTH_MODEL', App\Models\User::class),
+        ],
+        'managers' => [
+            'driver' => 'split_table',
+            'model'  => env('AUTH_MANAGER_MODEL', App\Models\Manager::class),
+        ],
+        'employees' => [
+            'driver' => 'split_table',
+            'model'  => env('AUTH_MANAGER_MODEL', App\Models\Employee::class),
+        ],
+        'customers' => [
+            'driver' => 'split_table',
+            'model'  => env('AUTH_MANAGER_MODEL', App\Models\Customer::class),
         ],
 
         // 'users' => [

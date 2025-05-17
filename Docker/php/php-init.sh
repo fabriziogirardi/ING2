@@ -97,15 +97,4 @@ if [ "$APP_ENV" = "production" ]; then
   php artisan config:cache
 fi
 
-# Permission denied fix
-if [ "$APP_ENV" = "local" ]; then
-  echo "Fixing permissions"
-  chown -R ${USER}:${USER} /var/www/html
-
-  # Set permissions for directories
-  chmod -R 755 /var/www/html
-  chmod -R 776 /var/www/html/storage
-  chmod -R 776 /var/www/html/bootstrap/cache
-fi
-
 echo "Laravel initialization script completed successfully"
