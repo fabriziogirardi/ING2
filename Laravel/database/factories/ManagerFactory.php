@@ -20,7 +20,7 @@ class ManagerFactory extends Factory
     {
         return [
             'person_id' => Person::factory(),
-            'password' => Hash::make('password'),
+            'password'  => Hash::make('password'),
         ];
     }
 }

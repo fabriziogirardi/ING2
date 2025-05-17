@@ -19,7 +19,7 @@ class ProductModelFactory extends Factory
     {
         return [
             'product_brand_id' => ProductBrand::factory(),
-            'name' => $this->faker->name(),
+            'name'             => $this->faker->name(),
         ];
     }
 }

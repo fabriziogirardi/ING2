@@ -20,9 +20,9 @@ class CustomerFactory extends Factory
     {
         return [
             'person_id' => Person::factory(),
-            'password' => Hash::make('password'),
+            'password'  => Hash::make('password'),
             'is_active' => $this->faker->boolean(),
-            'rating' => $this->faker->randomFloat(2, 0, 5),
+            'rating'    => $this->faker->randomFloat(2, 0, 5),
         ];
     }
 }

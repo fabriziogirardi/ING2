@@ -11,27 +11,24 @@ class EloquentSplitTableUserProvider extends EloquentUserProvider
 {
     /**
      * Retrieve a user by the given credentials.
-     *
-     * @param  array  $credentials
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveByCredentials(#[\SensitiveParameter] array $credentials) : ?Authenticatable
+    public function retrieveByCredentials(#[\SensitiveParameter] array $credentials): ?Authenticatable
     {
         $credentials = array_filter(
             $credentials,
             fn ($key) => ! str_contains($key, 'password'),
             ARRAY_FILTER_USE_KEY
         );
-        
+
         if (empty($credentials)) {
             return null;
         }
-        
+
         // First we will add each credential element to the query as a where clause.
         // Then we can execute the query and, if we found a user, return it in a
         // Eloquent User "model" that will be utilized by the Guard instances.
         $query = $this->newModelQuery();
-        
+
         foreach ($credentials as $key => $value) {
             if (is_array($value) || $value instanceof Arrayable) {
                 $query->whereIn($key, $value);
@@ -47,7 +44,7 @@ class EloquentSplitTableUserProvider extends EloquentUserProvider
                 }
             }
         }
-        
+
         return $query->first();
     }
 }

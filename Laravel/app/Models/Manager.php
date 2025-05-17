@@ -10,9 +10,9 @@ class Manager extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\ManagerFactory> */
     use HasFactory;
-    
+
     protected $with = ['person'];
-    
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

@@ -10,9 +10,9 @@ class Employee extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\EmployeeFactory> */
     use HasFactory;
-    
+
     protected $with = ['person'];
-    
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

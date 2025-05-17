@@ -14,9 +14,9 @@ class Customer extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory;
-    
+
     protected $with = ['person'];
-    
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

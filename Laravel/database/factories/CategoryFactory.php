@@ -18,12 +18,12 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'category_name' => $this->faker->word(),
+            'category_name'        => $this->faker->word(),
             'category_description' => $this->faker->sentence(),
-            'parent_id' => $this->getRandomParentId(),
+            'parent_id'            => $this->getRandomParentId(),
         ];
     }
-    
+
     private function getRandomParentId(): ?int
     {
         return (rand() % 2 == 0 && Category::count() > 1) ? Category::all()->random()->id : null;
