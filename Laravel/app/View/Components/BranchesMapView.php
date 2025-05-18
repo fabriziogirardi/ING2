@@ -19,8 +19,6 @@ class BranchesMapView extends Component
     public function __construct($branches = null)
     {
         $this->branches = $branches;
-        // $this->api_key = '';
-        // Comentar para dev
         $this->api_key = config('credentials.google_maps.public_api_key');
     }
 
