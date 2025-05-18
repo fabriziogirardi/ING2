@@ -11,7 +11,8 @@
     <meta name="keywords" content="" />
     <meta name="author" content="" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!--Replace with your tailwind.css once created-->
+    @livewireStyles
+      <!--Replace with your tailwind.css once created-->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
     <!-- Define your gradient here - use online tools to find a gradient matching your branding-->
     <style>
@@ -773,5 +774,6 @@
         return false;
       }
     </script>
+  @livewireScripts
   </body>
 </html>

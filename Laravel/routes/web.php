@@ -36,3 +36,11 @@ Route::get('/a/test', function () {
 
     return 'Hola test';
 });
+
+Route::get('/map', function () {
+    $data       = \App\Facades\GoogleMaps::searchGoogleMapsAutocomplete('16 1428');
+    $details    = \App\Facades\GoogleMaps::searchGoogleMapsPlaceDetails($data['predictions'][0]['place_id']);
+    $components = \App\Facades\GoogleMaps::getAddressCoordinates($details);
+
+    dd($data, $details, $components);
+});
