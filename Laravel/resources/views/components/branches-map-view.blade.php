@@ -1,4 +1,4 @@
-<div id="map" style="height: 100%; width: 100%;"></div>
+<div id="map" class="w-full h-full"></div>
 
 <script>
     async function initMap() {
@@ -24,7 +24,7 @@
 
             const pinElement = document.createElement('div');
             pinElement.innerHTML = `
-                <img src="{{ asset('BranchesMapPin.png') }}" style="width:40px;height:40px;" alt="Pin">
+                <img src="{{ asset('BranchesMapPin.png') }}" class="w-10 h-10" alt="Pin">
             `;
 
             const marker = new AdvancedMarkerElement({
@@ -36,10 +36,10 @@
 
             marker.addListener('gmp-click', function () {
                 const content = `
-                    <div style="text-align: center;">
-                        <h3>${branch.name}</h3>
-                        <p>Dirección: ${branch.address}</p>
-                        <p>Teléfono: +54 9 221 123-456</p>
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold">${branch.name}</h3>
+                        <p class="text-sm">Dirección: ${branch.address}</p>
+                        <p class="text-sm">Teléfono: +54 9 221 123-456</p>
                     </div>
                 `;
                 infowindow.setContent(content);
