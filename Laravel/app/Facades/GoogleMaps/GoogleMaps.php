@@ -27,25 +27,25 @@ class GoogleMaps extends Maps
      * GoogleMaps FindPlaces API EndpointMaps, currently unused.
      * Not related right now, but probably used in a future.
      */
-    private const GOOGLE_FIND_PLACE = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key={key}&inputtype=textquery&input={address}&fields=business_status,formatted_address,geometry,icon,icon_mask_base_uri,icon_background_color,name,photo,place_id,plus_code,type';
+    private const string GOOGLE_FIND_PLACE = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key={key}&inputtype=textquery&input={address}&fields=business_status,formatted_address,geometry,icon,icon_mask_base_uri,icon_background_color,name,photo,place_id,plus_code,type';
 
     /**
      * GoogleMaps Place Details API Endpoint
      * Retrieves details from a place, such as coordinates, viewport, etc
      */
-    private const GOOGLE_PLACE_DETAILS = 'https://maps.googleapis.com/maps/api/place/details/json?key={key}&place_id={place_id}';
+    private const string GOOGLE_PLACE_DETAILS = 'https://maps.googleapis.com/maps/api/place/details/json?key={key}&place_id={place_id}';
 
     /**
      * GoogleMaps Static Map API Endpoint
      * Generates a URL with a static map to be shown as an image
      */
-    private const GOOGLE_STATIC_MAP = 'https://maps.googleapis.com/maps/api/staticmap?key={key}&center={center}&markers={center}&size=400x400&zoom=18';
+    private const string GOOGLE_STATIC_MAP = 'https://maps.googleapis.com/maps/api/staticmap?key={key}&center={center}&markers={center}&size=400x400&zoom=18';
 
     /**
      * GoogleMaps Distance Matrix API Endpoint
      * Calculates driving distance between two points
      */
-    private const GOOGLE_DISTANCE_MATRIX = 'https://maps.googleapis.com/maps/api/distancematrix/json?key={key}&origins=place_id:{origin}&destinations=place_id:{destination}';
+    private const string GOOGLE_DISTANCE_MATRIX = 'https://maps.googleapis.com/maps/api/distancematrix/json?key={key}&origins=place_id:{origin}&destinations=place_id:{destination}';
 
     /**
      * @var Repository|Application|mixed
