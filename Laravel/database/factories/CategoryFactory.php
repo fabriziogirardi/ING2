@@ -26,6 +26,8 @@ class CategoryFactory extends Factory
 
     private function getRandomParentId(): ?int
     {
-        return (rand() % 2 == 0 && Category::count() > 1) ? Category::all()->random()->id : null;
+        return (Category::count() > 4)
+            ? Category::all()->random()->id
+            : null;
     }
 }

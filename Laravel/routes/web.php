@@ -1,5 +1,9 @@
 <?php
 
+use App\Facades\GoogleMaps;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,9 +42,13 @@ Route::get('/a/test', function () {
 });
 
 Route::get('/map', function () {
-    $data       = \App\Facades\GoogleMaps::searchGoogleMapsAutocomplete('16 1428');
-    $details    = \App\Facades\GoogleMaps::searchGoogleMapsPlaceDetails($data['predictions'][0]['place_id']);
-    $components = \App\Facades\GoogleMaps::getAddressCoordinates($details);
+    $data       = GoogleMaps::searchGoogleMapsAutocomplete('16 1428');
+    $details    = GoogleMaps::searchGoogleMapsPlaceDetails($data['predictions'][0]['place_id']);
+    $components = GoogleMaps::getAddressCoordinates($details);
 
     dd($data, $details, $components);
 });
+
+Route::get('cat/{cat:slug}', static function (Category $cat) {
+    dd(Product::get_all_by_category($cat)->get()->toArray());
+})->name('category.index');
