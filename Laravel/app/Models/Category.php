@@ -71,6 +71,7 @@ class Category extends Model
         return Attribute::make(
             get: function () {
                 $ids = collect([$this->id]);
+
                 return $ids->merge($this->children->pluck('id')->merge(
                     $this->children->flatMap(fn ($child) => $child->all_children)
                 ))->sort();

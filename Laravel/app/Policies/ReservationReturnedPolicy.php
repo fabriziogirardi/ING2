@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\ReservationReturned;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ReservationReturnedPolicy
 {

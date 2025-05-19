@@ -5,8 +5,8 @@ namespace App\View\Components;
 use App\Models\Branch;
 use Closure;
 use Illuminate\Contracts\View\View;
-use Illuminate\View\Component;
 use Illuminate\Support\Collection;
+use Illuminate\View\Component;
 
 class BranchesMapView extends Component
 {
@@ -14,12 +14,13 @@ class BranchesMapView extends Component
      * Create a new component instance.
      */
     public Collection|Branch|null $branches;
+
     public string $api_key;
 
     public function __construct($branches = null)
     {
         $this->branches = $branches;
-        $this->api_key = config('credentials.google_maps.public_api_key');
+        $this->api_key  = config('credentials.google_maps.public_api_key');
     }
 
     /**

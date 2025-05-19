@@ -3,7 +3,6 @@
 use App\Facades\GoogleMaps;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
