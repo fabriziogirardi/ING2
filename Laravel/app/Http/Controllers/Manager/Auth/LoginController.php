@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Auth\LoginRequest;
 use App\Mail\Manager\TokenGeneratedMail;
 use App\Models\Manager;
-use App\Models\ManagerToken;
 use Mail;
 use Random\RandomException;
 
