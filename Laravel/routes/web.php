@@ -75,4 +75,26 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             return redirect()->to(route('manager.login'));
         })->name('logout');
     });
+
+    Route::get('/product/brand', static function () {
+        return view('manager.product.brand');
+    })->name('product.brand');
+
+    Route::post('/product/brand', static function () {
+       $response = request()->validate([
+            'name' => 'required|string|max:255',
+        ], [
+            'name.unique' => 'La marca ya existe.',
+       ]);
+
+       $response = \App\Models\ProductBrand::create([
+            'name' => $response['name'],
+        ]);
+
+       return response()->json([
+            'status' => 200,
+            'message' => 'Marca creada correctamente',
+            'data' => $response,
+        ]);
+    });
 });
