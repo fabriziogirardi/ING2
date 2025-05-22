@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Manager::class);
             $table->string('token')->unique();
+            $table->timestamp('expires_at');
             $table->timestamps();
         });
     }
