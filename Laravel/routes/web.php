@@ -76,3 +76,5 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         })->name('logout');
     });
 });
+
+Route::get('/listarSucursales', [\App\Http\Controllers\BranchesListing::class, 'index'])->name('branches.index');
