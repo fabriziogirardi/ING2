@@ -1,38 +1,38 @@
 <?php
 
 use App\Facades\GoogleMaps;
+use App\Http\Controllers\Manager\Auth\LoginController;
+use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/', static function () {
     return view('landing.landing');
 });
 
-// Alkil.ar routes
-
 Route::middleware('auth:customer')->group(function () {
-    Route::get('/a/a', function () {
+    Route::get('/a/a', static function () {
         return 'hola a';
     })->name('a.a');
-    Route::get('/a/d', function () {
+    Route::get('/a/d', static function () {
         return 'hola d';
     })->name('a.d');
 
-    Route::get('/a/c', function () {
+    Route::get('/a/c', static function () {
         Auth::guard('customer')->logout();
 
         return 'Hola c ';
     })->name('a.c');
 });
 
-Route::get('/a/login', function () {
+Route::get('/a/login', static function () {
     $res = Auth::guard('customer')->attempt(['email' => 'gerard33@example.net', 'password' => 'password']);
 
     return 'Hola login '.Auth::guard('customer')->user()->person->name;
 })->name('a.login');
 
-Route::get('/a/test', function () {
+Route::get('/a/test', static function () {
     $a = Auth::guard('customer')->check();
     $b = Auth::guard('manager')->check();
     $c = Auth::guard('employee')->check();
@@ -40,7 +40,7 @@ Route::get('/a/test', function () {
     return 'Hola test';
 });
 
-Route::get('/map', function () {
+Route::get('/map', static function () {
     $data       = GoogleMaps::searchGoogleMapsAutocomplete('16 1428');
     $details    = GoogleMaps::searchGoogleMapsPlaceDetails($data['predictions'][0]['place_id']);
     $components = GoogleMaps::getAddressCoordinates($details);
@@ -51,3 +51,28 @@ Route::get('/map', function () {
 Route::get('cat/{cat:slug}', static function (Category $cat) {
     dd(Product::get_all_by_category($cat)->get()->toArray());
 })->name('category.index');
+
+Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
+    Route::get('/login', static function () {
+        return view('manager.login');
+    })->name('login');
+
+    Route::post('/login', LoginController::class)->name('login.post');
+
+    Route::get('/verify-token', static function () {
+        return view('manager.verify-token');
+    })->name('verify-token');
+    Route::post('/verify-token', VerifyTokenController::class)->name('verify-token');
+
+    Route::group(['middleware' => 'auth:manager'], static function () {
+        Route::get('/dashboard', static function () {
+            return view('manager.dashboard');
+        })->name('dashboard');
+
+        Route::get('/logout', static function () {
+            Auth::guard('manager')->logout();
+
+            return redirect()->to(route('manager.login'));
+        })->name('logout');
+    });
+});

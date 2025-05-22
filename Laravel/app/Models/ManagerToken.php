@@ -4,23 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @mixin QueryBuilder
  * @mixin EloquentBuilder
  */
-class Employee extends Authenticatable
+class ManagerToken extends Model
 {
-    /** @use HasFactory<\Database\Factories\EmployeeFactory> */
+    /** @use HasFactory<\Database\Factories\ManagerTokenFactory> */
     use HasFactory;
 
-    protected $with = ['person'];
+    protected $fillable = [
+        'manager_id',
+        'token',
+        'expires_at',
+    ];
 
-    public function person(): BelongsTo
+    public function manager(): BelongsTo
     {
-        return $this->belongsTo(Person::class);
+        return $this->belongsTo(Manager::class);
     }
 }

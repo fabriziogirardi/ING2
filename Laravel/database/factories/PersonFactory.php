@@ -20,7 +20,7 @@ class PersonFactory extends Factory
             'name'                  => $this->faker->name(),
             'lastname'              => $this->faker->lastName(),
             'email'                 => $this->faker->unique()->safeEmail(),
-            'government_id_type_id' => GovernmentIdTypeFactory::new()->create()->id,
+            'government_id_type_id' => GovernmentIdTypeFactory::new()->create(),
             'government_id_number'  => $this->faker->unique()->numerify('#########'),
         ];
     }
