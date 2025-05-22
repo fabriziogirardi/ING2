@@ -27,14 +27,14 @@ class BranchesListingTest extends TestCase
 
         $response = $this->get(route('manager.branches.index'));
 
-        $response->assertStatus(401);
+        $response->assertStatus(302);
     }
 
     public function test_listing_without_branches_no_authenticated(): void
     {
         $response = $this->get(route('manager.branches.index'));
 
-        $response->assertStatus(401);
+        $response->assertStatus(302);
     }
 
     public function test_listing_with_branches_authenticated(): void
