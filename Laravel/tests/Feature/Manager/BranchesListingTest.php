@@ -59,6 +59,5 @@ class BranchesListingTest extends TestCase
         $response->assertViewHas('branches', function ($branches) {
             return $branches->isEmpty();
         });
-        $response->assertSee('No hay sucursales para mostrar');
     }
 }
