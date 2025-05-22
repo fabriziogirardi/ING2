@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
- * @mixin QueryBuilder
  * @mixin EloquentBuilder
+ * @mixin QueryBuilder
  */
 class ProductBrand extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductBrandFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+    ];
 }

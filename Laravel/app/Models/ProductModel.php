@@ -13,6 +13,11 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class ProductModel extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductModelFactory> */
     use HasFactory;
+
+    /** @use HasFactory<\Database\Factories\ProductModelFactory> */
+    protected $fillable = [
+        'product_brand_id',
+        'name',
+    ];
 }

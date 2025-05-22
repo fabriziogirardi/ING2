@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Person::class);
             $table->string('password');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

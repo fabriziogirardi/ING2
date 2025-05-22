@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->decimal('rating', 3, 2)->default(0.00);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

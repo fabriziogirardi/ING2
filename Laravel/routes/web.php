@@ -3,6 +3,8 @@
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Manager\Auth\LoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
@@ -45,6 +47,10 @@ Route::get('/map', static function () {
 
     dd($data, $details, $components);
 });
+
+Route::get('cat/{cat:slug}', static function (Category $cat) {
+    dd(Product::get_all_by_category($cat)->get()->toArray());
+})->name('category.index');
 
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
     Route::get('/login', static function () {
