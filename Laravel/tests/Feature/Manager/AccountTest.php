@@ -18,11 +18,12 @@ class AccountTest extends TestCase
     {
         $manager = $this->createManager();
 
-        $this->post(route('manager.login'), [
+        $response = $this->post(route('manager.login.post'), [
             'email'    => $manager->email,
             'password' => 'password',
-        ])
-            ->assertStatus(200);
+        ]);
+
+        $response->assertStatus(200);
 
         $this->assertDatabaseHas('manager_tokens', [
             'manager_id' => $manager->id,

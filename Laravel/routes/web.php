@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Manager\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,4 +44,12 @@ Route::get('/map', function () {
     $components = \App\Facades\GoogleMaps::getAddressCoordinates($details);
 
     dd($data, $details, $components);
+});
+
+Route::group(['prefix' => 'manager', 'as' => 'manager.'], function () {
+    Route::get('/login', function () {
+        return view('manager.login');
+    })->name('login');
+
+    Route::post('/login', LoginController::class)->name('login.post');
 });
