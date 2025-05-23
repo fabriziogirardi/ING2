@@ -3,6 +3,7 @@
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Manager\Auth\LoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
+use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -74,27 +75,17 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
 
             return redirect()->to(route('manager.login'));
         })->name('logout');
-    });
 
-    Route::get('/product/brand', static function () {
-        return view('manager.product.brand');
-    })->name('product.brand');
+        Route::group(['prefix' => 'brand', 'as' => 'product.brand.'], static function () {
+            Route::get('/', static function () {
+                return view('manager.product.brand');
+            })->name('index');
 
-    Route::post('/product/brand', static function () {
-       $response = request()->validate([
-            'name' => 'required|string|max:255',
-        ], [
-            'name.unique' => 'La marca ya existe.',
-       ]);
+            Route::post('/', [BrandController::class, 'store'])->name('store');
 
-       $response = \App\Models\ProductBrand::create([
-            'name' => $response['name'],
-        ]);
+            Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
 
-       return response()->json([
-            'status' => 200,
-            'message' => 'Marca creada correctamente',
-            'data' => $response,
-        ]);
+            Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
+        });
     });
 });
