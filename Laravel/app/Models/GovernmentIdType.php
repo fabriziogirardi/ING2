@@ -15,4 +15,8 @@ class GovernmentIdType extends Model
 {
     /** @use HasFactory<\Database\Factories\GovernmentIdTypeFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+    ];
 }

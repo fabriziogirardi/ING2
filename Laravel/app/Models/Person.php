@@ -15,4 +15,12 @@ class Person extends Model
 {
     /** @use HasFactory<\Database\Factories\PersonFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'government_id_type_id',
+        'government_id_number',
+    ];
 }
