@@ -74,5 +74,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
 
             return redirect()->to(route('manager.login'));
         })->name('logout');
+
+        Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
+
     });
 });
