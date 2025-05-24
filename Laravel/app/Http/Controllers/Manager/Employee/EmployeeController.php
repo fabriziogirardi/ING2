@@ -22,21 +22,22 @@ class EmployeeController extends Controller
 
     public function create(Request $request)
     {
-        $governmentIdTypes = GovernmentIdType::all();
+        $government_id_types = GovernmentIdType::all();
 
         return view('manager.employee.create', [
-            'governmentIdTypes' => $governmentIdTypes,
+            'government_id_types' => $government_id_types,
         ]);
     }
 
     public function store(RegisterEmployeeRequest $request)
     {
-        $person = Person::create([
-            'first_name'            => $request->validated('first_name'),
-            'last_name'             => $request->validated('last_name'),
+        $person = Person::firstOrCreate([
             'email'                 => $request->validated('email'),
             'government_id_type_id' => $request->validated('government_id_type_id'),
             'government_id_number'  => $request->validated('government_id_number'),
+        ], [
+            'first_name' => $request->validated('first_name'),
+            'last_name'  => $request->validated('last_name'),
         ]);
 
         Employee::create([

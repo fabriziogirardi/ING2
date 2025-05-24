@@ -22,7 +22,7 @@ class LoginController extends Controller
 
         if (! $manager || ! password_verify($request->validated('password'), $manager->password)) {
             return redirect()->back()->withErrors([
-                'incorrect_credentials' => __('manager.auth.incorrect_credentials'),
+                'incorrect_credentials' => __('manager/auth.incorrect_credentials'),
             ]);
         }
 

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->foreignIdFor(GovernmentIdType::class);
             $table->string('government_id_number');
             $table->timestamps();
+
+            $table->unique(['government_id_type_id', 'government_id_number']);
         });
     }
 
