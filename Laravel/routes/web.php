@@ -87,5 +87,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
 
             Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
         });
+
+        Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
     });
 });
