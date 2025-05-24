@@ -14,12 +14,14 @@ return new class extends Migration
     {
         Schema::create('people', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('lastname');
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->foreignIdFor(GovernmentIdType::class);
             $table->string('government_id_number');
             $table->timestamps();
+
+            $table->unique(['government_id_type_id', 'government_id_number']);
         });
     }
 

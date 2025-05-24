@@ -20,8 +20,9 @@ class ProductFactory extends Factory
         return [
             'name'             => $this->faker->name(),
             'description'      => $this->faker->text(),
-            'product_model_id' => ProductModel::factory(),
+            'product_model_id' => ProductModel::count() > 5 ? ProductModel::inRandomOrder()->first()->id : ProductModel::factory(),
             'price'            => $this->faker->randomFloat(2, 0, 900000),
+            'min_days'         => $this->faker->numberBetween(1, 30),
         ];
     }
 }

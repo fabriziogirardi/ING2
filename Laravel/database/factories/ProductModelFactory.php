@@ -18,7 +18,7 @@ class ProductModelFactory extends Factory
     public function definition(): array
     {
         return [
-            'product_brand_id' => ProductBrand::factory(),
+            'product_brand_id' => ProductBrand::count() > 5 ? ProductBrand::inRandomOrder()->first()->id : ProductBrand::factory(),
             'name'             => $this->faker->name(),
         ];
     }
