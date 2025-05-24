@@ -3,6 +3,7 @@
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Manager\Auth\LoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
+use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Models\Category;
 use App\Models\Product;
@@ -53,6 +54,7 @@ Route::get('cat/{cat:slug}', static function (Category $cat) {
     dd(Product::get_all_by_category($cat)->get()->toArray());
 })->name('category.index');
 
+// region Rutas del manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
     Route::get('/login', static function () {
         return view('manager.login');
@@ -69,12 +71,13 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('/dashboard', static function () {
             return view('manager.dashboard');
         })->name('dashboard');
-
         Route::get('/logout', static function () {
             Auth::guard('manager')->logout();
 
             return redirect()->to(route('manager.login'));
         })->name('logout');
+
+        Route::resource('employee', EmployeeController::class);
 
         Route::group(['prefix' => 'brand', 'as' => 'product.brand.'], static function () {
             Route::get('/', static function () {
@@ -91,3 +94,4 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
     });
 });
+// endregion
