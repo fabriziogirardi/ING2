@@ -4,6 +4,7 @@ use App\Facades\GoogleMaps;
 use App\Http\Controllers\Manager\Auth\LoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
+use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +78,20 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         })->name('logout');
 
         Route::resource('employee', EmployeeController::class);
+
+        Route::group(['prefix' => 'brand', 'as' => 'product.brand.'], static function () {
+            Route::get('/', static function () {
+                return view('manager.product.brand');
+            })->name('index');
+
+            Route::post('/', [BrandController::class, 'store'])->name('store');
+
+            Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
+
+            Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
     });
 });
 // endregion
