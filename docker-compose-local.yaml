@@ -52,6 +52,7 @@ services:
         condition: service_started
       php-init:
         condition: service_completed_successfully
+        required: false
     networks:
       - ing2-development-network
 
@@ -73,8 +74,10 @@ services:
         condition: service_healthy
       composer-init:
         condition: service_completed_successfully
+        restart: false
       npm-init:
         condition: service_completed_successfully
+        restart: false
     working_dir: /var/www/html
     networks:
       - ing2-development-network
