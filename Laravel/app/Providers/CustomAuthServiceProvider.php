@@ -32,12 +32,8 @@ class CustomAuthServiceProvider extends ServiceProvider
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
 
-            if ($request->routeIs('manager.*')) {
-                return route('manager.login');
-            }
-
-            if ($request->routeIs('employee.*')) {
-                return route('employee.login');
+            if ($request->routeIs('a.*')) {
+                return route('a.login');
             }
 
             return route('login');
