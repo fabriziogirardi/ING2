@@ -21,7 +21,7 @@ class ModelTest extends TestCase
         $this->manager = Manager::factory()->create();
     }
 
-    public function test_add_new_model_that_does_not_exist(): void
+    public function test_manager_can_create_model_that_not_exists(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -37,7 +37,7 @@ class ModelTest extends TestCase
         ]);
     }
 
-    public function test_add_new_model_that_exists()
+    public function test_manager_can_create_model_that_exists(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -57,7 +57,7 @@ class ModelTest extends TestCase
         $this->assertEquals($countBefore, $countAfter);
     }
 
-    public function test_update_model()
+    public function test_manager_can_update_model(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -76,7 +76,7 @@ class ModelTest extends TestCase
         ]);
     }
 
-    public function test_delete_model()
+    public function test_manager_can_delete_model(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -93,7 +93,7 @@ class ModelTest extends TestCase
         ]);
     }
 
-    public function test_models_with_same_name_but_different_brands_can_exist()
+    public function test_manager_can_create_model_with_same_name_and_diferents_brands(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -126,7 +126,7 @@ class ModelTest extends TestCase
         ]);
     }
 
-    public function test_guest_cannot_create_model()
+    public function test_guest_can_not_create_model(): void
     {
         $brand = ProductBrand::factory()->create();
 
@@ -139,7 +139,7 @@ class ModelTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_guest_cannot_update_model()
+    public function test_guest_can_not_update_model(): void
     {
         $model = ProductModel::factory()->create();
 
@@ -152,7 +152,7 @@ class ModelTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_guest_cannot_delete_model()
+    public function test_guest_can_not_delete_model(): void
     {
         $model = ProductModel::factory()->create();
 

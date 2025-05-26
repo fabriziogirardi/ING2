@@ -4,21 +4,25 @@ namespace App\Rules;
 
 use Closure;
 use App\Models\ProductModel;
+use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class UniqueModelNamePerBrand implements ValidationRule
+class UniqueModelNamePerBrand implements DataAwareRule, ValidationRule
 {
-    protected $brandId;
+    protected array $data = [];
 
-    public function __construct($brandId)
+    public function setData(array $data): static
     {
-        $this->brandId = $brandId;
+        $this->data = $data;
+        return $this;
     }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        $brandId = $this->data['product_brand_id'];
+
         $exists = ProductModel::where('name', $value)
-            ->where('product_brand_id', $this->brandId)
+            ->where('product_brand_id', $brandId)
             ->exists();
 
         if ($exists) {
