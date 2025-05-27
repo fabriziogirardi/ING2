@@ -30,7 +30,7 @@ class BrandTest extends TestCase
         $this->customer = Customer::factory()->create();
     }
 
-    public function test_manager_can_access_empty_brands_index()
+    public function test_manager_can_access_empty_brands_index(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -41,7 +41,7 @@ class BrandTest extends TestCase
         $response->assertViewIs('manager.brand.index')->assertDontSee('brands');
     }
 
-    public function test_manager_can_access_brands_index_with_one_brand()
+    public function test_manager_can_access_brands_index_with_one_brand(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -55,7 +55,7 @@ class BrandTest extends TestCase
         });
     }
 
-    public function test_manager_can_access_brands_index_with_pagination()
+    public function test_manager_can_access_brands_index_with_pagination(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -68,7 +68,7 @@ class BrandTest extends TestCase
         });
     }
 
-    public function test_manager_can_store_brand_that_does_not_exist()
+    public function test_manager_can_store_brand_that_does_not_exist(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -83,7 +83,7 @@ class BrandTest extends TestCase
         ]);
     }
 
-    public function test_manager_can_not_store_brand_that_exists()
+    public function test_manager_can_not_store_brand_that_exists(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -96,7 +96,7 @@ class BrandTest extends TestCase
         $response->assertSessionHasErrors();
     }
 
-    public function test_manager_can_show_brand()
+    public function test_manager_can_show_brand(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -109,7 +109,7 @@ class BrandTest extends TestCase
         ]);
     }
 
-    public function test_manager_can_update_brand()
+    public function test_manager_can_update_brand(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -127,7 +127,7 @@ class BrandTest extends TestCase
         ]);
     }
 
-    public function test_manager_can_delete_brand()
+    public function test_manager_can_delete_brand(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -142,7 +142,7 @@ class BrandTest extends TestCase
         ]);
     }
 
-    public function test_manager_can_edit_brand_that_exists()
+    public function test_manager_can_edit_brand_that_exists(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -153,7 +153,7 @@ class BrandTest extends TestCase
         $response->assertViewIs('manager.brand.edit')->assertViewHas('brand', $brand);
     }
 
-    public function test_manager_can_not_edit_brand_that_does_not_exist()
+    public function test_manager_can_not_edit_brand_that_does_not_exist(): void
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -162,7 +162,7 @@ class BrandTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function test_customer_can_not_access_brands_index()
+    public function test_customer_can_not_access_brands_index(): void
     {
         $this->actingAs($this->customer, 'customer');
 
@@ -171,7 +171,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_customer_can_not_store_brand()
+    public function test_customer_can_not_store_brand(): void
     {
         $this->actingAs($this->customer, 'customer');
 
@@ -182,7 +182,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_customer_can_not_update_brand()
+    public function test_customer_can_not_update_brand(): void
     {
         $this->actingAs($this->customer, 'customer');
 
@@ -195,7 +195,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_customer_can_not_delete_brand()
+    public function test_customer_can_not_delete_brand(): void
     {
         $this->actingAs($this->customer, 'customer');
 
@@ -206,18 +206,18 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_customer_can_not_edit_brand()
+    public function test_customer_can_not_edit_brand(): void
     {
         $this->actingAs($this->customer, 'customer');
 
         $brand = ProductBrand::factory()->create();
 
-        $respose = $this->get(route('manager.brand.edit', ['brand' => $brand->id]));
+        $response = $this->get(route('manager.brand.edit', ['brand' => $brand->id]));
 
-        $respose->assertRedirect(route('manager.login'));
+        $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_employee_can_not_access_brands_index()
+    public function test_employee_can_not_access_brands_index(): void
     {
         $this->actingAs($this->employee, 'employee');
 
@@ -226,7 +226,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_employee_can_not_store_brand()
+    public function test_employee_can_not_store_brand(): void
     {
         $this->actingAs($this->employee, 'employee');
 
@@ -237,7 +237,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_employee_can_not_update_brand()
+    public function test_employee_can_not_update_brand(): void
     {
         $this->actingAs($this->employee, 'employee');
 
@@ -250,7 +250,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_employee_can_not_delete_brand()
+    public function test_employee_can_not_delete_brand(): void
     {
         $this->actingAs($this->employee, 'employee');
 
@@ -261,25 +261,25 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_employee_can_not_edit_brand()
+    public function test_employee_can_not_edit_brand(): void
     {
         $this->actingAs($this->employee, 'employee');
 
         $brand = ProductBrand::factory()->create();
 
-        $respose = $this->get(route('manager.brand.edit', ['brand' => $brand->id]));
+        $response = $this->get(route('manager.brand.edit', ['brand' => $brand->id]));
 
-        $respose->assertRedirect(route('manager.login'));
+        $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_guest_can_not_access_brands_index()
+    public function test_guest_can_not_access_brands_index(): void
     {
         $response = $this->get(route('manager.brand.index'));
 
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_guest_can_not_store_brand()
+    public function test_guest_can_not_store_brand(): void
     {
         $response = $this->post(route('manager.brand.store'), [
             'name' => 'Guest Brand',
@@ -288,7 +288,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_guest_can_not_update_brand()
+    public function test_guest_can_not_update_brand(): void
     {
         $brand = ProductBrand::factory()->create();
 
@@ -299,7 +299,7 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_guest_can_not_delete_brand()
+    public function test_guest_can_not_delete_brand(): void
     {
         $brand = ProductBrand::factory()->create();
 
@@ -308,12 +308,12 @@ class BrandTest extends TestCase
         $response->assertRedirect(route('manager.login'));
     }
 
-    public function test_guest_can_not_edit_brand()
+    public function test_guest_can_not_edit_brand(): void
     {
         $brand = ProductBrand::factory()->create();
 
-        $respose = $this->get(route('manager.brand.edit', ['brand' => $brand->id]));
+        $response = $this->get(route('manager.brand.edit', ['brand' => $brand->id]));
 
-        $respose->assertRedirect(route('manager.login'));
+        $response->assertRedirect(route('manager.login'));
     }
 }

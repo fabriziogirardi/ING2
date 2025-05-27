@@ -12,14 +12,14 @@ class BrandController extends Controller
 {
     public function index()
     {
-        return view('manager.product.brand.index', [
+        return view('manager.brand.index', [
             'brands' => ProductBrand::paginate(10),
         ]);
     }
 
     public function create()
     {
-        return view('manager.product.brand.create');
+        return view('manager.brand.create');
     }
 
     public function store(StoreBrandRequest $request)
@@ -43,14 +43,14 @@ class BrandController extends Controller
 
     public function edit(ProductBrand $brand)
     {
-        return view('manager.product.brand.edit', [
+        return view('manager.brand.edit', [
             'brand' => $brand,
         ]);
     }
 
     public function show(ProductBrand $brand)
     {
-        return view('manager.product.brand.show', [
+        return view('manager.brand.show', [
             'brand' => $brand,
         ]);
     }
