@@ -10,6 +10,18 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    public function index()
+    {
+        return view('manager.product.brand.index', [
+            'brands' => ProductBrand::paginate(10),
+        ]);
+    }
+
+    public function create()
+    {
+        return view('manager.product.brand.create');
+    }
+
     public function store(StoreBrandRequest $request)
     {
         // Create a new brand
@@ -22,10 +34,25 @@ class BrandController extends Controller
 
     public function update(UpdateBrandRequest $request, ProductBrand $brand)
     {
-        $brand->name = $request->validated('name');
-        $brand->save();
+        $brand->update([
+            'name' => $request->validated('name'),
+        ]);
 
-        return response(200);
+        return redirect()->to(route('manager.product.brand.show', ['brand' => $brand->id]))->with('success', 'exito');
+    }
+
+    public function edit(ProductBrand $brand)
+    {
+        return view('manager.product.brand.edit', [
+            'brand' => $brand,
+        ]);
+    }
+
+    public function show(ProductBrand $brand)
+    {
+        return view('manager.product.brand.show', [
+            'brand' => $brand,
+        ]);
     }
 
     public function destroy(Request $request, ProductBrand $brand)

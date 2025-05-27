@@ -2,6 +2,8 @@
 
 namespace Products;
 
+use App\Models\Customer;
+use App\Models\Employee;
 use App\Models\Manager;
 use App\Models\ProductBrand;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,13 +18,57 @@ class BrandTest extends TestCase
 
     private Manager $manager;
 
+    private Employee $employee;
+
+    private Customer $customer;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->manager = Manager::factory()->create();
+        $this->manager  = Manager::factory()->create();
+        $this->employee = Employee::factory()->create();
+        $this->customer = Customer::factory()->create();
     }
 
-    public function test_add_new_brand_that_does_not_exist(): void
+    public function test_manager_can_access_empty_brands_index()
+    {
+        $this->actingAs($this->manager, 'manager');
+
+        ProductBrand::destroy(ProductBrand::all());
+
+        $response = $this->get(route('manager.product.brand.index'));
+
+        $response->assertViewIs('manager.product.brand.index')->assertDontSee('brands');
+    }
+
+    public function test_manager_can_access_brands_index_with_one_brand()
+    {
+        $this->actingAs($this->manager, 'manager');
+
+        ProductBrand::destroy(ProductBrand::all());
+        ProductBrand::factory()->create();
+
+        $response = $this->get(route('manager.product.brand.index'));
+
+        $response->assertViewIs('manager.product.brand.index')->assertViewHas('brands', function ($brands) {
+            return $brands->count() === 1;
+        });
+    }
+
+    public function test_manager_can_access_brands_index_with_pagination()
+    {
+        $this->actingAs($this->manager, 'manager');
+
+        ProductBrand::factory()->count(25)->create();
+
+        $response = $this->get(route('manager.product.brand.index'));
+
+        $response->assertViewIs('manager.product.brand.index')->assertViewHas('brands', function ($paginator) {
+            return $paginator->hasPages(); // Assuming default pagination is 10
+        });
+    }
+
+    public function test_manager_can_store_brand_that_does_not_exist()
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -30,14 +76,14 @@ class BrandTest extends TestCase
             'name' => 'Test Brand',
         ]);
 
-        $response->assertSessionHas('success', 'exito');
+        $response->assertRedirect(route('manager.product.brand.index'));
 
         $this->assertDatabaseHas('product_brands', [
             'name' => 'Test Brand',
         ]);
     }
 
-    public function test_add_new_brand_that_exists()
+    public function test_manager_can_not_store_brand_that_exists()
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -47,10 +93,23 @@ class BrandTest extends TestCase
             'name' => $brand->name,
         ]);
 
-        $response->assertStatus(302);
+        $response->assertSessionHasErrors();
     }
 
-    public function test_update_brand()
+    public function test_manager_can_show_brand()
+    {
+        $this->actingAs($this->manager, 'manager');
+
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->get(route('manager.product.brand.show', ['brand' => $brand->id]));
+
+        $response->assertViewIs('manager.product.brand.show')->assertViewHas([
+            'brand' => $brand,
+        ]);
+    }
+
+    public function test_manager_can_update_brand()
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -60,7 +119,7 @@ class BrandTest extends TestCase
             'name' => 'Updated Product Brand',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertRedirect(route('manager.product.brand.show', ['brand' => $brand->id]));
 
         $this->assertDatabaseHas('product_brands', [
             'id'   => $brand->id,
@@ -68,7 +127,7 @@ class BrandTest extends TestCase
         ]);
     }
 
-    public function test_delete_brand()
+    public function test_manager_can_delete_brand()
     {
         $this->actingAs($this->manager, 'manager');
 
@@ -81,5 +140,180 @@ class BrandTest extends TestCase
         $this->assertDatabaseMissing('product_brands', [
             'id' => $brand->id,
         ]);
+    }
+
+    public function test_manager_can_edit_brand_that_exists()
+    {
+        $this->actingAs($this->manager, 'manager');
+
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->get(route('manager.product.brand.edit', ['brand' => $brand->id]));
+
+        $response->assertViewIs('manager.product.brand.edit')->assertViewHas('brand', $brand);
+    }
+
+    public function test_manager_can_not_edit_brand_that_does_not_exist()
+    {
+        $this->actingAs($this->manager, 'manager');
+
+        $response = $this->get(route('manager.product.brand.edit', ['brand' => ProductBrand::max('id') + 1]));
+
+        $response->assertNotFound();
+    }
+
+    public function test_customer_can_not_access_brands_index()
+    {
+        $this->actingAs($this->customer, 'customer');
+
+        $response = $this->get(route('manager.product.brand.index'));
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_customer_can_not_store_brand()
+    {
+        $this->actingAs($this->customer, 'customer');
+
+        $response = $this->post(route('manager.product.brand.store'), [
+            'name' => 'Guest Brand',
+        ]);
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_customer_can_not_update_brand()
+    {
+        $this->actingAs($this->customer, 'customer');
+
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->put(route('manager.product.brand.update', ['brand' => $brand->id]), [
+            'name' => 'Updated Guest Brand',
+        ]);
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_customer_can_not_delete_brand()
+    {
+        $this->actingAs($this->customer, 'customer');
+
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->delete(route('manager.product.brand.destroy', ['brand' => $brand->id]));
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_customer_can_not_edit_brand()
+    {
+        $this->actingAs($this->customer, 'customer');
+
+        $brand = ProductBrand::factory()->create();
+
+        $respose = $this->get(route('manager.product.brand.edit', ['brand' => $brand->id]));
+
+        $respose->assertRedirect(route('manager.login'));
+    }
+
+    public function test_employee_can_not_access_brands_index()
+    {
+        $this->actingAs($this->employee, 'employee');
+
+        $response = $this->get(route('manager.product.brand.index'));
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_employee_can_not_store_brand()
+    {
+        $this->actingAs($this->employee, 'employee');
+
+        $response = $this->post(route('manager.product.brand.store'), [
+            'name' => 'Guest Brand',
+        ]);
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_employee_can_not_update_brand()
+    {
+        $this->actingAs($this->employee, 'employee');
+
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->put(route('manager.product.brand.update', ['brand' => $brand->id]), [
+            'name' => 'Updated Guest Brand',
+        ]);
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_employee_can_not_delete_brand()
+    {
+        $this->actingAs($this->employee, 'employee');
+
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->delete(route('manager.product.brand.destroy', ['brand' => $brand->id]));
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_employee_can_not_edit_brand()
+    {
+        $this->actingAs($this->employee, 'employee');
+
+        $brand = ProductBrand::factory()->create();
+
+        $respose = $this->get(route('manager.product.brand.edit', ['brand' => $brand->id]));
+
+        $respose->assertRedirect(route('manager.login'));
+    }
+
+    public function test_guest_can_not_access_brands_index()
+    {
+        $response = $this->get(route('manager.product.brand.index'));
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_guest_can_not_store_brand()
+    {
+        $response = $this->post(route('manager.product.brand.store'), [
+            'name' => 'Guest Brand',
+        ]);
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_guest_can_not_update_brand()
+    {
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->put(route('manager.product.brand.update', ['brand' => $brand->id]), [
+            'name' => 'Updated Guest Brand',
+        ]);
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_guest_can_not_delete_brand()
+    {
+        $brand = ProductBrand::factory()->create();
+
+        $response = $this->delete(route('manager.product.brand.destroy', ['brand' => $brand->id]));
+
+        $response->assertRedirect(route('manager.login'));
+    }
+
+    public function test_guest_can_not_edit_brand()
+    {
+        $brand = ProductBrand::factory()->create();
+
+        $respose = $this->get(route('manager.product.brand.edit', ['brand' => $brand->id]));
+
+        $respose->assertRedirect(route('manager.login'));
     }
 }
