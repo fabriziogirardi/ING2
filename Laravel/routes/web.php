@@ -3,8 +3,8 @@
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Manager\Auth\LoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
-use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Brand\BrandController;
+use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;

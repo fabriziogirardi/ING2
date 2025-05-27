@@ -37,9 +37,9 @@
             marker.addListener('gmp-click', function () {
                 const content = `
                     <div class="text-center">
+                        <img class="mx-auto w-1/6 h-1/6" src="{{ asset('logotipo.png') }}"/>
                         <h3 class="text-lg font-semibold">${branch.name}</h3>
                         <p class="text-sm">Dirección: ${branch.address}</p>
-                        <p class="text-sm">Teléfono: +54 9 221 123-456</p>
                     </div>
                 `;
                 infowindow.setContent(content);
@@ -49,4 +49,5 @@
     }
 </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ $api_key }}&callback=initMap&v=weekly&libraries=maps,marker&loading=async"></script>
+{{--<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ $api_key }}&callback=initMap&v=weekly&libraries=maps,marker&loading=async"></script>--}}
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ "" }}&callback=initMap&v=weekly&libraries=maps,marker&loading=async"></script>
