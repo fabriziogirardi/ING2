@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Models\ProductBrand;
 use Closure;
 use App\Models\ProductModel;
 use Illuminate\Contracts\Validation\DataAwareRule;
@@ -19,14 +20,8 @@ class UniqueModelNamePerBrand implements DataAwareRule, ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $brandId = $this->data['product_brand_id'];
-
-        $exists = ProductModel::where('name', $value)
-            ->where('product_brand_id', $brandId)
-            ->exists();
-
-        if ($exists) {
-            $fail(__('manager/model.validation.name.unique_per_brand'));
+        if (ProductBrand::where('product_brands.id', $this->data['product_brand_id'])->whereRelation('models', 'name', $value)->exists()) {
+            $fail(('manager/model.validation.name.unique_per_brand'));
         }
     }
 }
