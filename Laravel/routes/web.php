@@ -5,6 +5,7 @@ use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginControlle
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
+use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Models\Category;
@@ -59,7 +60,7 @@ Route::get('cat/{cat:slug}', static function (Category $cat) {
 // region Rutas del manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
     Route::get('/login', static function () {
-        return view('manager.login');
+        return view('manager.Login');
     })->name('login');
 
     Route::post('/login', ManagerLoginController::class)->name('login.post');
@@ -79,22 +80,9 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             return redirect()->to(route('manager.login'));
         })->name('logout');
 
-        Route::resource('employee', EmployeeController::class);
+        Route::resource('brand', BrandController::class);
 
-        Route::group(['prefix' => 'brand', 'as' => 'product.brand.'], static function () {
-            Route::get('/', static function () {
-                return view('manager.product.brand');
-            })->name('index');
-
-            Route::post('/', [BrandController::class, 'store'])->name('store');
-
-            Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
-
-            Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
-        });
-
-        Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
-    });
+        Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
 });
 // endregion
 
