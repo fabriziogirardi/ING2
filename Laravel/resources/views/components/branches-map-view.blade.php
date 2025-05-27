@@ -1,4 +1,4 @@
-<div id="map" class="w-full h-full"></div>
+<div id="map" {{ $attributes->class("w-full h-full") }}></div>
 
 <script>
     async function initMap() {
@@ -8,7 +8,7 @@
         var branches = @json($branches);
 
         const map = new Map(document.getElementById('map'), {
-            zoom: 16,
+            zoom: 13,
             center: {lat: -34.920749, lng: -57.953604},
             disableDefaultUI: true,
             mapId: "{{ config('credentials.google_maps.map_id') }}",
@@ -49,4 +49,4 @@
     }
 </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&callback=initMap&v=weekly&libraries=maps,marker&loading=async"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ $api_key }}&callback=initMap&v=weekly&libraries=maps,marker&loading=async"></script>
