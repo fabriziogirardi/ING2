@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Auth\VerifyTokenRequest;
 use App\Models\Manager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VerifyTokenController extends Controller
 {
@@ -26,6 +27,9 @@ class VerifyTokenController extends Controller
                 'incorrect_token' => __('manager/auth.incorrect_token'),
             ]);
         }
+
+        Auth::guard('employee')->logout();
+        Auth::guard('customer')->logout();
 
         Auth()->guard('manager')->login($manager);
         $manager->token->delete();
