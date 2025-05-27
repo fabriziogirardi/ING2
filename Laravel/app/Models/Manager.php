@@ -21,6 +21,11 @@ class Manager extends Authenticatable
 
     protected $with = ['person'];
 
+    protected $fillable = [
+        'person_id',
+        'password',
+    ];
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
