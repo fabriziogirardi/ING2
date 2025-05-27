@@ -126,7 +126,7 @@ class ModelTest extends TestCase
         ]);
     }
 
-    public function test_guest_can_not_create_model(): void
+    public function test_guest_cannot_create_model(): void
     {
         $brand = ProductBrand::factory()->create();
 
@@ -139,7 +139,7 @@ class ModelTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_guest_can_not_update_model(): void
+    public function test_guest_cannot_update_model(): void
     {
         $model = ProductModel::factory()->create();
 
@@ -152,7 +152,7 @@ class ModelTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_guest_can_not_delete_model(): void
+    public function test_guest_cannot_delete_model(): void
     {
         $model = ProductModel::factory()->create();
 
