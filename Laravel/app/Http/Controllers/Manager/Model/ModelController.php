@@ -11,6 +11,14 @@ use Illuminate\Http\Request;
 
 class ModelController extends Controller
 {
+    public function index(Request $request)
+    {
+        $models = ProductModel::with('brand')->get();
+
+        return view('Manager.model.index', [
+            'models' => $models,
+        ]);
+    }
     public function store(StoreModelRequest $request)
     {
 
