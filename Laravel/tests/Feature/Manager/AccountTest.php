@@ -23,9 +23,12 @@ class AccountTest extends TestCase
         $this->manager = Manager::factory()->create();
     }
 
-    /**
-     * A basic feature test example.
-     */
+    public function test_manager_can_see_login_page(): void
+    {
+        $response = $this->get(route('manager.login'));
+        $response->assertStatus(200);
+    }
+
     public function test_manager_can_request_token_with_correct_credentials(): void
     {
         Mail::fake();

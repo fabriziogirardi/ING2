@@ -18,11 +18,11 @@ class LoginController extends Controller
      */
     public function __invoke(LoginRequest $request)
     {
-        $manager = Manager::whereRelation('person', 'email', $request->email)->first();
+        $manager = Manager::whereRelation('person', 'email', $request->validated('email'))->first();
 
-        if (! $manager || ! password_verify($request->password, $manager->password)) {
+        if (! $manager || ! password_verify($request->validated('password'), $manager->password)) {
             return redirect()->back()->withErrors([
-                'incorrect_credentials' => __('manager.auth.incorrect_credentials'),
+                'incorrect_credentials' => __('manager/auth.incorrect_credentials'),
             ]);
         }
 
@@ -31,7 +31,7 @@ class LoginController extends Controller
         Mail::to($request->email)->send(new TokenGeneratedMail($manager->token));
 
         return redirect()->to(route('manager.verify-token'))->with([
-            'email' => $request->email,
+            'email' => $request->validated('email'),
         ]);
     }
 }

@@ -1,17 +1,20 @@
 <?php
 
 use App\Facades\GoogleMaps;
-use App\Http\Controllers\Manager\Auth\LoginController;
+use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
+use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
+use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
-    return view('landing.landing');
-});
+    return view('components.navigation.landing');
+})->name('home');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -54,12 +57,13 @@ Route::get('cat/{cat:slug}', static function (Category $cat) {
     dd(Product::get_all_by_category($cat)->get()->toArray());
 })->name('category.index');
 
+// region Rutas del manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
     Route::get('/login', static function () {
         return view('manager.Login');
     })->name('login');
 
-    Route::post('/login', LoginController::class)->name('login.post');
+    Route::post('/login', ManagerLoginController::class)->name('login.post');
 
     Route::get('/verify-token', static function () {
         return view('manager.verify-token');
@@ -70,7 +74,6 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('/dashboard', static function () {
             return view('manager.dashboard');
         })->name('dashboard');
-
         Route::get('/logout', static function () {
             Auth::guard('manager')->logout();
 
@@ -80,5 +83,46 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('brand', BrandController::class);
 
         Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
+});
+// endregion
+
+// region Rutas del empleado
+Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
+    Route::get('/login', static function () {
+        return view('employee.login');
+    })->name('login');
+
+    Route::post('/login', EmployeeLoginController::class)->name('login.post');
+
+    Route::group(['middleware' => 'auth:employee'], static function () {
+
+        Route::get('/logout', static function () {
+            Auth::guard('employee')->logout();
+
+            return redirect()->to(route('home'));
+        })->name('logout');
     });
 });
+// endregion
+
+// region Rutas del cliente
+Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
+    Route::get('/login', static function () {
+        return view('customer.login');
+    })->name('login');
+
+    Route::post('/login', CustomerLoginController::class)->name('login.post');
+
+    Route::get('/register', static function () {
+        return view('customer.register');
+    })->name('register');
+
+    Route::group(['middleware' => 'auth:customer'], static function () {
+        Route::get('/logout', static function () {
+            Auth::guard('customer')->logout();
+
+            return redirect()->to(route('home'));
+        })->name('logout');
+    });
+});
+// endregion

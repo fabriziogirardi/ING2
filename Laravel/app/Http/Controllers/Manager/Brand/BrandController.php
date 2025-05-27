@@ -29,7 +29,7 @@ class BrandController extends Controller
             'name' => $request->validated('name'),
         ]);
 
-        return redirect()->to(route('manager.product.brand.index'))->with('success', 'exito');
+        return redirect()->to(route('manager.brand.index'))->with('success', 'exito');
     }
 
     public function update(UpdateBrandRequest $request, ProductBrand $brand)
@@ -38,7 +38,7 @@ class BrandController extends Controller
             'name' => $request->validated('name'),
         ]);
 
-        return redirect()->to(route('manager.product.brand.show', ['brand' => $brand->id]))->with('success', 'exito');
+        return redirect()->to(route('manager.brand.show', ['brand' => $brand->id]))->with('success', 'exito');
     }
 
     public function edit(ProductBrand $brand)
@@ -60,6 +60,6 @@ class BrandController extends Controller
         // Delete the brand
         $brand->delete();
 
-        return redirect()->to(route('manager.product.brand.index'))->with('success', 'exito');
+        return redirect()->to(route('manager.brand.index'))->with('success', 'exito');
     }
 }
