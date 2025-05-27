@@ -77,21 +77,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             return redirect()->to(route('manager.login'));
         })->name('logout');
 
-        Route::group(['prefix' => 'product', 'as' => 'product.'], static function () {
-
-            Route::group(['prefix' => 'brand', 'as' => 'brand.'], static function () {
-                Route::resource('brand', BrandController::class)->names([
-                    'index'   => 'index',
-                    'create'  => 'create',
-                    'edit'    => 'edit',
-                    'store'   => 'store',
-                    'update'  => 'update',
-                    'show'    => 'show',
-                    'destroy' => 'destroy',
-                ]);
-            });
-
-        });
+        Route::resource('brand', BrandController::class);
 
         Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
     });
