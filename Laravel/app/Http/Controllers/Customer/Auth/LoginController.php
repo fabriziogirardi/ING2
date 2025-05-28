@@ -18,7 +18,7 @@ class LoginController extends Controller
 
         if (! $customer || ! password_verify($request->validated('password'), $customer->password)) {
             return redirect()->back()->withErrors([
-                'incorrect_credentials' => __('manager/auth.incorrect_credentials'),
+                'incorrect_credentials' => __('customer/auth.incorrect_credentials'),
             ]);
         }
 

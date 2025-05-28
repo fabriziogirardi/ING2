@@ -18,14 +18,14 @@ class LoginController extends Controller
 
         if (! $employee || ! password_verify($request->validated('password'), $employee->password)) {
             return redirect()->back()->withErrors([
-                'incorrect_credentials' => __('manager/auth.incorrect_credentials'),
+                'incorrect_credentials' => __('employee/auth.incorrect_credentials'),
             ]);
         }
 
         Auth::guard('manager')->logout();
         Auth::guard('customer')->logout();
 
-        Auth()->guard('customer')->login($employee);
+        Auth()->guard('employee')->login($employee);
 
         return redirect()->to(route('home'));
     }
