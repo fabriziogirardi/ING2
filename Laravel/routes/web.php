@@ -97,8 +97,4 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
     });
 });
-
-Route::resources([
-    'model' => ModelController::class,
-]);
 // endregion
