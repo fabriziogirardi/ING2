@@ -27,7 +27,7 @@ class ModelController extends Controller
             'product_brand_id' => $request->validated('product_brand_id'),
         ]);
 
-        return redirect()->back()->with(['success' => __('manager.model.created')]);
+        return redirect()->back()->with([__('manager.model.created')]);
     }
 
     public function update(UpdateModelRequest $request, ProductModel $model)
@@ -36,13 +36,13 @@ class ModelController extends Controller
         $model->name = $request->validated('name');
         $model->save();
 
-        return redirect()->back()->with(['success' => __('manager.model.updated')]);
+        return redirect()->back();
     }
 
     public function destroy(Request $request, ProductModel $model)
     {
         $model->delete();
 
-        return redirect()->to(route('manager.product.model.index'))->with(['success' => __('manager.model.deleted')]);
+        return redirect()->to(route('manager.model.index'));
     }
 }

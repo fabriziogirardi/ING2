@@ -92,17 +92,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy');
         });
 
-        Route::group(['prefix' => 'model', 'as' => 'product.model.'], static function () {
-            Route::get('/', static function () {
-                return view('manager.product.model');
-            })->name('index');
-
-            Route::post('/', [\App\Http\Controllers\Manager\Model\ModelController::class, 'store'])->name('store');
-
-            Route::put('/{model}', [\App\Http\Controllers\Manager\Model\ModelController::class, 'update'])->name('update');
-
-            Route::delete('/{model}', [\App\Http\Controllers\Manager\Model\ModelController::class, 'destroy'])->name('destroy');
-        });
+        Route::resource('model', ModelController::class);
 
         Route::get('/viewBranches', [\App\Http\Controllers\Manager\Branches\BranchesListing::class, '__invoke'])->name('branches.index');
     });
