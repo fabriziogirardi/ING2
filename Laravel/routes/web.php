@@ -7,7 +7,6 @@ use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
-use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -83,6 +82,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('brand', BrandController::class);
 
         Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
+    });
 });
 // endregion
 

@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "flowbite/src/themes";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
 
 [x-cloak] {
     display: none;
