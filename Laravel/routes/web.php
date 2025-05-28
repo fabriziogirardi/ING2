@@ -83,6 +83,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('brand', BrandController::class);
 
         Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
+    });
 });
 // endregion
 

@@ -3,7 +3,7 @@
         <div class="lg:flex lg:items-center lg:justify-between">
             <div class="flex items-center justify-between">
                 <a href="{{ route('home') }}">
-                    <img class="w-auto h-12" src="{{ asset('logotipo.png') }}" alt="">
+                    <img class="w-auto h-12 p-1 bg-white rounded-lg" src="{{ asset('logotipo.png') }}" alt="Logo">
                 </a>
 
                 <!-- Mobile menu button -->
