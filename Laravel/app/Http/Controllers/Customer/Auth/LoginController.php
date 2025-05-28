@@ -25,7 +25,7 @@ class LoginController extends Controller
         Auth::guard('manager')->logout();
         Auth::guard('employee')->logout();
 
-        Auth()->guard('manager')->login($customer);
+        Auth()->guard('customer')->login($customer);
 
         return redirect()->to(route('home'));
     }
