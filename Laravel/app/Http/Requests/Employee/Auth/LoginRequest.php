@@ -26,15 +26,4 @@ class LoginRequest extends FormRequest
             'password' => 'required|string',
         ];
     }
-
-    public function messages(): array
-    {
-        return [
-            'email.required'    => 'El email es obligatorio',
-            'email.email'       => 'El email debe ser una dirección de correo electrónico válida',
-            'email.exists'      => 'El email no existe en la base de datos',
-            'password.required' => 'La contraseña es obligatoria',
-            'password.string'   => 'La contraseña debe ser una cadena de texto',
-        ];
-    }
 }
