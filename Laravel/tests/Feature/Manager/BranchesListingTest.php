@@ -25,14 +25,14 @@ class BranchesListingTest extends TestCase
     {
         Branch::factory()->count(10)->create();
 
-        $response = $this->get(route('manager.branches.index'));
+        $response = $this->get(route('manager.branch.index'));
 
         $response->assertStatus(302);
     }
 
     public function test_listing_without_branches_no_authenticated(): void
     {
-        $response = $this->get(route('manager.branches.index'));
+        $response = $this->get(route('manager.branch.index'));
 
         $response->assertStatus(302);
     }
@@ -43,7 +43,7 @@ class BranchesListingTest extends TestCase
 
         Branch::factory()->count(10)->create();
 
-        $response = $this->get(route('manager.branches.index'));
+        $response = $this->get(route('manager.branch.index'));
 
         $response->assertStatus(200);
         $response->assertViewHas('branches');
@@ -53,7 +53,7 @@ class BranchesListingTest extends TestCase
     {
         $this->actingAs($this->manager, 'manager');
 
-        $response = $this->get(route('manager.branches.index'));
+        $response = $this->get(route('manager.branch.index'));
 
         $response->assertStatus(200);
         $response->assertViewHas('branches', function ($branches) {
