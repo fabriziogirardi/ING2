@@ -3,8 +3,9 @@
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Manager\Auth\LoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
-use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Brand\BrandController;
+use App\Http\Controllers\Manager\Category\CategoryController;
+use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -78,6 +79,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         })->name('logout');
 
         Route::resource('employee', EmployeeController::class);
+
+        Route::resource('category', CategoryController::class)->except(['destroy']);
 
         Route::group(['prefix' => 'brand', 'as' => 'product.brand.'], static function () {
             Route::get('/', static function () {
