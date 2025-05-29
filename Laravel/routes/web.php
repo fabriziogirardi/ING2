@@ -80,6 +80,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         })->name('logout');
 
         Route::resource('brand', BrandController::class);
+
         Route::resource('branch', BranchController::class);
     });
 });

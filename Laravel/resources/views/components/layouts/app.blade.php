@@ -19,11 +19,13 @@
             }
         </style>
     </head>
-    <body class="leading-normal tracking-normal text-white gradient min-h-screen" style="font-family: 'Source Sans Pro', sans-serif;">
+    <body class="flex flex-col leading-normal tracking-normal text-gray-700 gradient min-h-screen" style="font-family: 'Source Sans Pro', sans-serif;">
         <!--Nav-->
         <x-navigation.navbar.complete />
 
-        {{ $slot }}
+        <div class="pt-20">
+            {{ $slot }}
+        </div>
 
         <x-footer />
 
