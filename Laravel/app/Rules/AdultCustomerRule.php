@@ -19,9 +19,8 @@ class AdultCustomerRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $birthDate = Carbon::parse($value);
-        $adultDate = now()->subYears(18);
 
-        if ($birthDate->greaterThan($adultDate)) {
+        if ($birthDate->greaterThan(now()->subYears(18))) {
             $fail(__('customer/auth.birth_date_adult'));
         }
     }

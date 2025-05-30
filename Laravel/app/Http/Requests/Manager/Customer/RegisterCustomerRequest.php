@@ -30,7 +30,7 @@ class RegisterCustomerRequest extends FormRequest
             'government_id_number' => [
                 'required',
                 'string',
-                'max:255',
+                'size:8',
                 new UniqueCustomerGovernmentIdRule(),
             ],
             'first_name' => 'required|string|max:255',
