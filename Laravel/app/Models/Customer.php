@@ -15,7 +15,10 @@ class Customer extends Authenticatable
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory;
 
-    protected $with = ['person'];
+    protected $fillable = [
+        'person_id',
+        'password',
+    ];
 
     public function person(): BelongsTo
     {

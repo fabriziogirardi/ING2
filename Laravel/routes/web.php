@@ -2,6 +2,7 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\Auth\RegisterController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
@@ -112,6 +113,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
     })->name('login');
 
     Route::post('/login', CustomerLoginController::class)->name('login.post');
+
+    Route::get('/register', [RegisterController::class, 'create']);
+    Route::post('/register', [RegisterController::class, 'store']);
 
     Route::get('/register', static function () {
         return view('customer.register');
