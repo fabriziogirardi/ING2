@@ -12,13 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('customers', static function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Person::class);
             $table->string('password');
             $table->boolean('is_active')->default(true);
             $table->decimal('rating', 3, 2)->default(0.00);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

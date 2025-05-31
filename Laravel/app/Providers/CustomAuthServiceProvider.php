@@ -23,17 +23,29 @@ class CustomAuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Auth::provider('split_table', function ($app, array $config) {
+        Auth::provider('split_table', static function ($app, array $config) {
             return new EloquentSplitTableUserProvider($app['hash'], $config['model']);
         });
 
-        Authenticate::redirectUsing(function (Request $request) {
+        Auth::macro('getCurrentGuard', function () {
+            $guards = array_keys(config('auth.guards'));
+
+            return collect($guards)->first(static function ($guard) {
+                return auth()->guard($guard)->check();
+            });
+        });
+
+        Authenticate::redirectUsing(static function (Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
 
-            if ($request->routeIs('a.*')) {
-                return route('a.login');
+            if ($request->routeIs('manager.*')) {
+                return route('manager.login');
+            }
+
+            if ($request->routeIs('employee.*')) {
+                return route('employee.login');
             }
 
             return route('login');
