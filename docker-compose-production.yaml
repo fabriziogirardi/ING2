@@ -66,7 +66,7 @@ services:
       - data-production:/var/www/html
     depends_on:
       mariadb:
-        condition: service_started
+        condition: service_healthy
       composer-init:
         condition: service_completed_successfully
       npm-init:
