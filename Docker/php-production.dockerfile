@@ -32,9 +32,6 @@ FROM base AS production
 # If APP_ENV is production, copy the application files
 COPY ./Laravel /var/www/html
 
-# Make the application files owned by the new user
-RUN chown -R ${USER}:${USER} /var/www/html
-
 # Set permissions for directories
 RUN chmod -R 755 /var/www/html
 RUN chmod -R 776 /var/www/html/storage
