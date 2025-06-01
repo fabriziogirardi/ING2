@@ -114,6 +114,8 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 
     Route::post('/login', CustomerLoginController::class)->name('login.post');
 
+    // Estas rutas son para el registro de clientes, deberian ir a empleados
+    // debido a que los clientes no deberian poder registrarse por si solos
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store']);
 

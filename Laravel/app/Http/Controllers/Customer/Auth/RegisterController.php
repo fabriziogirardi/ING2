@@ -27,8 +27,8 @@ class RegisterController extends Controller
     {
         $person = Person::firstOrCreate([
             'email'                 => $request->validated('email'),
-            'government_id_type_id' => $request->validated('government_id_type_id'),
             'government_id_number'  => $request->validated('government_id_number'),
+            'government_id_type_id' => $request->validated('government_id_type_id'),
         ], [
             'first_name' => $request->validated('first_name'),
             'last_name'  => $request->validated('last_name'),

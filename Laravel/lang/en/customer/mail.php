@@ -6,6 +6,6 @@ return [
     'account_created' => 'Your account has been created with the following details:',
     'mail' => 'Email: :email',
     'temporary_password' => 'Temporary Password: :password',
-    'login_instruction' => 'Please log in using these credentials and change your password after your first login.',
+    'login_instruction' => 'Log in using these credentials and later you can change your password in you profile.',
     'thanks' => 'Thanks, Alkil.ar',
 ];

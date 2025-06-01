@@ -22,7 +22,7 @@ class RegisterTest extends TestCase
         $this->idType = GovernmentIdType::factory()->create([
             'name' => 'DNI',
         ]);
-        GovernmentIdType::factory()->create([
+        $this->idTypeDistint = GovernmentIdType::factory()->create([
             'name' => 'Passport',
         ]);
     }
@@ -59,6 +59,41 @@ class RegisterTest extends TestCase
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
             'government_id_type_id'  => $this->idType->id,
+        ]);
+
+        $response = $this->post(route('customer.register'), [
+            'first_name'            => 'John',
+            'last_name'             => 'Doe',
+            'email'                 => 'john@example.com',
+            'government_id_number'  => '12345678',
+            'government_id_type_id'  => $this->idType->id,
+            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+        ]);
+
+        $response->assertRedirect('/');
+
+        $response->assertStatus(302);
+
+        Mail::assertSent(NewCustomerCreated::class, function ($mail) {
+            return $mail->hasTo('john@example.com');
+        });
+    }
+
+    public function test_customer_can_register_with_valid_data_and_type_document_distint(): void
+    {
+        Mail::fake();
+
+        $person = Person::factory()->create([
+            'first_name'            => 'John',
+            'last_name'             => 'Doe',
+            'email'                 => 'test@example.com',
+            'government_id_number'  => '12345678',
+            'government_id_type_id'  => $this->idTypeDistint->id,
+        ]);
+
+        Customer::factory()->create([
+            'person_id' => $person->id,
+            'password'  => bcrypt('password'),
         ]);
 
         $response = $this->post(route('customer.register'), [
@@ -136,6 +171,7 @@ class RegisterTest extends TestCase
             'last_name'             => 'Test',
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
+            'government_id_type_id'  => $this->idType->id,
         ]);
 
         Customer::factory()->create([

@@ -25,17 +25,17 @@ class RegisterCustomerRequest extends FormRequest
                 'max:255',
                 new UniqueCustomerEmailRule(),
             ],
-            'government_id_type_id'   => [
-                'required',
-                'integer',
-                'exists:government_id_types,id',
-            ],
             'government_id_number' => [
                 'required',
                 'string',
                 'min:7',
                 'max:8',
                 new UniqueCustomerGovernmentIdRule(),
+            ],
+            'government_id_type_id'   => [
+                'required',
+                'integer',
+                'exists:government_id_types,id',
             ],
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
