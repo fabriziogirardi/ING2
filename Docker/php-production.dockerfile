@@ -29,15 +29,9 @@ RUN rm -rf /var/cache/apk/*
 
 FROM base AS production
 
-USER www-data
-
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
 
 FROM base AS clean
-
-# Clean stage does not need additional steps
-
-USER www-data
 
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
 
@@ -46,7 +40,5 @@ FROM base AS init
 # Copy entrypoint script
 COPY ./Docker/php/php-init.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-USER www-data
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
