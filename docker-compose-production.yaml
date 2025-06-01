@@ -1,52 +1,23 @@
 networks:
-  default:
+  portfolio_default:
+    name: portfolio_default
+    driver: bridge
+    external: true
+  ing2-default:
+    name: ing2_default
+    driver: bridge
 
 services:
-  nginx:
-    build:
-      context: ./docker
-      dockerfile: nginx.dockerfile
-      target: ${APP_ENV}
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
-        - APP_DOMAIN=${APP_DOMAIN}
-    restart: unless-stopped
-    container_name: ${APP_NAME}-nginx
-    environment:
-      - TZ=America/Buenos_Aires
-    volumes:
-      - data-${APP_ENV}:/var/www/html
-    ports:
-      - "80:80"
-      - "443:443"
-      - "5173:5173"
-    depends_on:
-      php:
-        condition: service_started
-      laravel-queue:
-        condition: service_started
-      laravel-cron:
-        condition: service_started
-    profiles: ["local", "production"]
-    networks:
-      - default
-
   php:
     build:
       context: ./
-      dockerfile: Docker/php.dockerfile
-      target: ${APP_ENV}
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
+      dockerfile: Docker/php-production.dockerfile
+      target: production
     container_name: ${APP_NAME}-php
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     depends_on:
       mariadb:
         condition: service_started
@@ -54,25 +25,22 @@ services:
         condition: service_started
       php-init:
         condition: service_completed_successfully
-        restart: false
-    profiles: ["local", "production"]
     networks:
-      - default
+      ing2-default:
+      portfolio_default:
+        aliases:
+          - php-ing2
 
   php-init:
     build:
       context: ./
-      dockerfile: Docker/php.dockerfile
+      dockerfile: Docker/php-production.dockerfile
       target: init
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-php-init
     env_file:
       - .env
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     depends_on:
       composer-init:
         condition: service_completed_successfully
@@ -81,47 +49,36 @@ services:
         condition: service_completed_successfully
         restart: false
     working_dir: /var/www/html
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   composer-init:
     build:
       context: ./
-      dockerfile: Docker/composer.dockerfile
+      dockerfile: Docker/composer-production.dockerfile
       target: init
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-composer-init
     env_file:
       - .env
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     working_dir: /var/www/html
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   npm-init:
     build:
       context: ./
       dockerfile: Docker/node.dockerfile
       target: init
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-npm-init
     env_file:
       - .env
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     working_dir: /var/www/html
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   mariadb:
     image: mariadb:11.6.2-ubi9
@@ -138,9 +95,8 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
       TZ: America/Buenos_Aires
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   redis:
     image: redis:alpine
@@ -150,115 +106,95 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   laravel-cron:
     build:
       context: ./Docker
-      dockerfile: php.dockerfile
+      dockerfile: php-production.dockerfile
       target: clean
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-laravel-cron
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     depends_on:
       php:
         condition: service_started
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'schedule:work']
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   laravel-queue:
     build:
       context: ./docker
-      dockerfile: php.dockerfile
+      dockerfile: php-production.dockerfile
       target: clean
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-laravel-queue
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     depends_on:
       php:
         condition: service_started
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
-    profiles: ["local", "production"]
     networks:
-      - default
+      - ing2-default
 
   vite:
     build:
       context: ./docker
       dockerfile: node.dockerfile
-      target: ${APP_ENV}
+      target: production
     container_name: ${APP_NAME}-vite-local
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     working_dir: /var/www/html
-    profiles: ["local"]
     depends_on:
       nginx:
         condition: service_started
     networks:
-      - default
+      - ing2-default
 
   composer:
     build:
       context: ./docker
-      dockerfile: composer.dockerfile
+      dockerfile: composer-production.dockerfile
       target: base
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-composer
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     working_dir: /var/www/html
     profiles: ["composer"]
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
-      - default
+      - ing2-default
 
   artisan:
     build:
       context: ./docker
-      dockerfile: php.dockerfile
+      dockerfile: php-production.dockerfile
       target: clean
-      args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        - USER=${USER:-laravel}
     container_name: ${APP_NAME}-artisan
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     depends_on:
       - mariadb
     working_dir: /var/www/html
     profiles: ["artisan"]
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
-      - default
+      - ing2-default
 
   npm:
     build:
@@ -273,12 +209,12 @@ services:
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     working_dir: /var/www/html
     profiles: ["npm"]
     entrypoint: ['npm']
     networks:
-      - default
+      - ing2-default
 
   npx:
     build:
@@ -289,7 +225,7 @@ services:
     environment:
       - TZ=America/Buenos_Aires
     volumes:
-      - data-${APP_ENV}:/var/www/html
+      - data-production:/var/www/html
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -298,16 +234,9 @@ services:
     profiles: ["npx"]
     entrypoint: ['npx']
     networks:
-      - default
+      - ing2-default
 
 volumes:
-  data-local:
-    name: data-local
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./Laravel
   data-production:
     name: data-production
     external: true
