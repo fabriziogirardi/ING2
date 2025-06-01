@@ -16,4 +16,4 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/l
 FROM base AS production
 
 # Copy Nginx configuration
-COPY ./Docker/nginx/nginx-prod.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx-prod.conf /etc/nginx/conf.d/default.conf
