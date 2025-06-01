@@ -162,6 +162,7 @@ return [
     'url'         => 'El campo :attribute debe ser una URL válida.',
     'ulid'        => 'El campo :attribute debe ser un ULID válido.',
     'uuid'        => 'El campo :attribute debe ser un UUID válido.',
+    'select_a_option'      => 'Selecciona una opcion',
 
     /*
     |--------------------------------------------------------------------------
@@ -195,7 +196,8 @@ return [
         'first_name'              => 'Nombre',
         'last_name'              => 'Apellido',
         'email'             => 'Correo electrónico',
-        'government_id_number'             => 'Documento de identidad',
+        'government_id_number'             => 'Numero de documento',
+        'government_id_type'             => 'Tipo de documento',
         'password'          => 'Contraseña',
         'password_confirmation' => 'Confirmación de contraseña',
         'current_password'  => 'Contraseña actual',

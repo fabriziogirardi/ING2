@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Manager\Customer;
+namespace App\Http\Requests\Customer;
 
 use App\Rules\AdultCustomerRule;
 use App\Rules\UniqueCustomerEmailRule;
 use App\Rules\UniqueCustomerGovernmentIdRule;
-use App\Rules\UniqueEmployeeRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterCustomerRequest extends FormRequest
@@ -22,15 +21,20 @@ class RegisterCustomerRequest extends FormRequest
         return [
             'email'      => [
                 'required',
-                'string',
                 'email',
                 'max:255',
                 new UniqueCustomerEmailRule(),
             ],
+            'government_id_type_id'   => [
+                'required',
+                'integer',
+                'exists:government_id_types,id',
+            ],
             'government_id_number' => [
                 'required',
                 'string',
-                'size:8',
+                'min:7',
+                'max:8',
                 new UniqueCustomerGovernmentIdRule(),
             ],
             'first_name' => 'required|string|max:255',

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\GovernmentIdType;
 use Illuminate\Database\Seeder;
 
 class GovernmentIdTypeSeeder extends Seeder
@@ -11,6 +12,6 @@ class GovernmentIdTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        GovernmentIdType::factory()->count(5)->create();
     }
 }

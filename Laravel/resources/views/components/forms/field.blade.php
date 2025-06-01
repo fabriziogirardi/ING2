@@ -1,8 +1,8 @@
-@props(['label', 'name', 'type'])
+@props(['label', 'name'])
 
 <div>
     @if ($label)
-        <x-forms.label :$name :$label :$type/>
+        <x-forms.label :$name :$label/>
     @endif
 
     <div class="mt-1">

@@ -114,12 +114,8 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 
     Route::post('/login', CustomerLoginController::class)->name('login.post');
 
-    Route::get('/register', [RegisterController::class, 'create']);
+    Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store']);
-
-    Route::get('/register', static function () {
-        return view('customer.register');
-    })->name('register');
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/logout', static function () {
