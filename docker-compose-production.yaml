@@ -116,6 +116,12 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
       TZ: America/Buenos_Aires
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     networks:
       - ing2-default
 
