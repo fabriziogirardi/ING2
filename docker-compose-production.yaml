@@ -125,7 +125,7 @@ services:
 
   laravel-queue:
     build:
-      context: ./docker
+      context: ./Docker
       dockerfile: php-production.dockerfile
       target: clean
     container_name: ${APP_NAME}-laravel-queue
@@ -143,7 +143,7 @@ services:
 
   vite:
     build:
-      context: ./docker
+      context: ./Docker
       dockerfile: node.dockerfile
       target: production
     container_name: ${APP_NAME}-vite-local
@@ -157,7 +157,7 @@ services:
 
   composer:
     build:
-      context: ./docker
+      context: ./Docker
       dockerfile: composer-production.dockerfile
       target: base
     container_name: ${APP_NAME}-composer
@@ -173,7 +173,7 @@ services:
 
   artisan:
     build:
-      context: ./docker
+      context: ./Docker
       dockerfile: php-production.dockerfile
       target: clean
     container_name: ${APP_NAME}-artisan
@@ -191,7 +191,7 @@ services:
 
   npm:
     build:
-      context: ./docker
+      context: ./Docker
       dockerfile: node.dockerfile
       target: base
     container_name: ${APP_NAME}-npm
@@ -211,7 +211,7 @@ services:
 
   npx:
     build:
-      context: ./docker
+      context: ./Docker
       dockerfile: node.dockerfile
       target: base
     container_name: ${APP_NAME}-npx
