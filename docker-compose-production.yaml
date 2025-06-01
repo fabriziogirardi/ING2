@@ -8,6 +8,29 @@ networks:
     driver: bridge
 
 services:
+  nginx:
+    build:
+      context: ./Docker
+      dockerfile: nginx.dockerfile
+      target: production
+    restart: unless-stopped
+    container_name: ${APP_NAME}-nginx
+    environment:
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - data-production:/var/www/static
+    depends_on:
+      php:
+        condition: service_started
+      laravel-queue:
+        condition: service_started
+      laravel-cron:
+        condition: service_started
+    networks:
+      portfolio_default:
+        aliases:
+          - nginx-ing2
+
   php:
     build:
       context: ./
@@ -42,6 +65,8 @@ services:
     volumes:
       - data-production:/var/www/html
     depends_on:
+      mariadb:
+        condition: service_started
       composer-init:
         condition: service_completed_successfully
       npm-init:
