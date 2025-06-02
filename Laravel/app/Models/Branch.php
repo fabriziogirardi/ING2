@@ -15,4 +15,6 @@ class Branch extends Model
 {
     /** @use HasFactory<\Database\Factories\BranchFactory> */
     use HasFactory;
+
+    protected $fillable = ['place_id', 'name', 'address', 'latitude', 'longitude', 'description'];
 }

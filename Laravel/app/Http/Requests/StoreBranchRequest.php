@@ -11,7 +11,7 @@ class StoreBranchRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class StoreBranchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'place_id'    => 'required|string|unique:branches,place_id',
+            'name'        => 'required|string|max:255',
+            'address'     => 'required|string|max:255',
+            'latitude'    => 'required|numeric',
+            'longitude'   => 'required|numeric',
+            'description' => 'nullable|string',
         ];
     }
 }

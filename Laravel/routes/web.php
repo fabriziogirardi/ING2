@@ -5,8 +5,10 @@ use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginControlle
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
+use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
+use App\Http\Controllers\Manager\Model\ModelController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +84,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('brand', BrandController::class);
 
         Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
+        Route::resource('branch', BranchController::class);
     });
 });
 // endregion
@@ -95,7 +98,6 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
     Route::post('/login', EmployeeLoginController::class)->name('login.post');
 
     Route::group(['middleware' => 'auth:employee'], static function () {
-
         Route::get('/logout', static function () {
             Auth::guard('employee')->logout();
 
