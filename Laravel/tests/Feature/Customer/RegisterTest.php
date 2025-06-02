@@ -2,6 +2,7 @@
 
 namespace Customer;
 
+use App\Mail\NewCustomerCreated;
 use App\Models\Customer;
 use App\Models\GovernmentIdType;
 use App\Models\Person;
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
-use App\Mail\NewCustomerCreated;
 
 class RegisterTest extends TestCase
 {
@@ -18,13 +18,14 @@ class RegisterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Create a new id_type for government ID
-        $this->idType = GovernmentIdType::factory()->create([
-            'name' => 'DNI',
+        $types = GovernmentIdType::factory()->createMany([
+            ['name' => 'DNI'],
+            ['name' => 'PAS'],
+            ['name' => 'LE'],
+            ['name' => 'LC'],
         ]);
-        $this->idTypeDistint = GovernmentIdType::factory()->create([
-            'name' => 'Passport',
-        ]);
+        $this->idType        = $types[0];
+        $this->idTypeDistint = $types[1];
     }
 
     public function test_customer_can_register_with_valid_data(): void
@@ -36,11 +37,11 @@ class RegisterTest extends TestCase
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2000-01-01',
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect('/')->assertSessionHas('success');
 
         $response->assertStatus(302);
 
@@ -58,7 +59,7 @@ class RegisterTest extends TestCase
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
+            'government_id_type_id' => $this->idType->id,
         ]);
 
         $response = $this->post(route('customer.register'), [
@@ -66,11 +67,11 @@ class RegisterTest extends TestCase
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2000-01-01',
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect('/')->assertSessionHas('success');
 
         $response->assertStatus(302);
 
@@ -88,7 +89,7 @@ class RegisterTest extends TestCase
             'last_name'             => 'Doe',
             'email'                 => 'test@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idTypeDistint->id,
+            'government_id_type_id' => $this->idTypeDistint->id,
         ]);
 
         Customer::factory()->create([
@@ -101,11 +102,11 @@ class RegisterTest extends TestCase
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2000-01-01',
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect('/')->assertSessionHas('success');
 
         $response->assertStatus(302);
 
@@ -130,8 +131,8 @@ class RegisterTest extends TestCase
             'last_name'             => 'Smith',
             'email'                 => 'not-an-email',
             'government_id_number'  => '87654321',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2000-01-01',
         ]);
 
         $response->assertSessionHasErrors(['email']);
@@ -144,7 +145,7 @@ class RegisterTest extends TestCase
             'last_name'             => 'Test',
             'email'                 => 'existing@example.com',
             'government_id_number'  => '11111111',
-            'government_id_type_id'  => $this->idType->id,
+            'government_id_type_id' => $this->idType->id,
         ]);
 
         Customer::factory()->create([
@@ -157,8 +158,8 @@ class RegisterTest extends TestCase
             'last_name'             => 'Smith',
             'email'                 => 'existing@example.com',
             'government_id_number'  => '87654321',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2000-01-01',
         ]);
 
         $response->assertSessionHasErrors(['email']);
@@ -171,7 +172,7 @@ class RegisterTest extends TestCase
             'last_name'             => 'Test',
             'email'                 => 'john@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
+            'government_id_type_id' => $this->idType->id,
         ]);
 
         Customer::factory()->create([
@@ -184,8 +185,8 @@ class RegisterTest extends TestCase
             'last_name'             => 'Smith',
             'email'                 => 'jane@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2000-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2000-01-01',
         ]);
 
         $response->assertSessionHasErrors(['government_id_number']);
@@ -200,11 +201,10 @@ class RegisterTest extends TestCase
             'last_name'             => 'Smith',
             'email'                 => 'jane@example.com',
             'government_id_number'  => '12345678',
-            'government_id_type_id'  => $this->idType->id,
-            'birth_date'            => '2010-01-01', // Assuming birth_date is required
+            'government_id_type_id' => $this->idType->id,
+            'birth_date'            => '2010-01-01',
         ]);
 
         $response->assertSessionHasErrors(['birth_date']);
     }
-
 }

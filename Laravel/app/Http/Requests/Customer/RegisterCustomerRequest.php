@@ -16,23 +16,24 @@ class RegisterCustomerRequest extends FormRequest
     {
         return true;
     }
+
     public function rules(): array
     {
         return [
-            'email'      => [
+            'email' => [
                 'required',
                 'email',
                 'max:255',
-                new UniqueCustomerEmailRule(),
+                new UniqueCustomerEmailRule,
             ],
             'government_id_number' => [
                 'required',
                 'string',
                 'min:7',
                 'max:8',
-                new UniqueCustomerGovernmentIdRule(),
+                new UniqueCustomerGovernmentIdRule,
             ],
-            'government_id_type_id'   => [
+            'government_id_type_id' => [
                 'required',
                 'integer',
                 'exists:government_id_types,id',
@@ -41,7 +42,7 @@ class RegisterCustomerRequest extends FormRequest
             'last_name'  => 'required|string|max:255',
             'birth_date' => [
                 'required',
-                new AdultCustomerRule(),
+                new AdultCustomerRule,
             ],
         ];
     }

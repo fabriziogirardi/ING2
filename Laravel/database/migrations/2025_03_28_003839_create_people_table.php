@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->foreignIdFor(GovernmentIdType::class);
+            $table->date('birth_date');
             $table->string('government_id_number');
             $table->timestamps();
 

@@ -2,8 +2,6 @@
 
 namespace App\Rules;
 
-use App\Models\Customer;
-use App\Models\Employee;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Carbon;
@@ -18,9 +16,7 @@ class AdultCustomerRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $birthDate = Carbon::parse($value);
-
-        if ($birthDate->greaterThan(now()->subYears(18))) {
+        if (Carbon::parse($value)->greaterThan(now()->subYears(18))) {
             $fail(__('customer/auth.birth_date_adult'));
         }
     }

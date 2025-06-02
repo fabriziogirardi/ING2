@@ -7,16 +7,18 @@ use App\Http\Requests\Customer\RegisterCustomerRequest;
 use App\Http\Requests\UpdatePersonRequest;
 use App\Mail\NewCustomerCreated;
 use App\Models\Customer;
+use App\Models\GovernmentIdType;
 use App\Models\Person;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Models\GovernmentIdType;
 
 class RegisterController extends Controller
 {
     public function create()
     {
         $idTypes = GovernmentIdType::all();
+
         return view('customer.register', compact('idTypes'));
     }
 
@@ -32,20 +34,16 @@ class RegisterController extends Controller
         ], [
             'first_name' => $request->validated('first_name'),
             'last_name'  => $request->validated('last_name'),
+            'birth_date' => $request->validated('birth_date'),
         ]);
 
-        //Se valida que sea mayor de edad
-        $request -> validated('birth_date');
-
-        //Se crea una contraseña aleatoria para enviarla al mail del cliente
         $password = Str::random(8);
-        //Se crea un nuevo cliente y se general la contraseña
+
         Customer::create([
-            'person_id'  => $person->id,
-            'password'   => bcrypt($password),
+            'person_id' => $person->id,
+            'password'  => Hash::make($password),
         ]);
 
-        //Se envia un correo al cliente con sus datos
         Mail::to($person->email)->send(
             new NewCustomerCreated(
                 $person->first_name,
@@ -55,7 +53,7 @@ class RegisterController extends Controller
             )
         );
 
-        return redirect('/');
+        return redirect('/')->with('success', __('customer/auth.register_success'));
     }
 
     /**

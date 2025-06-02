@@ -13,8 +13,11 @@ class NewCustomerCreated extends Mailable
     use Queueable, SerializesModels;
 
     public string $firstName;
+
     public string $lastName;
+
     public string $email;
+
     public string $password;
 
     /**
@@ -23,9 +26,9 @@ class NewCustomerCreated extends Mailable
     public function __construct(string $firstName, string $lastName, string $email, string $password)
     {
         $this->firstName = $firstName;
-        $this->lastName = $lastName;
-        $this->email = $email;
-        $this->password = $password;
+        $this->lastName  = $lastName;
+        $this->email     = $email;
+        $this->password  = $password;
     }
 
     /**
@@ -47,9 +50,9 @@ class NewCustomerCreated extends Mailable
             markdown: 'mail.new-customer-created',
             with: [
                 'first_name' => $this->firstName,
-                'last_name' => $this->lastName,
-                'email' => $this->email,
-                'password' => $this->password,
+                'last_name'  => $this->lastName,
+                'email'      => $this->email,
+                'password'   => $this->password,
             ],
         );
     }

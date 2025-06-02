@@ -16,15 +16,15 @@
 
                             <x-forms.input-options label="{{ __('validation.attributes.government_id_type') }}" name="government_id_type_id" id="government_id_type_id" :components="$idTypes"/>
 
-                            <x-forms.input-text label="{{ __('validation.attributes.government_id_number') }}" name="government_id_number"/>
+                            <x-forms.input label="{{ __('validation.attributes.government_id_number') }}" name="government_id_number" type="text"/>
 
-                            <x-forms.input-text label="{{ __('validation.attributes.first_name') }}" name="first_name"/>
+                            <x-forms.input label="{{ __('validation.attributes.first_name') }}" name="first_name" type="text"/>
 
-                            <x-forms.input-text label="{{ __('validation.attributes.last_name') }}" name="last_name"/>
+                            <x-forms.input label="{{ __('validation.attributes.last_name') }}" name="last_name" type="text"/>
 
-                            <x-forms.input-email label="{{ __('validation.attributes.email') }}" name="email"/>
+                            <x-forms.input label="{{ __('validation.attributes.email') }}" name="email" type="email"/>
 
-                            <x-forms.input-date label="{{ __('validation.attributes.birthdate') }}" name="birth_date"/>
+                            <x-forms.input label="{{ __('validation.attributes.birthdate') }}" name="birth_date" type="date"/>
 
                         </div>
                         <button type="submit" class="w-full text-gray bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Sign in to your account</button>

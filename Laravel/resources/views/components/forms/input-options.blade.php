@@ -8,7 +8,7 @@
     <div class="mt-1">
         <select name='{{ $name }}' id='{{ $id }}'
                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required>
-            <option value="">{{ __('validation.select_a_option') }}</option>
+            <option value="">{{ __('auth.select_a_option') }}</option>
             @foreach($components as $type)
                 <option value="{{ $type->id }}">{{ $type->name }}</option>
             @endforeach

@@ -162,7 +162,6 @@ return [
     'url'         => 'The :attribute field must be a valid URL.',
     'ulid'        => 'The :attribute field must be a valid ULID.',
     'uuid'        => 'The :attribute field must be a valid UUID.',
-    'select_a_option'      => 'Select a option',
 
     /*
     |--------------------------------------------------------------------------
@@ -193,15 +192,15 @@ return [
     */
 
     'attributes' => [
-        'first_name'              => 'First Name',
-        'last_name'              => 'Last Name',
-        'email'             => 'Email',
-        'government_id_number'             => 'Document Number',
-        'government_id_type'             => 'Type of document',
-        'password'          => 'Password',
+        'first_name'            => 'First Name',
+        'last_name'             => 'Last Name',
+        'email'                 => 'Email',
+        'government_id_number'  => 'Document Number',
+        'government_id_type'    => 'Type of document',
+        'password'              => 'Password',
         'password_confirmation' => 'Password Confirmation',
-        'current_password'  => 'Current Password',
-        'new_password'      => 'New Password',
-        'birthdate'          => 'Birthdate',
+        'current_password'      => 'Current Password',
+        'new_password'          => 'New Password',
+        'birthdate'             => 'Birthdate',
     ],
 ];
