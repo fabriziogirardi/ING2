@@ -167,21 +167,21 @@ class ManageEmployeeTest extends TestCase
 
     public function test_manager_can_delete_employee(): void
     {
-//        $this->actingAs($this->manager, 'manager');
-//
-//        $employee = Employee::factory()->create();
-//
-//        $response = $this->delete(route('manager.employee.destroy', $employee));
-//
-//        $response->assertStatus(302);
-//        $response->assertRedirect(route('manager.employee.index'));
-//        $response->assertSessionHas('success', __('manager.employee.deleted'));
-//
-//        $this->assertDatabaseMissing('people', [
-//            'id' => $employee->person_id,
-//        ]);
-//        $this->assertDatabaseMissing('employees', [
-//            'id' => $employee->id,
-//        ]);
+        //        $this->actingAs($this->manager, 'manager');
+        //
+        //        $employee = Employee::factory()->create();
+        //
+        //        $response = $this->delete(route('manager.employee.destroy', $employee));
+        //
+        //        $response->assertStatus(302);
+        //        $response->assertRedirect(route('manager.employee.index'));
+        //        $response->assertSessionHas('success', __('manager.employee.deleted'));
+        //
+        //        $this->assertDatabaseMissing('people', [
+        //            'id' => $employee->person_id,
+        //        ]);
+        //        $this->assertDatabaseMissing('employees', [
+        //            'id' => $employee->id,
+        //        ]);
     }
 }
