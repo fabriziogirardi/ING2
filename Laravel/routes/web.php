@@ -7,6 +7,7 @@ use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
+use App\Http\Controllers\Manager\Model\ModelController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -95,7 +96,6 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
     Route::post('/login', EmployeeLoginController::class)->name('login.post');
 
     Route::group(['middleware' => 'auth:employee'], static function () {
-
         Route::get('/logout', static function () {
             Auth::guard('employee')->logout();
 
