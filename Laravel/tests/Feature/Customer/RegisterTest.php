@@ -32,7 +32,7 @@ class RegisterTest extends TestCase
     {
         Mail::fake();
 
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'John',
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
@@ -62,7 +62,7 @@ class RegisterTest extends TestCase
             'government_id_type_id' => $this->idType->id,
         ]);
 
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'John',
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
@@ -97,7 +97,7 @@ class RegisterTest extends TestCase
             'password'  => bcrypt('password'),
         ]);
 
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'John',
             'last_name'             => 'Doe',
             'email'                 => 'john@example.com',
@@ -117,7 +117,7 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_with_missing_fields(): void
     {
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             // Missing all fields
         ]);
 
@@ -126,7 +126,7 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_with_invalid_email(): void
     {
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'Jane',
             'last_name'             => 'Smith',
             'email'                 => 'not-an-email',
@@ -153,7 +153,7 @@ class RegisterTest extends TestCase
             'password'  => bcrypt('password'),
         ]);
 
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'Jane',
             'last_name'             => 'Smith',
             'email'                 => 'existing@example.com',
@@ -180,7 +180,7 @@ class RegisterTest extends TestCase
             'password'  => bcrypt('password'),
         ]);
 
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'Jane',
             'last_name'             => 'Smith',
             'email'                 => 'jane@example.com',
@@ -196,7 +196,7 @@ class RegisterTest extends TestCase
     public function test_registration_fails_if_is_minor_age(): void
     {
 
-        $response = $this->post(route('customer.register'), [
+        $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'Jane',
             'last_name'             => 'Smith',
             'email'                 => 'jane@example.com',

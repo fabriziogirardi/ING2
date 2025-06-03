@@ -2,8 +2,8 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
-use App\Http\Controllers\Customer\Auth\RegisterController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
+use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
@@ -95,6 +95,9 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
     Route::post('/login', EmployeeLoginController::class)->name('login.post');
 
+    Route::get('/register_customer', [RegisterCustomer::class, 'create'])->name('register_customer');
+    Route::post('/register_customer', [RegisterCustomer::class, 'store']);
+
     Route::group(['middleware' => 'auth:employee'], static function () {
 
         Route::get('/logout', static function () {
@@ -113,11 +116,6 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
     })->name('login');
 
     Route::post('/login', CustomerLoginController::class)->name('login.post');
-
-    // Estas rutas son para el registro de clientes, deberian ir a empleados
-    // debido a que los clientes no deberian poder registrarse por si solos
-    Route::get('/register', [RegisterController::class, 'create'])->name('register');
-    Route::post('/register', [RegisterController::class, 'store']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/logout', static function () {

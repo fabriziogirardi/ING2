@@ -10,7 +10,7 @@
                     <h1 class="mb-2 text-2xl font-bold leading-tight tracking-tight text-gray-900">
                         Registrar a un nuevo cliente!
                     </h1>
-                    <form class="mt-4 space-y-6 sm:mt-6" action="{{ route('customer.register') }}" method="POST">
+                    <form class="mt-4 space-y-6 sm:mt-6" action="{{ route('employee.register_customer') }}" method="POST">
                         @csrf
                         <div class="grid gap-6 sm:grid-cols-2">
 
