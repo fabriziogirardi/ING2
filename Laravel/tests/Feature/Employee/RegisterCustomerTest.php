@@ -1,9 +1,10 @@
 <?php
 
-namespace Customer;
+namespace Employee;
 
 use App\Mail\NewCustomerCreated;
 use App\Models\Customer;
+use App\Models\Employee;
 use App\Models\GovernmentIdType;
 use App\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,10 +12,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
-class RegisterTest extends TestCase
+class RegisterCustomerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    private Employee $employee;
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,10 +28,14 @@ class RegisterTest extends TestCase
         ]);
         $this->idType        = $types[0];
         $this->idTypeDistint = $types[1];
+
+        $this->employee = Employee::factory()->create();
     }
 
     public function test_customer_can_register_with_valid_data(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         Mail::fake();
 
         $response = $this->post(route('employee.register_customer'), [
@@ -52,6 +58,8 @@ class RegisterTest extends TestCase
 
     public function test_customer_can_register_with_valid_data_and_registered_person(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         Mail::fake();
 
         Person::factory()->create([
@@ -82,6 +90,8 @@ class RegisterTest extends TestCase
 
     public function test_customer_can_register_with_valid_data_and_type_document_distint(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         Mail::fake();
 
         $person = Person::factory()->create([
@@ -117,6 +127,8 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_with_missing_fields(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         $response = $this->post(route('employee.register_customer'), [
             // Missing all fields
         ]);
@@ -126,6 +138,8 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_with_invalid_email(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'Jane',
             'last_name'             => 'Smith',
@@ -140,6 +154,8 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_if_email_already_exists(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         $person = Person::factory()->create([
             'first_name'            => 'Test',
             'last_name'             => 'Test',
@@ -167,6 +183,8 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_if_government_id_number_already_exists(): void
     {
+        $this->actingAs($this->employee, 'employee');
+
         $person = Person::factory()->create([
             'first_name'            => 'Test',
             'last_name'             => 'Test',
@@ -195,6 +213,7 @@ class RegisterTest extends TestCase
 
     public function test_registration_fails_if_is_minor_age(): void
     {
+        $this->actingAs($this->employee, 'employee');
 
         $response = $this->post(route('employee.register_customer'), [
             'first_name'            => 'Jane',
@@ -207,4 +226,12 @@ class RegisterTest extends TestCase
 
         $response->assertSessionHasErrors(['birth_date']);
     }
+
+    public function test_other_users_cannot_register()
+    {
+        $response = $this->get(route('employee.register_customer'));
+        $response->assertStatus(302);
+    }
+
+
 }

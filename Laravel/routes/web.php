@@ -96,8 +96,8 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
     Route::post('/login', EmployeeLoginController::class)->name('login.post');
 
     Route::group(['middleware' => 'auth:employee'], static function () {
-        Route::get('/register_customer', [RegisterCustomer::class, 'create'])->name('register_customer');
-        Route::post('/register_customer', [RegisterCustomer::class, 'store']);
+        Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
+        Route::post('/customer', [RegisterCustomer::class, 'store']);
 
         Route::get('/logout', static function () {
             Auth::guard('employee')->logout();
