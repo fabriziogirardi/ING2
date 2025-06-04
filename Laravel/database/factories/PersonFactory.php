@@ -22,6 +22,16 @@ class PersonFactory extends Factory
             'email'                 => $this->faker->unique()->safeEmail(),
             'government_id_type_id' => GovernmentIdTypeFactory::new()->create(),
             'government_id_number'  => $this->faker->unique()->numerify('#########'),
+            'birth_date'            => $this->faker->date(),
         ];
+    }
+
+    public function adult(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'birth_date' => now()->subYears(20)->format('Y-m-d'),
+            ];
+        });
     }
 }

@@ -26,7 +26,7 @@ class ModelTest extends TestCase
         $this->actingAs($this->manager, 'manager');
 
         $response = $this->post(route('manager.model.store'), [
-            'name' => 'Test Model',
+            'name'             => 'Test Model',
             'product_brand_id' => ProductBrand::factory()->create()->id,
         ]);
 
@@ -44,7 +44,7 @@ class ModelTest extends TestCase
         $model = ProductModel::factory()->create();
 
         $response = $this->post(route('manager.model.store'), [
-            'name' => $model->name,
+            'name'             => $model->name,
             'product_brand_id' => $model->product_brand_id,
         ]);
 
@@ -61,14 +61,14 @@ class ModelTest extends TestCase
         $model = ProductModel::factory()->create();
 
         $response = $this->put(route('manager.model.update', $model), [
-            'name' => 'Updated Model',
+            'name'             => 'Updated Model',
             'product_brand_id' => $model->product_brand_id,
         ]);
 
         $response->assertStatus(302);
 
         $this->assertDatabaseHas('product_models', [
-            'id' => $model->id,
+            'id'   => $model->id,
             'name' => 'Updated Model',
         ]);
     }
@@ -99,24 +99,24 @@ class ModelTest extends TestCase
 
         // Create first model
         $responseA = $this->post(route('manager.model.store'), [
-            'name' => $modelName,
+            'name'             => $modelName,
             'product_brand_id' => $brandA->id,
         ]);
         $responseA->assertStatus(302);
 
         // Create second model with same name but different brand
         $responseB = $this->post(route('manager.model.store'), [
-            'name' => $modelName,
+            'name'             => $modelName,
             'product_brand_id' => $brandB->id,
         ]);
         $responseB->assertStatus(302);
 
         $this->assertDatabaseHas('product_models', [
-            'name' => $modelName,
+            'name'             => $modelName,
             'product_brand_id' => $brandA->id,
         ]);
         $this->assertDatabaseHas('product_models', [
-            'name' => $modelName,
+            'name'             => $modelName,
             'product_brand_id' => $brandB->id,
         ]);
     }
@@ -126,7 +126,7 @@ class ModelTest extends TestCase
         $brand = ProductBrand::factory()->create();
 
         $response = $this->post(route('manager.model.store'), [
-            'name' => 'Test Model',
+            'name'             => 'Test Model',
             'product_brand_id' => $brand->id,
         ]);
 
@@ -139,7 +139,7 @@ class ModelTest extends TestCase
         $model = ProductModel::factory()->create();
 
         $response = $this->put(route('manager.model.update', $model), [
-            'name' => 'Updated Model',
+            'name'             => 'Updated Model',
             'product_brand_id' => $model->product_brand_id,
         ]);
 

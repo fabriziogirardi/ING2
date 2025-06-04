@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('price', 12);
             $table->smallInteger('min_days');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

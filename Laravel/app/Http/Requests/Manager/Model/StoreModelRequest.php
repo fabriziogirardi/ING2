@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Manager\Model;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\UniqueModelNamePerBrand;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreModelRequest extends FormRequest
 {
