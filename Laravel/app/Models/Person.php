@@ -25,6 +25,11 @@ class Person extends Model
         'email',
         'government_id_type_id',
         'government_id_number',
+        'birth_date',
+    ];
+
+    protected $casts = [
+        'birth_date' => 'date',
     ];
 
     public function government_id_type(): BelongsTo

@@ -3,11 +3,13 @@
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
+use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
+use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Models\Category;
 use App\Models\Product;
@@ -81,9 +83,11 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             return redirect()->to(route('manager.login'));
         })->name('logout');
 
+        // Esta ruta no va acá
+        // Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
+        Route::resource('employee', EmployeeController::class);
         Route::resource('brand', BrandController::class);
-
-        Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
+        Route::resource('model', ModelController::class);
         Route::resource('branch', BranchController::class);
     });
 });
@@ -98,6 +102,9 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
     Route::post('/login', EmployeeLoginController::class)->name('login.post');
 
     Route::group(['middleware' => 'auth:employee'], static function () {
+        Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
+        Route::post('/customer', [RegisterCustomer::class, 'store']);
+
         Route::get('/logout', static function () {
             Auth::guard('employee')->logout();
 
@@ -114,10 +121,6 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
     })->name('login');
 
     Route::post('/login', CustomerLoginController::class)->name('login.post');
-
-    Route::get('/register', static function () {
-        return view('customer.register');
-    })->name('register');
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/logout', static function () {
