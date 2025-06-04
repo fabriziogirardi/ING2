@@ -4,7 +4,6 @@ namespace App\Rules;
 
 use App\Models\ProductBrand;
 use Closure;
-use App\Models\ProductModel;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -15,6 +14,7 @@ class UniqueModelNamePerBrand implements DataAwareRule, ValidationRule
     public function setData(array $data): static
     {
         $this->data = $data;
+
         return $this;
     }
 

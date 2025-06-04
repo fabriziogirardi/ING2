@@ -17,6 +17,7 @@ class RegisterCustomerTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     private Employee $employee;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -232,6 +233,4 @@ class RegisterCustomerTest extends TestCase
         $response = $this->get(route('employee.register_customer'));
         $response->assertStatus(302);
     }
-
-
 }
