@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Manager\Product;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\ProductBrand;
 
 class ProductController extends Controller
 {
@@ -13,7 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::paginate(10);
+        return view('manager.product.index', compact('products'));
     }
 
     /**
@@ -21,7 +24,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $brands = ProductBrand::all();
+        return view('manager.product.create', compact('brands'));
     }
 
     /**
@@ -29,7 +33,9 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        Product::create($request->validated());
+
+        return redirect()->route('manager.product.create')->with('success', __('manager/product.created'));
     }
 
     /**
@@ -37,7 +43,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view('manager.product.show', compact('product'));
     }
 
     /**
@@ -45,7 +51,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return view('manager.product.edit', compact('product'));
     }
 
     /**
@@ -53,7 +59,9 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $product->update($request->validated());
+
+        return redirect()->route('manager.product.show',['product' => $product->id])->with('success',__('manager/product.updated'));
     }
 
     /**
@@ -61,6 +69,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->route('manager.product.index')->with('success',__('manager/product.deleted'));
     }
 }

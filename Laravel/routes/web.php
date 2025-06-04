@@ -89,6 +89,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('brand', BrandController::class);
         Route::resource('model', ModelController::class);
         Route::resource('branch', BranchController::class);
+        Route::resource('product', ProductController::class);
     });
 });
 // endregion
