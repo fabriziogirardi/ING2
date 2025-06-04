@@ -25,4 +25,13 @@ class PersonFactory extends Factory
             'birth_date'            => $this->faker->date(),
         ];
     }
+
+    public function adult(): static
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'birth_date' => now()->subYears(20)->format('Y-m-d'),
+            ];
+        });
+    }
 }

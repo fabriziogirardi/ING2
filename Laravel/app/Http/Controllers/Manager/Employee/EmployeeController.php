@@ -38,6 +38,7 @@ class EmployeeController extends Controller
         ], [
             'first_name' => $request->validated('first_name'),
             'last_name'  => $request->validated('last_name'),
+            'birth_date' => $request->validated('birth_date'),
         ]);
 
         Employee::create([

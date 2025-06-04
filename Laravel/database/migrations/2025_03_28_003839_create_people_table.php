@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('birth_date');
             $table->string('government_id_number');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique(['government_id_type_id', 'government_id_number']);
         });

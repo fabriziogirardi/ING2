@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('branch_product', function (Blueprint $table) {
+        Schema::create('branch_product', static function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });

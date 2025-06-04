@@ -64,6 +64,7 @@ class ManageEmployeeTest extends TestCase
             'last_name'             => 'Lopez',
             'email'                 => 'juanlopez@gmail.com',
             'password'              => 'password',
+            'birth_date'            => '1990-01-01',
             'password_confirmation' => 'password',
             'government_id_type_id' => GovernmentIdType::firstOrCreate(['name' => 'DNI'])->id,
             'government_id_number'  => '12345678',
@@ -133,7 +134,7 @@ class ManageEmployeeTest extends TestCase
     {
         $this->actingAs($this->manager, 'manager');
 
-        $person   = Person::factory()->create();
+        $person   = Person::factory()->adult()->create();
         $customer = Customer::factory()->create([
             'person_id' => $person->id,
         ]);
@@ -142,6 +143,7 @@ class ManageEmployeeTest extends TestCase
             'first_name'            => $person->first_name,
             'last_name'             => $person->last_name,
             'email'                 => $person->email,
+            'birth_date'            => $person->birth_date->format('Y-m-d'),
             'password'              => 'password',
             'password_confirmation' => 'password',
             'government_id_type_id' => $person->government_id_type->id,

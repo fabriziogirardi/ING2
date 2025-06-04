@@ -28,6 +28,10 @@ class Person extends Model
         'birth_date',
     ];
 
+    protected $casts = [
+        'birth_date' => 'date',
+    ];
+
     public function government_id_type(): BelongsTo
     {
         return $this->belongsTo(GovernmentIdType::class);
