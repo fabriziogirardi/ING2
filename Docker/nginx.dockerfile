@@ -7,7 +7,14 @@ RUN apk upgrade && \
 # Clean up
 RUN rm -rf /var/cache/apk/*
 
+# Make html directory
+RUN mkdir -p /var/www/html
+
 FROM base AS local
+
+# Copy configuration files
+RUN mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
+ADD ./nginx/nginx-dev.conf.template /etc/nginx/templates/nginx-dev.conf.template
 
 # Create SSL certificate
 RUN mkdir -p /etc/nginx/ssl/live/${APP_DOMAIN}
