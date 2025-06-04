@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -39,5 +40,10 @@ class Product extends Model
         $query->whereHas('categories', function (EloquentBuilder $query) use ($category) {
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
+    }
+
+    public function images(): HasMany|Product
+    {
+        return $this->hasMany(ProductImage::class);
     }
 }

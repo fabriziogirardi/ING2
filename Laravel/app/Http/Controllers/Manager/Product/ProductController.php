@@ -7,6 +7,8 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductBrand;
+use App\Models\ProductImage;
+use App\Models\ProductModel;
 
 class ProductController extends Controller
 {
@@ -24,7 +26,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $brands = ProductBrand::all();
+        $brands = ProductBrand::with('models')->get();
         return view('manager.product.create', compact('brands'));
     }
 
@@ -33,7 +35,15 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        Product::create($request->validated());
+        $product = Product::create($request->validated());
+
+        foreach($request->file('images') as $index => $file){
+            $path = $file->store('images', 'public');
+            ProductImage::create([
+                'product_id' => $product->id,
+                'path' => $path,
+            ]);
+        }
 
         return redirect()->route('manager.product.create')->with('success', __('manager/product.created'));
     }

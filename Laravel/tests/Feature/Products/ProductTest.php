@@ -6,9 +6,12 @@ use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Manager;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\ProductModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
@@ -71,12 +74,19 @@ class ProductTest extends TestCase
 
         $productModel = ProductModel::factory()->create();
 
+        Storage::fake();
+        $file = UploadedFile::fake()->image('product.jpg');
+
+        $this->assertDatabaseEmpty('products');
+        $this->assertDatabaseEmpty('product_images');
+
         $response = $this->post(route('manager.product.store'), [
             'name' => 'Test Product',
             'description' => 'Test Product Description',
             'price' => 12.50,
             'min_days' => 1,
             'product_model_id' => $productModel->id,
+            'images' => [$file],
         ]);
 
         $response->assertRedirect(route('manager.product.create'));
@@ -89,6 +99,10 @@ class ProductTest extends TestCase
             'min_days' => 1,
             'product_model_id' => $productModel->id,
         ]);
+
+        $this->assertTrue(Product::withCount('images')->first()->images_count == 1);
+
+        Storage::assertExists(ProductImage::first()->path);
     }
 
     public function test_manager_can_show_product(): void
@@ -160,6 +174,7 @@ class ProductTest extends TestCase
             'price' => 12.50,
             'min_days' => 1,
             'product_model_id' => $productModel->id,
+            ''
         ]);
 
         $response->assertRedirect(route('manager.login'));
