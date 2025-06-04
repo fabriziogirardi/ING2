@@ -1,12 +1,5 @@
 FROM nginx:1.27.3-alpine3.20 AS base
 
-# environment arguments
-ARG APP_DOMAIN
-ARG APP_ENV
-
-# Dialout group in alpine linux conflicts with MacOS staff group's gid, whis is 20. So we remove it.
-RUN delgroup dialout
-
 # Update system and install required packages
 RUN apk upgrade && \
     apk --update add --no-cache openssl dcron
