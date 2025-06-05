@@ -19,7 +19,9 @@ class ProductTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     private Manager $manager;
+
     private Employee $employee;
+
     private Customer $customer;
 
     protected function setUp(): void
@@ -29,7 +31,6 @@ class ProductTest extends TestCase
         $this->employee = Employee::factory()->create();
         $this->customer = Customer::factory()->create();
     }
-
 
     public function test_manager_can_access_empty_products_index(): void
     {
@@ -81,22 +82,22 @@ class ProductTest extends TestCase
         $this->assertDatabaseEmpty('product_images');
 
         $response = $this->post(route('manager.product.store'), [
-            'name' => 'Test Product',
-            'description' => 'Test Product Description',
-            'price' => 12.50,
-            'min_days' => 1,
+            'name'             => 'Test Product',
+            'description'      => 'Test Product Description',
+            'price'            => 12.50,
+            'min_days'         => 1,
             'product_model_id' => $productModel->id,
-            'images' => [$file],
+            'images'           => [$file],
         ]);
 
         $response->assertRedirect(route('manager.product.create'));
-        $response->assertSessionHas('success',__('manager/product.created'));
+        $response->assertSessionHas('success', __('manager/product.created'));
 
         $this->assertDatabaseHas('products', [
-            'name' => 'Test Product',
-            'description' => 'Test Product Description',
-            'price' => 12.50,
-            'min_days' => 1,
+            'name'             => 'Test Product',
+            'description'      => 'Test Product Description',
+            'price'            => 12.50,
+            'min_days'         => 1,
             'product_model_id' => $productModel->id,
         ]);
 
@@ -173,12 +174,12 @@ class ProductTest extends TestCase
         $productModel = ProductModel::factory()->create();
 
         $response = $this->post(route('manager.product.store'), [
-            'name' => 'Test Product',
-            'description' => 'Test Product Description',
-            'price' => 12.50,
-            'min_days' => 1,
+            'name'             => 'Test Product',
+            'description'      => 'Test Product Description',
+            'price'            => 12.50,
+            'min_days'         => 1,
             'product_model_id' => $productModel->id,
-            ''
+            '',
         ]);
 
         $response->assertRedirect(route('manager.login'));
@@ -253,10 +254,10 @@ class ProductTest extends TestCase
         $productModel = ProductModel::factory()->create();
 
         $response = $this->post(route('manager.product.store'), [
-            'name' => 'Test Product',
-            'description' => 'Test Product Description',
-            'price' => 12.50,
-            'min_days' => 1,
+            'name'             => 'Test Product',
+            'description'      => 'Test Product Description',
+            'price'            => 12.50,
+            'min_days'         => 1,
             'product_model_id' => $productModel->id,
         ]);
 
@@ -310,10 +311,10 @@ class ProductTest extends TestCase
         $productModel = ProductModel::factory()->create();
 
         $response = $this->post(route('manager.product.store'), [
-            'name' => 'Test Product',
-            'description' => 'Test Product Description',
-            'price' => 12.50,
-            'min_days' => 1,
+            'name'             => 'Test Product',
+            'description'      => 'Test Product Description',
+            'price'            => 12.50,
+            'min_days'         => 1,
             'product_model_id' => $productModel->id,
         ]);
 

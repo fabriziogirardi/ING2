@@ -22,13 +22,13 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric',
-            'min_days' => 'required|numeric|min:1|max:365',
+            'name'             => 'required|string|max:255',
+            'description'      => 'required|string',
+            'price'            => 'required|numeric',
+            'min_days'         => 'required|numeric|min:1|max:365',
             'product_model_id' => 'required|exists:product_models,id',
-            'images' => 'required|array',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'images'           => 'required|array',
+            'images.*'         => 'required|image|mimes:jpeg,png,jpg,webp',
         ];
     }
 }

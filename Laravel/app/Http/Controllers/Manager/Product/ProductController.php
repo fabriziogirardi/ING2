@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductImage;
-use App\Models\ProductModel;
 
 class ProductController extends Controller
 {
@@ -18,6 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::paginate(10);
+
         return view('manager.product.index', compact('products'));
     }
 
@@ -27,6 +27,7 @@ class ProductController extends Controller
     public function create()
     {
         $brands = ProductBrand::with('models')->get();
+
         return view('manager.product.create', compact('brands'));
     }
 
@@ -37,11 +38,11 @@ class ProductController extends Controller
     {
         $product = Product::create($request->validated());
 
-        foreach($request->file('images') as $index => $file){
+        foreach ($request->file('images') as $index => $file) {
             $path = $file->store('images', 'public');
             ProductImage::create([
                 'product_id' => $product->id,
-                'path' => 'storage/'.$path,
+                'path'       => 'storage/'.$path,
             ]);
         }
 
@@ -71,7 +72,7 @@ class ProductController extends Controller
     {
         $product->update($request->validated());
 
-        return redirect()->route('manager.product.show',['product' => $product->id])->with('success',__('manager/product.updated'));
+        return redirect()->route('manager.product.show', ['product' => $product->id])->with('success', __('manager/product.updated'));
     }
 
     /**
@@ -80,6 +81,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('manager.product.index')->with('success',__('manager/product.deleted'));
+
+        return redirect()->route('manager.product.index')->with('success', __('manager/product.deleted'));
     }
 }
