@@ -1,5 +1,5 @@
 <nav x-data="{ isOpen: false }" class="bg-white shadow dark:bg-gray-800 fixed top-0 left-0 right-0 z-50">
-    <div @keyup.ctrl.shift.enter.window="alert('HOLA')" class="container px-6 py-4 mx-auto">
+    <div class="container px-6 py-4 mx-auto">
         <div class="lg:flex lg:items-center lg:justify-between">
             <div class="flex items-center justify-between">
                 <a href="{{ route('home') }}">

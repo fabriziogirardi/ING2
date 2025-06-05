@@ -38,7 +38,7 @@ class Manager extends Authenticatable
 
     public function deleteTokens(): void
     {
-        $this->tokens()->delete();
+        $this->token()->delete();
     }
 
     /**

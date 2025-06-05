@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,5 +36,26 @@ class Person extends Model
     public function government_id_type(): BelongsTo
     {
         return $this->belongsTo(GovernmentIdType::class);
+    }
+
+    public function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => str($this->first_name.' '.$this->last_name)->title(),
+        );
+    }
+
+    public function fullNameEllipsis(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => str($this->first_name.' '.$this->last_name)->title()->limit(18),
+        );
+    }
+
+    public function initials(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => str(mb_substr($this->first_name, 0, 1).mb_substr($this->last_name, 0, 1))->upper(),
+        );
     }
 }
