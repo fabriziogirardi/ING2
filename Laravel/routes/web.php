@@ -2,6 +2,7 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
@@ -116,6 +117,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
+        Route::post('/reset-password', [ResetPasswordController::class, '__invoke']);
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
     });
 });

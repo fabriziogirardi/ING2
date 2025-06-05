@@ -25,7 +25,7 @@ class ResetPasswordTest extends TestCase
 
     public function test_customer_can_change_password_with_valid_data()
     {
-        $response = $this->post('/customer/reset_password', [
+        $response = $this->post('/customer/reset-password', [
             'new_password'              => 'newpassword123',
             'new_password_confirmation' => 'newpassword123',
         ]);
@@ -35,7 +35,7 @@ class ResetPasswordTest extends TestCase
 
     public function test_customer_cannot_change_password_without_confirmation()
     {
-        $response = $this->post('/customer/reset_password', [
+        $response = $this->post('/customer/reset-password', [
             'new_password'              => 'newpassword123',
             'new_password_confirmation' => 'differentpassword',
         ]);
