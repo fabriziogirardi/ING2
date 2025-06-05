@@ -8,7 +8,7 @@ use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
-use App\Http\Controllers\Manager\Model\ModelController;
+use App\Http\Controllers\Manager\Products\BranchProductController;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +85,13 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
 
         Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
         Route::resource('branch', BranchController::class);
+
+        Route::group(['prefix' => 'products', 'as' => 'products.'], static function () {
+
+            Route::post('stock', [BranchProductController::class, 'store'])->name('stock.store');
+            Route::put('stock/{product_id}/{branch_id}', [BranchProductController::class, 'update'])->name('stock.update');
+            Route::delete('stock/{product_id}/{branch_id}', [BranchProductController::class, 'destroy'])->name('stock.destroy');
+        });
     });
 });
 // endregion

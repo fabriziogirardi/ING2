@@ -33,6 +33,11 @@ class Product extends Model
         return $this->belongsToMany(Category::class)->without('children');
     }
 
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class)->using(BranchProduct::class)->withPivot('quantity')->withTimestamps();
+    }
+
     #[Scope]
     protected function get_all_by_category(EloquentBuilder $query, Category $category): void
     {
