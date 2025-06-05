@@ -2,12 +2,11 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
-use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
-use App\Http\Controllers\Manager\Auth\VerifyTokenController;
 use App\Http\Controllers\Manager\Branches\BranchController;
+use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
@@ -63,16 +62,15 @@ Route::get('cat/{cat:slug}', static function (Category $cat) {
 
 // region Rutas del manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
-    Route::get('/login', static function () {
-        return view('manager.Login');
-    })->name('login');
+    Route::get('/login', [ManagerLoginController::class, 'showLoginForm'])
+        ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::post('/login', [ManagerLoginController::class, 'loginAttempt'])
+        ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
-    Route::post('/login', ManagerLoginController::class)->name('login.post');
-
-    Route::get('/verify-token', static function () {
-        return view('manager.verify-token');
-    })->name('verify-token');
-    Route::post('/verify-token', VerifyTokenController::class)->name('verify-token');
+    Route::get('/verify-token/{manager}', [ManagerLoginController::class, 'showTokenForm'])
+        ->name('verify-token')->middleware(['guest:customer', 'guest:employee', 'guest:manager', 'signed']);
+    Route::post('/verify-token/{manager}', [ManagerLoginController::class, 'tokenAttempt'])
+        ->name('verify-token.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:manager'], static function () {
         Route::get('/dashboard', static function () {
@@ -96,46 +94,29 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
 
 // region Rutas del empleado
 Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
-    Route::get('/login', static function () {
-        return view('employee.login');
-    })->name('login');
-
-    Route::post('/login', EmployeeLoginController::class)->name('login.post');
+    Route::get('/login', [EmployeeLoginController::class, 'showLoginForm'])
+        ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::post('/login', [EmployeeLoginController::class, 'loginAttempt'])
+        ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:employee'], static function () {
+        Route::get('/logout', [EmployeeLoginController::class, 'logout'])->name('logout');
+
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
-
-        Route::get('/logout', static function () {
-            Auth::guard('employee')->logout();
-
-            return redirect()->to(route('home'));
-        })->name('logout');
     });
 });
 // endregion
 
 // region Rutas del cliente
 Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
-    Route::get('/login', static function () {
-        return view('customer.login');
-    })->name('login');
-
-    Route::post('/login', CustomerLoginController::class)->name('login.post');
+    Route::get('/login', [CustomerLoginController::class, 'showLoginForm'])
+        ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::post('/login', [CustomerLoginController::class, 'loginAttempt'])
+        ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
-        Route::get('/logout', static function () {
-            Auth::guard('customer')->logout();
-
-            return redirect()->to(route('home'));
-        })->name('logout');
-
-        Route::post('/reset_password', ResetPasswordController::class);
+        Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
     });
 });
-
-Route::get('/fake-login', static function () {
-    \Illuminate\Support\Facades\Auth::guard('manager')->login(Manager::factory()->create());
-});
-
 // endregion
