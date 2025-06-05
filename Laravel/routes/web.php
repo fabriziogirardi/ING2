@@ -2,6 +2,7 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Models\Category;
+use App\Models\Manager;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
