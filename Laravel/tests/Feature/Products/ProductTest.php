@@ -102,7 +102,11 @@ class ProductTest extends TestCase
 
         $this->assertTrue(Product::withCount('images')->first()->images_count == 1);
 
-        Storage::assertExists(ProductImage::first()->path);
+        $path = ProductImage::first()->path;
+
+        $relativePath = preg_replace('/^storage\//', '', $path);
+
+        Storage::disk('public')->assertExists($relativePath);
     }
 
     public function test_manager_can_show_product(): void
