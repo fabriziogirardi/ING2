@@ -56,7 +56,7 @@ class AccountTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertSessionHasErrors(['incorrect_credentials']);
+        $response->assertSessionHasErrors(['credentials']);
 
         $this->assertGuest('manager')
             ->assertDatabaseEmpty('manager_tokens');
