@@ -25,7 +25,10 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with([
+            'toast'   => 'success',
+            'message' => __('customer/auth.login_successful'),
+        ]);
     }
 
     public function logout(Request $request): RedirectResponse

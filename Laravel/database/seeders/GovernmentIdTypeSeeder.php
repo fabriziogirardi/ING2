@@ -12,6 +12,16 @@ class GovernmentIdTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        GovernmentIdType::factory()->count(5)->create();
+        $types = [
+            ['name' => 'DNI'],
+            ['name' => 'PAS'],
+            ['name' => 'LE'],
+            ['name' => 'LC'],
+            ['name' => 'CI'],
+        ];
+
+        collect($types)->each(function ($type) {
+            GovernmentIdType::create($type);
+        });
     }
 }

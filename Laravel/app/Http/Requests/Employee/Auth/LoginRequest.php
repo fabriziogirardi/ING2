@@ -27,4 +27,13 @@ class LoginRequest extends FormRequest
             'branch_id' => 'required|exists:branches,id',
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'email'     => __('employee/auth.label_email'),
+            'password'  => __('employee/auth.label_password'),
+            'branch_id' => __('employee/auth.label_branch'),
+        ];
+    }
 }
