@@ -13,7 +13,7 @@ class BrandController extends Controller
     public function index()
     {
         return view('manager.brand.index', [
-            'brands' => ProductBrand::paginate(10),
+            'brands' => ProductBrand::withTrashed()->paginate(10),
         ]);
     }
 

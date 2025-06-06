@@ -30,6 +30,7 @@ return [
     ],
     'edit'          => 'Editar',
     'delete'        => 'Eliminar',
+    'restore'       => 'Restaurar',
     'yes_im_sure'   => 'Sí, estoy seguro',
     'no_cancel'     => 'No, cancelar',
     'back_to_index' => 'Volver al índice',

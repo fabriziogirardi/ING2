@@ -30,6 +30,7 @@ return [
     ],
     'edit'          => 'Edit',
     'delete'        => 'Delete',
+    'restore'       => 'Restore',
     'yes_im_sure'   => 'Yes, I\'m sure',
     'no_cancel'     => 'No, cancel',
     'back_to_index' => 'Back to index',

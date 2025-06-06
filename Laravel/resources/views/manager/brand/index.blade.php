@@ -27,31 +27,40 @@
                         @forelse ($brands as $brand)
                             <tr class="border-b dark:border-gray-700">
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <a href="{{ route('manager.brand.show', $brand->id) }}" class="text-blue-600 hover:underline">
-                                        {{ $brand->name }}
-                                    </a>
+                                    @if($brand->trashed())
+                                        <span class="line-through">{{ $brand->name }}</span>
+                                    @else
+                                        <a href="{{ route('manager.brand.show', $brand->id) }}" class="text-blue-600 hover:underline">
+                                            {{ $brand->name }}
+                                        </a>
+                                    @endif
                                 </th>
                                 <td class="px-4 py-3">{{ $brand->models()->count() }}</td>
-                                <td class="px-4 py-3 flex items-center justify-end">
-                                    <x-elements.link-button  text="{{ __('product/forms.edit') }}" href="{{ route('manager.brand.edit', $brand->id) }}" icon-left="fa-solid fa-pen-to-square" type="alert">
-                                    </x-elements.link-button>
-
+                                <td class="px-4 py-3 flex items-center justify-end space-x-2">
                                     <x-elements.link-button
-                                        text="{{ __('product/forms.delete') }}"
+                                        href="{{ route('manager.brand.edit', $brand->id) }}"
+                                        icon-left="fa-solid fa-pen-to-square"
+                                        type="alert"
+                                        :disabled="$brand->trashed()"
+                                    />
+                                    <x-elements.link-button
                                         icon-left="fa-solid fa-trash"
                                         type="danger"
                                         href="#"
                                         data-modal-target="popup-modal-{{ $brand->id }}"
                                         data-modal-toggle="popup-modal-{{ $brand->id }}"
                                         onclick="event.preventDefault();"
+                                        :disabled="$brand->trashed()"
                                     />
-
+                                    <form method="POST" action="{{ route('manager.brand.restore', $brand->id) }}">
+                                        @csrf
+                                        <x-elements.link-button href="{{ route('manager.brand.restore', $brand->id) }}" icon-left="fa-solid fa-repeat" :disabled="!$brand->trashed()"/>
+                                    </form>
                                     <x-forms.confirmation-delete
                                         :message="__('product/forms.brand.delete_confirm', ['item' => $brand->name])"
                                         :route="route('manager.brand.destroy', $brand->id)"
                                         :id="'popup-modal-' . $brand->id"
                                     />
-
                                 </td>
                             </tr>
                         @empty

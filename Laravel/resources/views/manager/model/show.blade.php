@@ -13,7 +13,7 @@
         </p>
         <div>
             <x-elements.link-button
-                text="{{ __('product/forms.model.back_to_index') }}"
+                text="{{ __('product/forms.back_to_index') }}"
                 href="{{ route('manager.model.index') }}"
                 icon-left="fa-solid fa-rotate-left">
             </x-elements.link-button>
