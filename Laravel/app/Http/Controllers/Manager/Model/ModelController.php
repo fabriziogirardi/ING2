@@ -72,4 +72,11 @@ class ModelController extends Controller
 
         return redirect()->to(route('manager.model.index'));
     }
+
+    public function restore(string $id)
+    {
+        ProductModel::withTrashed()->findOrFail($id)->restore();
+
+        return redirect()->to(route('manager.model.index'));
+    }
 }

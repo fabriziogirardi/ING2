@@ -62,4 +62,11 @@ class BrandController extends Controller
 
         return redirect()->to(route('manager.brand.index'))->with('success', 'exito');
     }
+
+    public function restore(string $id)
+    {
+        ProductBrand::withTrashed()->findOrFail($id)->restore();
+
+        return redirect()->to(route('manager.brand.index'));
+    }
 }

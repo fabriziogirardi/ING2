@@ -50,4 +50,11 @@ class EmployeeController extends Controller
             'success' => __('manager.employee.created'),
         ]);
     }
+
+    public function restore(string $id)
+    {
+        Employee::withTrashed()->findOrFail($id)->restore();
+
+        return redirect()->route('manager.employee.index');
+    }
 }

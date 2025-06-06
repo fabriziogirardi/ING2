@@ -86,8 +86,11 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         // Esta ruta no va acá
         // Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
         Route::resource('employee', EmployeeController::class);
+        Route::post('employee/{id}/restore', [EmployeeController::class, 'restore'])->name('employee.restore');
         Route::resource('brand', BrandController::class);
+        Route::get('brand/{id}/models', [BrandController::class, 'restore'])->name('brand.restore');
         Route::resource('model', ModelController::class);
+        Route::get('model/{id}/restore', [ModelController::class, 'restore'])->name('model.restore');
         Route::resource('branch', BranchController::class);
     });
 });
