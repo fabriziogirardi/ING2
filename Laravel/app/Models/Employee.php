@@ -22,8 +22,6 @@ class Employee extends Authenticatable
         'password',
     ];
 
-    protected $with = ['person'];
-
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
