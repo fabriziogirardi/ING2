@@ -77,15 +77,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             return view('manager.dashboard');
         })->name('dashboard');
 
-        Route::get('/create-brand', static function () {
-            return view('manager.brand.create');
-        })->name('create-brand');
-
-        Route::get('/edit-brand', [BrandController::class, 'edit'])
-            ->name('edit-brand');
-
-        Route::get('/index-brand', [BrandController::class, 'index'])
-            ->name('index-brand');
+        Route::get('brand/index', [BrandController::class, 'index'])
+            ->name('brand/index');
 
         Route::get('/logout', static function () {
             Auth::guard('manager')->logout();

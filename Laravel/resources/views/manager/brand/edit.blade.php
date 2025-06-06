@@ -1,6 +1,6 @@
 <x-layouts.app x-data>
     <x-slot:title>
-        {{ __('product/forms.edit_title') }}
+        {{ __('product/forms.brand.edit_title') }}
     </x-slot:title>
 
     <section class="bg-gray-50 h-full">
@@ -8,7 +8,7 @@
             <div class="w-full place-self-center lg:col-span-6">
                 <div class="p-6 mx-auto bg-white rounded-lg shadow sm:max-w-xl sm:p-8">
                     <h1 class="mb-2 text-2xl font-bold leading-tight tracking-tight text-gray-900">
-                        {{ __('product/forms.edit') }}
+                        {{ __('product/forms.brand.edit_title') }}
                     </h1>
                     <form class="mt-4 space-y-6 sm:mt-6" action="{{ route('manager.brand.update', $brand->id) }}" method="POST" @submit="submit = true">
                         @csrf
@@ -17,8 +17,8 @@
                             <x-forms.input.text
                                 name="name"
                                 id="name"
-                                label="{{ __('product/forms.new_name') }}"
-                                placeholder="{{ __('product/forms.placeholder') }}"
+                                label="{{ __('product/forms.brand.new_name') }}"
+                                placeholder="{{ __('product/forms.brand.placeholder') }}"
                                 value="{{ old('name', $brand->name) }}"
                             />
                         </div>
