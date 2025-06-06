@@ -6,10 +6,10 @@ use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginControlle
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
-use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
+use App\Http\Controllers\Manager\Product\ProductController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Manager;
@@ -91,6 +91,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('brand', BrandController::class);
         Route::resource('model', ModelController::class);
         Route::resource('branch', BranchController::class);
+        Route::resource('product', ProductController::class);
     });
 });
 // endregion
