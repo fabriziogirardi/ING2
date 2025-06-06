@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            //CategorySeeder::class,
-            //ProductBrandSeeder::class,
-            //ProductModelSeeder::class,
-            //ProductSeeder::class,
+            // CategorySeeder::class,
+            // ProductBrandSeeder::class,
+            // ProductModelSeeder::class,
+            // ProductSeeder::class,
             BranchSeeder::class,
             GovernmentIdTypeSeeder::class,
             ManagerSeeder::class,
