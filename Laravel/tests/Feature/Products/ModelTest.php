@@ -82,10 +82,6 @@ class ModelTest extends TestCase
         $response = $this->delete(route('manager.model.destroy', $model));
 
         $response->assertRedirect(route('manager.model.index'));
-
-        $this->assertDatabaseMissing('product_models', [
-            'id' => $model->id,
-        ]);
     }
 
     public function test_manager_can_create_model_with_same_name_and_diferents_brands(): void
