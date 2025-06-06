@@ -17,10 +17,13 @@ class BranchesMapView extends Component
 
     public string $api_key;
 
+    public string $map_id;
+
     public function __construct($branches = null)
     {
         $this->branches = $branches;
         $this->api_key  = config('credentials.google_maps.public_api_key');
+        $this->map_id   = config('credentials.google_maps.map_id');
     }
 
     /**
