@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ class LoginController extends Controller
         return view('customer.login');
     }
 
-    public function loginAttempt(LoginRequest $request)
+    public function loginAttempt(LoginRequest $request): RedirectResponse
     {
         if (! Auth::guard('customer')->attempt(['email' => $request->validated('email'), 'password' => $request->validated('password')])) {
             return redirect()->back()->withErrors([
@@ -27,9 +28,12 @@ class LoginController extends Controller
         return redirect()->route('home');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
-        // Logic for handling logout
-        // This should include invalidating the session and redirecting the user
+        Auth::guard('customer')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
     }
 }

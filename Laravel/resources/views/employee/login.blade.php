@@ -27,6 +27,7 @@
                             <x-forms.input.select name="branch_id" id="branch" label="{{ __('employee/auth.label_branch') }}"
                                                   :options="$branches" old="{{ old('branch_id') }}" required class="sm:col-span-2"
                                                   placeholder="{{ __('employee/auth.placeholder_branch') }}"
+                                                  error="{{ $errors->has('branch_id') ? $errors->first('branch_id') : '' }}"
                             />
                             <x-forms.error-description message="{{ $errors->has('credentials') ? $errors->first('credentials') : '' }}" class="sm:col-span-2" />
                         </div>
