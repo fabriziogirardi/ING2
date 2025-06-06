@@ -19,8 +19,6 @@ class Manager extends Authenticatable
     /** @use HasFactory<\Database\Factories\ManagerFactory> */
     use HasFactory;
 
-    protected $with = ['person'];
-
     protected $fillable = [
         'person_id',
         'password',
