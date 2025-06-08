@@ -5,6 +5,8 @@ server {
     index index.php index.html;
     root /var/www/html/public;
 
+    client_max_body_size 10M;
+
     access_log /var/log/nginx/https-access.log combined buffer=32k gzip;
     error_log /var/log/nginx/https-error.log notice;
 
