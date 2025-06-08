@@ -10,8 +10,9 @@
         <meta name="description" content="" />
         <meta name="keywords" content="" />
         <meta name="author" content="" />
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+        @filamentStyles
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
         <style>
             .gradient {
@@ -29,6 +30,7 @@
 
         <x-footer />
 
+        @filamentScripts
         @livewireScripts
     </body>
 </html>

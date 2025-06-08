@@ -58,4 +58,11 @@ class Person extends Model
             get: fn () => str(mb_substr($this->first_name, 0, 1).mb_substr($this->last_name, 0, 1))->upper(),
         );
     }
+
+    public function fullIdNumber(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->government_id_type->name.' '.$this->government_id_number,
+        );
+    }
 }

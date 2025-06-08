@@ -75,7 +75,11 @@ class ModelController extends Controller
 
     public function restore(string $id)
     {
-        ProductModel::withTrashed()->findOrFail($id)->restore();
+        ProductModel::with('brand')
+            ->whereHas('brand')
+            ->onlyTrashed()
+            ->findOrFail($id)
+            ->restore();
 
         return redirect()->to(route('manager.model.index'));
     }

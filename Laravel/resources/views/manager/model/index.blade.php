@@ -70,10 +70,8 @@
                         </tbody>
                     </table>
                 </div>
-                <nav class="flex flex-col md:flex-row flex justify-end items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-                    {{ $models->links() }}
-                </nav>
             </div>
+            {{ $models->links() }}
         </div>
     </section>
 </x-layouts.app>

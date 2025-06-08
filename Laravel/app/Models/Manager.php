@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +17,7 @@ use Random\RandomException;
  * @mixin QueryBuilder
  * @mixin EloquentBuilder
  */
-class Manager extends Authenticatable
+class Manager extends Authenticatable implements FilamentUser, HasName
 {
     /** @use HasFactory<\Database\Factories\ManagerFactory> */
     use HasFactory;
@@ -54,5 +57,15 @@ class Manager extends Authenticatable
             'token'      => random_int(10000000, 99999999),
             'expires_at' => now()->addMinutes(2),
         ]);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->person->full_name;
     }
 }

@@ -19,6 +19,8 @@ Route::get('/', static function () {
     return view('components.navigation.landing');
 })->name('home');
 
+Route::get('/la', \App\Livewire\ListProductBrands::class);
+
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
         return 'hola a';
@@ -60,9 +62,12 @@ Route::get('cat/{cat:slug}', static function (Category $cat) {
     dd(Product::get_all_by_category($cat)->get()->toArray());
 })->name('category.index');
 
+Route::get('/manager/login', [ManagerLoginController::class, 'showLoginForm'])
+    ->name('filament.manager.auth.login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+
 // region Rutas del manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
-    Route::get('/login', [ManagerLoginController::class, 'showLoginForm'])
+    Route::get('/loginForm', [ManagerLoginController::class, 'showLoginForm'])
         ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
     Route::post('/login', [ManagerLoginController::class, 'loginAttempt'])
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);

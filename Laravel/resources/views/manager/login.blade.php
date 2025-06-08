@@ -13,7 +13,7 @@
                     <p class="text-sm font-light text-gray-500">
                         {{ __('manager/auth.welcome_back_description') }}
                     </p>
-                    <form class="mt-4 space-y-6 sm:mt-6" action="{{ route('manager.login') }}" method="POST" @submit="submit = true">
+                    <form class="mt-4 space-y-6 sm:mt-6" action="{{ route('manager.login.post') }}" method="POST" @submit="submit = true">
                         @csrf
                         <div class="grid gap-6 sm:grid-cols-2">
                             <x-forms.input.text name="email" id="email" label="{{ __('manager/auth.label_email') }}"
