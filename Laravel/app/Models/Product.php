@@ -75,9 +75,4 @@ class Product extends Model
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
     }
-
-    public function images(): HasMany|Product
-    {
-        return $this->hasMany(ProductImage::class);
-    }
 }
