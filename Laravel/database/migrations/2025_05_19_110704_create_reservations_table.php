@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('reservations', static function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Customer::class);
-            $table->foreignIdFor(BranchProduct::class);
+            $table->foreignId('branch_product_id')->constrained('branch_product');
             $table->char('code', 8)->unique();
             $table->date('start');
             $table->date('end');
