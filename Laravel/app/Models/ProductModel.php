@@ -16,8 +16,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class ProductModel extends Model
 {
-    use HasFactory;
-    use softDeletes;
+    use HasFactory, SoftDeletes;
 
     /** @use HasFactory<\Database\Factories\ProductModelFactory> */
     protected $fillable = [

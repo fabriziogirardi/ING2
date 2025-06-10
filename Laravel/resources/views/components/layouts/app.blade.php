@@ -25,6 +25,9 @@
         <x-navigation.navbar.complete />
 
         <div class="pt-20">
+            @if(session('toast'))
+                <x-elements.toast message="{{ session('message') }}" type="{{ session('toast') }}" />
+            @endif
             {{ $slot }}
         </div>
 
