@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -27,6 +28,11 @@ class Reservation extends Model
         'end',
     ];
     
+    protected $casts = [
+        'start' => 'date',
+        'end'   => 'date',
+    ];
+    
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -35,6 +41,16 @@ class Reservation extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+    
+    public function retired(): HasOne
+    {
+        return $this->hasOne(ReservationRetired::class);
+    }
+    
+    public function returned(): HasOne
+    {
+        return $this->hasOne(ReservationReturned::class);
     }
     
     public function duration(): Attribute
