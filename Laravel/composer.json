@@ -13,7 +13,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.6",
         "mercadopago/dx-php": "^3.4",
-        "owenvoke/blade-fontawesome": "*",
+        "owenvoke/blade-fontawesome": "^2.9",
         "predis/predis": "^2.3.0"
     },
     "require-dev": {

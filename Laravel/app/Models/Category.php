@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,11 +28,8 @@ class Category extends Model
         'parent_id',
     ];
 
-    protected $with = ['children'];
-
     protected $appends = [
-        'all_children',
-        'all_parents',
+        'fully_qualified_name',
     ];
 
     public static function boot(): void
@@ -73,9 +71,9 @@ class Category extends Model
                 $ids = collect([$this->id]);
 
                 return $ids->merge($this->children->pluck('id')->merge(
-                    $this->children->flatMap(fn ($child) => $child->all_children)
+                    $this->children->flatMap(fn ($child) => $child->all_children),
                 ))->sort();
-            }
+            },
         );
     }
 
@@ -86,17 +84,40 @@ class Category extends Model
                 $parents = new Collection;
 
                 if ($this->parent) {
-                    $parents->push($this->parent);
                     $parents = $parents->merge($this->parents->all_parents);
+                    $parents->unshift($this->parent);
                 }
 
                 return $parents;
-            }
+            },
         );
     }
 
-    public function scopeRoots(EloquentBuilder $query): EloquentBuilder
+    public function fullyQualifiedName(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+
+                if ($this->parent) {
+                    $name = $this->parent->fully_qualified_name.' / '.$this->name;
+                } else {
+                    $name = $this->name;
+                }
+
+                return $name;
+            },
+        );
+    }
+
+    #[Scope]
+    public function roots(EloquentBuilder $query): EloquentBuilder
     {
         return $query->whereNull('parent_id');
+    }
+
+    #[Scope]
+    public function leaves(EloquentBuilder $query)
+    {
+        return $query->doesntHave('children')->get();
     }
 }

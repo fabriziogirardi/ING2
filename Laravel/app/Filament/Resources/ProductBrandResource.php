@@ -77,4 +77,9 @@ class ProductBrandResource extends Resource
             //            'edit'   => Pages\EditProductBrand::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }

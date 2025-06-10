@@ -13,7 +13,7 @@
                     <p class="text-sm font-light text-gray-500">
                         {{ __('manager/auth.welcome_back_token_description') }}
                     </p>
-                    <form class="mt-4 space-y-6 sm:mt-6" action="{{ url()->temporarySignedRoute('manager.verify-token', now()->addMinutes(2), ['manager' => $manager_id]) }}" method="POST" @submit="submit = true">
+                    <form autocomplete="off" class="mt-4 space-y-6 sm:mt-6" action="{{ url()->temporarySignedRoute('manager.verify-token', now()->addMinutes(2), ['manager' => $manager_id]) }}" method="POST" @submit="submit = true">
                         @csrf
                         <div class="grid gap-6 sm:grid-cols-2">
                             <x-forms.input.text name="token" id="token" label="{{ __('manager/auth.label_token') }}"

@@ -36,6 +36,10 @@ Route::middleware('auth:customer')->group(function () {
     })->name('a.c');
 });
 
+Route::get('/cat', static function () {
+    dd(Category::query()->leaves()->toArray());
+});
+
 Route::get('/a/login', static function () {
     $res = Auth::guard('customer')->attempt(['email' => 'gerard33@example.net', 'password' => 'password']);
 

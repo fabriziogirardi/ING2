@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\CustomerResource\Widgets\CustomersOverview;
 use Exception;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -28,6 +29,7 @@ class ManagerPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->topNavigation()
             ->brandLogo(asset('logotipo.png'))
             ->homeUrl('/')
             ->id('manager')
@@ -44,6 +46,7 @@ class ManagerPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+                // CustomersOverview::class,
                 // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([

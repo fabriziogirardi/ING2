@@ -1,6 +1,6 @@
 <?php
 
-namespace Employee;
+namespace Tests\Feature\Employee;
 
 use App\Mail\NewCustomerCreated;
 use App\Models\Customer;

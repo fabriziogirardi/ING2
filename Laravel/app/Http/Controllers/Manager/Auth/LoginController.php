@@ -78,6 +78,6 @@ class LoginController extends Controller
         $manager->deleteTokens();
         Auth::guard('manager')->login($manager);
 
-        return redirect()->route('home');
+        return redirect()->route('filament.manager.pages.dashboard');
     }
 }

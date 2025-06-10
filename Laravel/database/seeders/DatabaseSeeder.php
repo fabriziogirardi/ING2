@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             ManagerSeeder::class,
             EmployeeSeeder::class,
             CustomerSeeder::class,
+            ProductBrandSeeder::class,
+            ProductModelSeeder::class,
+            CategorySeeder::class,
         ]);
-
     }
 }
