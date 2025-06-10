@@ -37,6 +37,9 @@ class EmployeeResource extends Resource
                 Select::make('person_id')
                     ->label('Email')
                     ->relationship(name: 'person', titleAttribute: 'email')
+                    ->preload()
+                    ->required()
+                    ->placeholder('Ingrese un correo')
                     ->searchable()
                     ->createOptionForm([
                         TextInput::make('first_name')
