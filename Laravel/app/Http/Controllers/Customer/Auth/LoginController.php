@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +28,7 @@ class LoginController extends Controller
         return redirect()->route('home');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::guard('customer')->logout();
         $request->session()->invalidate();

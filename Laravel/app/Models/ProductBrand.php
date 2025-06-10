@@ -16,7 +16,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class ProductBrand extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductBrandFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     use softDeletes;
 

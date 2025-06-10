@@ -44,6 +44,11 @@ class Person extends Model
         return $this->hasOne(Employee::class);
     }
 
+    public function manager(): HasOne
+    {
+        return $this->hasOne(Manager::class);
+    }
+
     public function government_id_type(): BelongsTo
     {
         return $this->belongsTo(GovernmentIdType::class);

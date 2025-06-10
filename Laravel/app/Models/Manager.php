@@ -22,8 +22,6 @@ class Manager extends Authenticatable implements FilamentUser, HasName
     /** @use HasFactory<\Database\Factories\ManagerFactory> */
     use HasFactory;
 
-    protected $with = ['person'];
-
     protected $fillable = [
         'person_id',
         'password',

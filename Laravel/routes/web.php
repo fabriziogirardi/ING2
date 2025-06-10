@@ -6,17 +6,20 @@ use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginControlle
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
-use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
+use App\Http\Controllers\Manager\Product\ProductController;
+use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Manager;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
-    return view('components.navigation.landing');
+    return view('components.navigation.landing')->with([
+        'branches' => Branch::all(),
+    ]);
 })->name('home');
 
 Route::get('/la', \App\Livewire\ListProductBrands::class);
@@ -97,6 +100,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::resource('model', ModelController::class);
         Route::get('model/{id}/restore', [ModelController::class, 'restore'])->name('model.restore');
         Route::resource('branch', BranchController::class);
+        Route::resource('product', ProductController::class);
     });
 });
 // endregion
