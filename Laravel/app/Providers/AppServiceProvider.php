@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
@@ -60,5 +62,8 @@ class AppServiceProvider extends ServiceProvider
 
             return collect($this->items);
         });
+        FilamentAsset::register([
+            Css::make('custom-stylesheet', "http://localhost:5173/resources/css/app.css"),
+        ]);
     }
 }

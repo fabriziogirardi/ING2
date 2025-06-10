@@ -121,9 +121,9 @@ class ProductResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre del producto'),
-                TextColumn::make('model.brand.name')
+                TextColumn::make('product_model.product_brand.name')
                     ->label('Marca'),
-                TextColumn::make('model.name')
+                TextColumn::make('product_model.name')
                     ->label('Modelo'),
                 TextColumn::make('price')
                     ->label('Precio')
@@ -137,7 +137,9 @@ class ProductResource extends Resource
                     ->label('Imágenes')
                     ->circular()
                     ->size(50)
-                    ->stacked(),
+                    ->stacked()
+                    ->limit(3)
+                    ->limitedRemainingText(),
             ])
             ->filters([
                 //

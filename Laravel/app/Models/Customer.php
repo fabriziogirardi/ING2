@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -19,9 +20,7 @@ use Illuminate\Support\Str;
 class Customer extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
-    use HasFactory;
-
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'person_id',
@@ -39,7 +38,7 @@ class Customer extends Authenticatable
 
         static::saving(function (Customer $customer) {
             if ($customer->isDirty('person_id') && $customer->person_id && ! $customer->password) {
-                $password = Str::password(8);
+                $password = Str::password(length: 8, symbols: false);
 
                 Mail::to($customer->person->email)->send(
                     new NewCustomerCreated(

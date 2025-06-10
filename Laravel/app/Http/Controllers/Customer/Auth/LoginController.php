@@ -29,7 +29,10 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        // Logic for handling logout
-        // This should include invalidating the session and redirecting the user
+        Auth::guard('customer')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect()->route('customer.login');
     }
 }

@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Unique;
 
@@ -37,8 +38,14 @@ class CustomerResource extends Resource
             ->schema([
                 Select::make('person_id')
                     ->label('Email')
-                    ->relationship(name: 'person', titleAttribute: 'email')
+                    ->relationship(
+                        name: 'person',
+                        titleAttribute: 'email',
+                        modifyQueryUsing: fn(Builder $query) => $query->doesntHave('customer')
+                    )
                     ->preload()
+                    ->required()
+                    ->placeholder('Ingrese un correo')
                     ->searchable()
                     ->createOptionForm([
                         TextInput::make('first_name')
@@ -62,7 +69,7 @@ class CustomerResource extends Resource
                             ->required()
                             ->default(1),
                         TextInput::make('government_id_number')
-                            ->label('Número de documento')
+                            ->label('Número de documento ')
                             ->unique(modifyRuleUsing: function (Unique $rule, Get $get) {
                                 return $rule->where('government_id_type_id', $get('government_id_type_id'));
                             })
@@ -105,12 +112,15 @@ class CustomerResource extends Resource
                     ->label('Calificación'),
             ])
             ->filters([
-                TrashedFilter::make(),
+                //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                ->disabled()
+                ->extraAttributes(['class' => 'cursor-not-allowed pointer-events-auto hover:no-underline']),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\RestoreAction::make()
+                ->disabled(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -86,11 +86,7 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
             return view('manager.dashboard');
         })->name('dashboard');
 
-        Route::get('/logout', static function () {
-            Auth::guard('manager')->logout();
-
-            return redirect()->to(route('manager.login'));
-        })->name('logout');
+        Route::get('/logout', [ManagerLoginController::class, 'logout'])->name('logout');
 
         // Esta ruta no va acá
         // Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');

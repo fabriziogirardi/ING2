@@ -24,6 +24,10 @@ class ProductModel extends Model
         'product_brand_id',
         'name',
     ];
+    
+    protected $with = [
+        'product_brand'
+    ];
 
     public static function boot(): void
     {
@@ -39,6 +43,11 @@ class ProductModel extends Model
     }
 
     public function brand(): BelongsTo
+    {
+        return $this->belongsTo(ProductBrand::class);
+    }
+
+    public function product_brand(): BelongsTo
     {
         return $this->belongsTo(ProductBrand::class);
     }
