@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Branch;
+use App\Models\Manager;
 use App\Models\User;
 
 class BranchPolicy
@@ -10,56 +11,56 @@ class BranchPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(Manager $manager): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Branch $branch): bool
+    public function view(Manager $manager, Branch $branch): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(Manager $manager): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Branch $branch): bool
+    public function update(Manager $manager, Branch $branch): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Branch $branch): bool
+    public function delete(Manager $manager, Branch $branch): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Branch $branch): bool
+    public function restore(Manager $manager, Branch $branch): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Branch $branch): bool
+    public function forceDelete(Manager $manager, Branch $branch): bool
     {
-        return false;
+        return true;
     }
 }

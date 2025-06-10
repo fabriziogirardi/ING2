@@ -191,6 +191,16 @@ return [
     |
     */
 
-    'attributes' => [],
-
+    'attributes' => [
+        'first_name'            => 'First Name',
+        'last_name'             => 'Last Name',
+        'email'                 => 'Email',
+        'government_id_number'  => 'Document Number',
+        'government_id_type'    => 'Type of document',
+        'password'              => 'Password',
+        'password_confirmation' => 'Password Confirmation',
+        'current_password'      => 'Current Password',
+        'new_password'          => 'New Password',
+        'birthdate'             => 'Birthdate',
+    ],
 ];

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\GovernmentIdType;
 use Illuminate\Database\Seeder;
 
 class GovernmentIdTypeSeeder extends Seeder
@@ -11,6 +12,16 @@ class GovernmentIdTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $types = [
+            ['name' => 'DNI'],
+            ['name' => 'PAS'],
+            ['name' => 'LE'],
+            ['name' => 'LC'],
+            ['name' => 'CI'],
+        ];
+
+        collect($types)->each(function ($type) {
+            GovernmentIdType::create($type);
+        });
     }
 }

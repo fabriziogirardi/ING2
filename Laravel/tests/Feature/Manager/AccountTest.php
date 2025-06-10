@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Manager;
 
+use App\Mail\Manager\TokenGeneratedMail;
 use App\Models\Manager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JsonException;
+use Mail;
 use Random\RandomException;
 use Tests\TestCase;
 
@@ -21,11 +23,16 @@ class AccountTest extends TestCase
         $this->manager = Manager::factory()->create();
     }
 
-    /**
-     * A basic feature test example.
-     */
+    public function test_manager_can_see_login_page(): void
+    {
+        $response = $this->get(route('manager.login'));
+        $response->assertStatus(200);
+    }
+
     public function test_manager_can_request_token_with_correct_credentials(): void
     {
+        Mail::fake();
+
         $response = $this->post(route('manager.login.post'), [
             'email'    => $this->manager->person->email,
             'password' => 'password',
@@ -37,6 +44,8 @@ class AccountTest extends TestCase
             ->assertDatabaseHas('manager_tokens', [
                 'manager_id' => $this->manager->id,
             ]);
+
+        Mail::assertSent(TokenGeneratedMail::class);
     }
 
     public function test_manager_cannot_request_token_with_incorrect_credentials(): void
@@ -47,7 +56,7 @@ class AccountTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertSessionHasErrors(['incorrect_credentials']);
+        $response->assertSessionHasErrors(['credentials']);
 
         $this->assertGuest('manager')
             ->assertDatabaseEmpty('manager_tokens');

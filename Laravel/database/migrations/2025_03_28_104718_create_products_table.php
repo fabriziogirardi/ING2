@@ -16,10 +16,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->json('images_json')->nullable();
             $table->foreignIdFor(ProductModel::class);
             $table->decimal('price', 12);
             $table->smallInteger('min_days');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

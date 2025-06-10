@@ -1,5 +1,21 @@
-@tailwind base;
-@tailwind components;
+@import "@fortawesome/fontawesome-free/css/all.css";
+
+/* Tailwind CSS */
+@import "tailwindcss";
+
+/* Flowbite */
+@import "flowbite/src/themes/default.css";
+@plugin "flowbite/plugin";
+
+/* Tailwind Views */
+@source "../views";
+@source "../../app/Filament/**/*.php";
+@source "../views/filament/**/*.blade.php";
+@source "../../vendor/filament/**/*.blade.php"
+
+/* Flowbite */
+@source "../../node_modules/flowbite";
+
 @tailwind utilities;
 
 [x-cloak] {
