@@ -22,7 +22,7 @@ class Reservation extends Model
     /** @use HasFactory<\Database\Factories\ReservationFactory> */
     protected $fillable = [
         'customer_id',
-        'product_id',
+        'branch_product_id',
         'code',
         'start',
         'end',
@@ -33,9 +33,9 @@ class Reservation extends Model
         'end'   => 'date',
     ];
     
-    public function product(): BelongsTo
+    public function branchProduct(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(BranchProduct::class);
     }
     
     public function customer(): BelongsTo
