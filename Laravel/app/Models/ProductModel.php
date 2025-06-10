@@ -24,9 +24,9 @@ class ProductModel extends Model
         'product_brand_id',
         'name',
     ];
-    
+
     protected $with = [
-        'product_brand'
+        'product_brand',
     ];
 
     public static function boot(): void

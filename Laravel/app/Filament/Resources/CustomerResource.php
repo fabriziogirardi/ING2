@@ -12,7 +12,6 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +40,7 @@ class CustomerResource extends Resource
                     ->relationship(
                         name: 'person',
                         titleAttribute: 'email',
-                        modifyQueryUsing: fn(Builder $query) => $query->doesntHave('customer')
+                        modifyQueryUsing: fn (Builder $query) => $query->doesntHave('customer')
                     )
                     ->preload()
                     ->required()
@@ -116,11 +115,11 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                ->disabled()
-                ->extraAttributes(['class' => 'cursor-not-allowed pointer-events-auto hover:no-underline']),
+                    ->disabled()
+                    ->extraAttributes(['class' => 'cursor-not-allowed pointer-events-auto hover:no-underline']),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\RestoreAction::make()
-                ->disabled(),
+                    ->disabled(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
