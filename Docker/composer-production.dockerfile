@@ -20,8 +20,8 @@ RUN apk upgrade &&  \
 
 # Install PHP extensions
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions gd pdo_mysql mysqli zip bcmath pcntl memcached mcrypt redis
-RUN docker-php-ext-enable memcached mcrypt redis
+    install-php-extensions gd pdo_mysql mysqli zip bcmath pcntl memcached mcrypt redis intl
+RUN docker-php-ext-enable memcached mcrypt redis intl
 
 # Clean up
 RUN rm -rf /var/cache/apk/*

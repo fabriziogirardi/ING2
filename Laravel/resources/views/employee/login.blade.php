@@ -3,7 +3,7 @@
         Login
     </x-slot:title>
 
-    <section class="bg-gray-50 h-full" x-data="{ submit: false }" @keyup.ctrl.shift.enter.window="window.location.href = '{{ route('manager.login') }}'" >
+    <section class="bg-gray-50 h-full" x-data="{ submit: false }" @keyup.ctrl.shift.enter.window="window.location.href = '{{ route('filament.manager.auth.login') }}'" >
         <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-20 lg:py-16 lg:grid-cols-12">
             <div class="w-full place-self-center lg:col-span-6">
                 <div class="p-6 mx-auto bg-white rounded-lg shadow sm:max-w-xl sm:p-8">

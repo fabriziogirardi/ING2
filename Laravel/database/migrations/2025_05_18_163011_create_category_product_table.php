@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Category::class);
             $table->foreignIdFor(Product::class);
-            $table->timestamps();
         });
     }
 
