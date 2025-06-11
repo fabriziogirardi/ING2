@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('branch_product', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Branch::class)->nullable()->unique()->constrained();
-            $table->foreignIdFor(Product::class)->nullable()->unique()->constrained();
+            $table->foreignIdFor(Branch::class)->nullable()->constrained();
+            $table->foreignIdFor(Product::class)->nullable()->constrained();
             $table->unsignedTinyInteger('quantity')->default(0);
             $table->timestamps();
             $table->softDeletes();

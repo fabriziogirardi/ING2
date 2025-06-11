@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('category_product', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Category::class)->nullable()->unique()->constrained();
-            $table->foreignIdFor(Product::class)->nullable()->unique()->constrained();
+            $table->foreignIdFor(Category::class)->nullable()->constrained();
+            $table->foreignIdFor(Product::class)->nullable()->constrained();
+            
+            $table->unique(['category_id', 'product_id'], 'unique_category_product_combination');
         });
     }
 

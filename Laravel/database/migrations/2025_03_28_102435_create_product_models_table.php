@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();
+            
+            $table->unique(['name', 'product_brand_id'], 'unique_product_model_name_per_brand');
         });
     }
 
