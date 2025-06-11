@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class ProductAvailabilityService
@@ -17,9 +18,9 @@ class ProductAvailabilityService
         $this->end   = $end;
     }
 
-    public function getProductsWithAvailability(): Collection
+    public function getProductsWithAvailability(int $perPage = 15): LengthAwarePaginator
     {
-        return Product::with([
+        $paginated = Product::with([
             'branch_products' => function ($q) {
                 $q->with([
                     'reservations' => function ($r) {
@@ -35,7 +36,9 @@ class ProductAvailabilityService
                     'branch',
                 ]);
             },
-        ])->get()->map(function ($product) {
+        ])->paginate($perPage);
+
+        $paginated->getCollection()->transform(function ($product) {
             return [
                 'product'                => $product,
                 'has_stock'              => $this->hasStock($product),
@@ -43,6 +46,8 @@ class ProductAvailabilityService
                 'branches_without_stock' => $this->branchesWithoutStock($product),
             ];
         });
+
+        return $paginated;
     }
 
     protected function hasStock(Product $product): bool

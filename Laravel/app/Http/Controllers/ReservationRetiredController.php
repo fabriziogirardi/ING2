@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReservationRetiredRequest;
 use App\Http\Requests\UpdateReservationRetiredRequest;
-use App\Models\ReservationRetired;
+use App\Models\RetiredReservation;
 
 class ReservationRetiredController extends Controller
 {
@@ -35,7 +35,7 @@ class ReservationRetiredController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ReservationRetired $reservationRetired)
+    public function show(RetiredReservation $reservationRetired)
     {
         //
     }
@@ -43,7 +43,7 @@ class ReservationRetiredController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ReservationRetired $reservationRetired)
+    public function edit(RetiredReservation $reservationRetired)
     {
         //
     }
@@ -51,7 +51,7 @@ class ReservationRetiredController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReservationRetiredRequest $request, ReservationRetired $reservationRetired)
+    public function update(UpdateReservationRetiredRequest $request, RetiredReservation $reservationRetired)
     {
         //
     }
@@ -59,7 +59,7 @@ class ReservationRetiredController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ReservationRetired $reservationRetired)
+    public function destroy(RetiredReservation $reservationRetired)
     {
         //
     }

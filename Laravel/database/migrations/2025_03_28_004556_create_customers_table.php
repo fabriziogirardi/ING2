@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('customers', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Person::class)->nullable();
+            $table->foreignIdFor(Person::class)->nullable()->unique()->constrained();
             $table->string('password')->nullable();
             $table->boolean('active')->default(true);
             $table->decimal('rating', 3, 2)->default(3.00);

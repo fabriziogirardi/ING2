@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->json('images_json')->nullable();
-            $table->foreignIdFor(ProductModel::class);
+            $table->foreignIdFor(ProductModel::class)->nullable()->unique()->constrained();
             $table->decimal('price', 12);
             $table->smallInteger('min_days');
             $table->timestamps();

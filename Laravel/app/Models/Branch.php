@@ -18,7 +18,24 @@ class Branch extends Model
     /** @use HasFactory<\Database\Factories\BranchFactory> */
     use HasFactory;
 
-    protected $fillable = ['place_id', 'name', 'address', 'latitude', 'longitude', 'description'];
+    protected $fillable = [
+        'place_id',
+        'name',
+        'address',
+        'latitude',
+        'longitude',
+        'description',
+    ];
+
+    protected $casts = [
+        'latitude'         => 'float',
+        'longitude'        => 'float',
+        'default_location' => 'array',
+    ];
+
+    protected $appends = [
+        'default_location',
+    ];
 
     public function products(): BelongsToMany
     {
@@ -26,5 +43,12 @@ class Branch extends Model
             ->withPivot('quantity')
             ->using(BranchProduct::class)
             ->as('stock');
+    }
+
+    public function defaultLocation(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => [$this->latitude, $this->longitude],
+        );
     }
 }
