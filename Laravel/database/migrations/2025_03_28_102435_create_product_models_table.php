@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('product_models', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(ProductBrand::class)->nullable()->unique()->constrained();
+            $table->foreignIdFor(ProductBrand::class)->nullable()->constrained();
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();
