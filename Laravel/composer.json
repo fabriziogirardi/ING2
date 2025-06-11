@@ -8,7 +8,7 @@
     "require": {
         "php": "^8.3",
         "blade-ui-kit/blade-heroicons": "*",
-        "cheesegrits/filament-google-maps": "*",
+        "cheesegrits/filament-google-maps": "^3.0",
         "filament/filament": "^3.3",
         "laravel/framework": "^v12.1.1",
         "laravel/tinker": "^2.9",

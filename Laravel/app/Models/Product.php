@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -40,11 +42,6 @@ class Product extends Model
 
     protected $with = ['categories', 'product_model', 'product_model.brand'];
 
-    public function model(): BelongsTo
-    {
-        return $this->belongsTo(ProductModel::class, 'product_model_id');
-    }
-
     public function product_model(): BelongsTo
     {
         return $this->belongsTo(ProductModel::class, 'product_model_id');
@@ -68,10 +65,20 @@ class Product extends Model
             ->as('stock');
     }
 
-    #[Scope]
-    protected function get_all_by_category(EloquentBuilder $query, Category $category): void
+    public function reservations(): HasManyThrough
     {
-        $query->whereHas('categories', function (EloquentBuilder $query) use ($category) {
+        return $this->hasManyThrough(Reservation::class, BranchProduct::class);
+    }
+
+    public function branch_products(): HasMany
+    {
+        return $this->hasMany(BranchProduct::class);
+    }
+
+    #[Scope]
+    protected function get_all_by_category(EloquentBuilder $query, Category $category): EloquentBuilder
+    {
+        return $query->whereHas('categories', function (EloquentBuilder $query) use ($category) {
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
     }
