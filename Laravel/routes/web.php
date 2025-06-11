@@ -10,8 +10,10 @@ use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
+use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Models\Branch;
 use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Manager;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -129,6 +131,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
+        Route::get('/payment', [MercadoPagoController::class, 'show']);
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
     });
 });
