@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('returned_reservations', function (Blueprint $table) {
-            $table->dropForeign(['reservation_id']);
+            $table->dropConstrainedForeignIdFor(Reservation::class);
             $table->dropColumn('reservation_id');
             $table->dropColumn('rating');
         });
