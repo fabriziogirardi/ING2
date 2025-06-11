@@ -18,41 +18,41 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class Reservation extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     /** @use HasFactory<\Database\Factories\ReservationFactory> */
     protected $fillable = [
         'customer_id',
         'branch_product_id',
         'code',
-        'start',
-        'end',
+        'start_date',
+        'end_date',
     ];
-    
+
     protected $casts = [
         'start' => 'date',
         'end'   => 'date',
     ];
-    
+
     public function branchProduct(): BelongsTo
     {
         return $this->belongsTo(BranchProduct::class);
     }
-    
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
-    
+
     public function retired(): HasOne
     {
         return $this->hasOne(ReservationRetired::class);
     }
-    
+
     public function returned(): HasOne
     {
         return $this->hasOne(ReservationReturned::class);
     }
-    
+
     public function duration(): Attribute
     {
         return Attribute::make(
