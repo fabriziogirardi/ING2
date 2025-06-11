@@ -37,11 +37,11 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('model.product_brand_id')
+                Select::make('product_model.product_brand_id')
                     ->columnSpan(2)
                     ->label('Marca')
                     ->hiddenOn('edit')
-                    ->relationship('model.brand', 'name')
+                    ->relationship('product_model.product_brand', 'name')
                     ->required()
                     ->dehydrated(false)
                     ->options(ProductBrand::pluck('name', 'id'))
