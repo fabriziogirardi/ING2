@@ -6,10 +6,10 @@ use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginControlle
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
-use App\Http\Controllers\Manager\Branches\BranchesListing;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
+use App\Http\Controllers\Manager\Product\ProductController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Manager;
@@ -21,6 +21,26 @@ Route::get('/', static function () {
         'branches' => Branch::all(),
     ]);
 })->name('home');
+
+Route::get('/la', function () {
+    $service  = new \App\Services\ProductAvailabilityService('2025-06-15', '2025-06-20');
+    $products = $service->getProductsWithAvailability();
+
+    foreach ($products as $entry) {
+        echo 'Producto: '.$entry['product']->name.'<br>';
+        echo '¿Disponible?: '.($entry['has_stock'] ? '✅' : '❌').'<br>';
+
+        foreach ($entry['branches_with_stock'] as $branch) {
+            echo " - Sucursal con stock: {$branch['branch_name']}, disponible: {$branch['available']}".'<br>';
+        }
+
+        foreach ($entry['branches_without_stock'] as $branch) {
+            echo " - Sucursal sin stock: {$branch['branch_name']}".'<br>';
+        }
+
+        echo '<br>';
+    }
+});
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -35,6 +55,10 @@ Route::middleware('auth:customer')->group(function () {
 
         return 'Hola c ';
     })->name('a.c');
+});
+
+Route::get('/cat', static function () {
+    dd(Category::query()->leaves()->toArray());
 });
 
 Route::get('/a/login', static function () {
@@ -63,9 +87,12 @@ Route::get('cat/{cat:slug}', static function (Category $cat) {
     dd(Product::get_all_by_category($cat)->get()->toArray());
 })->name('category.index');
 
+Route::get('/manager/login', [ManagerLoginController::class, 'showLoginForm'])
+    ->name('filament.manager.auth.login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+
 // region Rutas del manager
 Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
-    Route::get('/login', [ManagerLoginController::class, 'showLoginForm'])
+    Route::get('/loginForm', [ManagerLoginController::class, 'showLoginForm'])
         ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
     Route::post('/login', [ManagerLoginController::class, 'loginAttempt'])
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
@@ -79,18 +106,19 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('/dashboard', static function () {
             return view('manager.dashboard');
         })->name('dashboard');
-        Route::get('/logout', static function () {
-            Auth::guard('manager')->logout();
 
-            return redirect()->to(route('manager.login'));
-        })->name('logout');
+        Route::get('/logout', [ManagerLoginController::class, 'logout'])->name('logout');
 
         // Esta ruta no va acá
         // Route::get('/viewBranches', [BranchesListing::class, '__invoke'])->name('branches.index');
         Route::resource('employee', EmployeeController::class);
+        Route::post('employee/{id}/restore', [EmployeeController::class, 'restore'])->name('employee.restore');
         Route::resource('brand', BrandController::class);
+        Route::get('brand/{id}/models', [BrandController::class, 'restore'])->name('brand.restore');
         Route::resource('model', ModelController::class);
+        Route::get('model/{id}/restore', [ModelController::class, 'restore'])->name('model.restore');
         Route::resource('branch', BranchController::class);
+        Route::resource('product', ProductController::class);
     });
 });
 // endregion
@@ -120,6 +148,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
+        Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');
     });
 });
 // endregion

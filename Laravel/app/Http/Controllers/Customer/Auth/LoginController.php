@@ -15,7 +15,7 @@ class LoginController extends Controller
         return view('customer.login');
     }
 
-    public function loginAttempt(LoginRequest $request): RedirectResponse
+    public function loginAttempt(LoginRequest $request)
     {
         if (! Auth::guard('customer')->attempt(['email' => $request->validated('email'), 'password' => $request->validated('password')])) {
             return redirect()->back()->withErrors([
@@ -34,6 +34,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('customer.login');
     }
 }

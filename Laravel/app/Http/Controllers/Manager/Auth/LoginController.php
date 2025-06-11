@@ -47,10 +47,12 @@ class LoginController extends Controller
         return redirect()->to($signedRoute);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        // Logic for handling logout
-        // This should include invalidating the session and redirecting the user
+        Auth::guard('manager')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('manager.login');
     }
 
@@ -78,6 +80,6 @@ class LoginController extends Controller
         $manager->deleteTokens();
         Auth::guard('manager')->login($manager);
 
-        return redirect()->route('home');
+        return redirect()->route('filament.manager.pages.dashboard');
     }
 }

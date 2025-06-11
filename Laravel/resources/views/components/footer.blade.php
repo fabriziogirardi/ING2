@@ -1,4 +1,4 @@
-<footer>
+<footer class="mt-auto">
     <div class="p-4 py-8 bg-white md:p-8 lg:p-10 ">
         <div class="mx-auto max-w-screen-xl text-center">
             <div class="grid lg:grid-cols-3">

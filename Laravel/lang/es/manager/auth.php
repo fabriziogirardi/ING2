@@ -12,6 +12,7 @@ return [
     'placeholder_token'              => 'Token de acceso',
     'login_button'                   => 'Iniciar sesión',
     'logout_button'                  => 'Cerrar sesión',
+    'control_panel_button'           => 'Panel de Control',
     'token_button'                   => 'Enviar token',
     'incorrect_credentials'          => 'Credenciales incorrectas.',
     'incorrect_token'                => 'Token incorrecto.',

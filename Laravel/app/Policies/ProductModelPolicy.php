@@ -2,6 +2,9 @@
 
 namespace App\Policies;
 
+use App\Models\Customer;
+use App\Models\Employee;
+use App\Models\Manager;
 use App\Models\ProductModel;
 use App\Models\User;
 
@@ -10,56 +13,56 @@ class ProductModelPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(Manager|Customer|Employee $user): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ProductModel $productModel): bool
+    public function view(Manager|Customer|Employee $user, ProductModel $productModel): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(Manager|Customer|Employee $user): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ProductModel $productModel): bool
+    public function update(Manager|Customer|Employee $user, ProductModel $productModel): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ProductModel $productModel): bool
+    public function delete(Manager|Customer|Employee $user, ProductModel $productModel): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, ProductModel $productModel): bool
+    public function restore(Manager|Customer|Employee $user, ProductModel $productModel): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, ProductModel $productModel): bool
+    public function forceDelete(Manager|Customer|Employee $user, ProductModel $productModel): bool
     {
-        return false;
+        return $user instanceof Manager;
     }
 }

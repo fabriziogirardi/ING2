@@ -1,0 +1,37 @@
+<?php
+
+return [
+    'brand' => [
+        'edit_title'      => 'Edit Brand',
+        'new_name'        => 'New Brand Name',
+        'placeholder'     => 'Honda',
+        'brands'          => 'Brands',
+        'add_brand'       => 'Add Brand',
+        'brand_name'      => 'Brand Name',
+        'models'          => 'Models',
+        'delete_confirm'  => 'Are you sure you want to delete this brand?',
+        'no_brands_found' => 'No brands found.',
+        'no_models_found' => 'No models found.',
+    ],
+    'model' => [
+        'models'          => 'Models',
+        'model_name'      => 'Model Name',
+        'brand_name'      => 'Brand',
+        'brand'           => 'Brand',
+        'name'            => 'Name',
+        'placeholder'     => 'Enter model name',
+        'select_brand'    => 'Select a brand',
+        'add_model'       => 'Add Model',
+        'edit_title'      => 'Edit Model',
+        'back_to_index'   => 'Back to Models',
+        'actions'         => 'Actions',
+        'no_models_found' => 'No models found.',
+        'delete_confirm'  => 'Are you sure you want to delete the model ":item"?',
+    ],
+    'edit'          => 'Edit',
+    'delete'        => 'Delete',
+    'restore'       => 'Restore',
+    'yes_im_sure'   => 'Yes, I\'m sure',
+    'no_cancel'     => 'No, cancel',
+    'back_to_index' => 'Back to index',
+];

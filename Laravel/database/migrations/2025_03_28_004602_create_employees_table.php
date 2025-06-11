@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('employees', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Person::class);
+            $table->foreignIdFor(Person::class)->nullable()->unique()->constrained();
             $table->string('password');
             $table->timestamps();
             $table->softDeletes();
