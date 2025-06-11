@@ -16,8 +16,8 @@ return [
 
     'keys' => [
         'web_key'     => env('FILAMENT_GOOGLE_MAPS_WEB_API_KEY', env('GOOGLE_MAPS_PUBLIC_API_KEY')),
-        'server_key'  => env('FILAMENT_GOOGLE_MAPS_SERVER_API_KEY', env('GOOGLE_MAPS_PUBLIC_API_KEY')),
-        'signing_key' => env('FILAMENT_GOOGLE_MAPS_SIGNING_KEY', null),
+        'server_key'  => env('FILAMENT_GOOGLE_MAPS_SERVER_API_KEY', env('GOOGLE_MAPS_PRIVATE_API_KEY')),
+        'signing_key' => env('FILAMENT_GOOGLE_MAPS_SIGNING_KEY', env('GOOGLE_MAPS_SECRET_SIGNATURE')),
     ],
 
     /*
