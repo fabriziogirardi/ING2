@@ -97,7 +97,7 @@
             </div>
             <div class="mr-auto place-self-center lg:col-span-6">
                 <img class="hidden mx-auto lg:flex"
-                     src="{{ asset('img/login-form-image.png') }}"
+                     src="{{ asset('img/register-deafult-image.png') }}"
                      alt="login-form-image">
             </div>
         </div>

@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ReservationRetired>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ReturnedReservation>
  */
-class ReservationRetiredFactory extends Factory
+class ReturnedReservationFactory extends Factory
 {
     /**
      * Define the model's default state.

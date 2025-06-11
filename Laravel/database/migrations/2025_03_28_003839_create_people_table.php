@@ -12,12 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('people', function (Blueprint $table) {
+        Schema::create('people', static function (Blueprint $table) {
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
-            $table->foreignIdFor(GovernmentIdType::class);
+            $table->foreignIdFor(GovernmentIdType::class)->constrained();
             $table->date('birth_date');
             $table->string('government_id_number');
             $table->timestamps();

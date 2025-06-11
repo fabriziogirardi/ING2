@@ -148,6 +148,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
+        Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');
     });
 });
 // endregion

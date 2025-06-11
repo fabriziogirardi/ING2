@@ -107,8 +107,8 @@ class CustomerResource extends Resource
                     ->label('Correo Electrónico')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('rating')
-                    ->label('Calificación'),
+                Tables\Columns\ViewColumn::make('rating')
+                    ->view('filament.tables.columns.rating'),
             ])
             ->filters([
                 //

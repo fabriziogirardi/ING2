@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservation_retireds', function (Blueprint $table) {
+        Schema::create('retired_reservations', static function (Blueprint $table) {
             $table->id();
             $table->timestamps();
         });
