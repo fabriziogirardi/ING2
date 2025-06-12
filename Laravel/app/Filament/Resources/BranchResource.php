@@ -38,6 +38,7 @@ class BranchResource extends Resource
                     ->label('Nombre')
                     ->columnSpan(2)
                     ->required()
+                    ->unique()
                     ->minLength(3)
                     ->maxLength(255)
                     ->string(),

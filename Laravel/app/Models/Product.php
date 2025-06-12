@@ -20,9 +20,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory;
-
-    use softDeletes;
+    use HasFactory, softDeletes;
 
     protected $fillable = [
         'name',
@@ -59,14 +57,14 @@ class Product extends Model
     public function branches(): BelongsToMany
     {
         return $this->belongsToMany(Branch::class)
-            ->withPivot('quantity')
+            ->withPivot('id', 'quantity')
             ->using(BranchProduct::class)
             ->as('stock');
     }
 
     public function reservations(): HasManyThrough
     {
-        return $this->hasManyThrough(Reservation::class, BranchProduct::class);
+        return $this->hasManyThrough(Reservation::class, BranchProduct::class, 'product_id', 'branch_product_id', 'id', 'id');
     }
 
     public function branch_products(): HasMany

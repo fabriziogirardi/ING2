@@ -15,6 +15,8 @@ class ProductBrandResource extends Resource
 {
     protected static ?string $model = ProductBrand::class;
 
+    protected static ?string $modelLabel = 'Marcas de productos';
+
     protected static ?string $navigationGroup = 'Productos';
 
     protected static ?string $navigationLabel = 'Marcas';
@@ -36,8 +38,8 @@ class ProductBrandResource extends Resource
                 Tables\Columns\TextColumn::make('name')->searchable()
                     ->sortable()
                     ->label('Nombre de la marca'),
-                Tables\Columns\TextColumn::make('models_count')
-                    ->counts('models')
+                Tables\Columns\TextColumn::make('product_models_count')
+                    ->counts('product_models')
                     ->label('Cantidad de modelos'),
             ])
             ->filters([

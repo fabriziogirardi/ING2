@@ -113,8 +113,8 @@ class PersonResource extends Resource
     public static function getRelations(): array
     {
         return [
-            CustomerRelationManager::class,
-            EmployeeRelationManager::class,
+            // CustomerRelationManager::class,
+            // EmployeeRelationManager::class,
         ];
     }
 

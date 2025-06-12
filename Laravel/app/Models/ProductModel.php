@@ -33,11 +33,9 @@ class ProductModel extends Model
         parent::boot();
 
         static::deleting(static function (ProductModel $model) {
-            $model->products()->delete();
-        });
-
-        static::restoring(static function (ProductModel $model) {
-            $model->products()->withTrashed()->restore();
+            $model->products->each(function ($product) {
+                $product->delete();
+            });
         });
     }
 
