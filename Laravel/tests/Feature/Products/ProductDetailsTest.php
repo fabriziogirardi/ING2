@@ -15,18 +15,21 @@ class ProductDetailsTest extends TestCase
     use RefreshDatabase , WithFaker;
 
     private Manager $manager;
+
     private Employee $employee;
+
     private Customer $customer;
+
     private Product $product;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->manager = Manager::factory()->create();
+        $this->manager  = Manager::factory()->create();
         $this->employee = Employee::factory()->create();
         $this->customer = Customer::factory()->create();
-        $this->product = Product::factory()->create();
+        $this->product  = Product::factory()->create();
     }
 
     public function test_manager_can_access_product_details()

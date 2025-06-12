@@ -14,10 +14,12 @@ class CatalogTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     private Branch $branch1;
+
     private Branch $branch2;
+
     private Product $product;
 
-    protected function setUp() :void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->branch1 = Branch::factory()->create();
@@ -29,15 +31,15 @@ class CatalogTest extends TestCase
         $product = Product::factory()->create();
 
         BranchProduct::create([
-            'branch_id' => $this->branch1->id,
+            'branch_id'  => $this->branch1->id,
             'product_id' => $product->id,
-            'quantity' => 10,
+            'quantity'   => 10,
         ]);
 
         BranchProduct::create([
-            'branch_id' => $this->branch2->id,
+            'branch_id'  => $this->branch2->id,
             'product_id' => $product->id,
-            'quantity' => 5,
+            'quantity'   => 5,
         ]);
 
         $response = $this->get(route('catalog.index'));
@@ -51,15 +53,15 @@ class CatalogTest extends TestCase
         $product = Product::factory()->create();
 
         BranchProduct::create([
-            'branch_id' => $this->branch1->id,
+            'branch_id'  => $this->branch1->id,
             'product_id' => $product->id,
-            'quantity' => 10,
+            'quantity'   => 10,
         ]);
 
         BranchProduct::create([
-            'branch_id' => $this->branch2->id,
+            'branch_id'  => $this->branch2->id,
             'product_id' => $product->id,
-            'quantity' => 0,
+            'quantity'   => 0,
         ]);
 
         $response = $this->get(route('catalog.index'));
@@ -73,15 +75,15 @@ class CatalogTest extends TestCase
         $product = Product::factory()->create();
 
         BranchProduct::create([
-            'branch_id' => $this->branch1->id,
+            'branch_id'  => $this->branch1->id,
             'product_id' => $product->id,
-            'quantity' => 0,
+            'quantity'   => 0,
         ]);
 
         BranchProduct::create([
-            'branch_id' => $this->branch2->id,
+            'branch_id'  => $this->branch2->id,
             'product_id' => $product->id,
-            'quantity' => 0,
+            'quantity'   => 0,
         ]);
 
         $response = $this->get(route('catalog.index'));
@@ -95,15 +97,15 @@ class CatalogTest extends TestCase
         $product = Product::factory()->create();
 
         BranchProduct::create([
-            'branch_id' => $this->branch1->id,
+            'branch_id'  => $this->branch1->id,
             'product_id' => $product->id,
-            'quantity' => 0,
+            'quantity'   => 0,
         ]);
 
         BranchProduct::create([
-            'branch_id' => $this->branch2->id,
+            'branch_id'  => $this->branch2->id,
             'product_id' => $product->id,
-            'quantity' => 0,
+            'quantity'   => 0,
         ]);
 
         $product->delete();

@@ -30,7 +30,7 @@ class Product extends Model
 
     protected $with = ['categories'];
 
-    public function hasStock() : bool
+    public function hasStock(): bool
     {
         // Implement logic to determine if the product should be displayed in grayscale
 
