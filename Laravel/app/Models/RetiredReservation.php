@@ -11,8 +11,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @mixin QueryBuilder
  * @mixin EloquentBuilder
  */
-class ReservationRetired extends Model
+class RetiredReservation extends Model
 {
-    /** @use HasFactory<\Database\Factories\ReservationRetiredFactory> */
+    /** @use HasFactory<\Database\Factories\ReturnedReservationFactory> */
     use HasFactory;
 }

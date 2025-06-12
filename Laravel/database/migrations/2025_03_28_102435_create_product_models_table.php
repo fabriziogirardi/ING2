@@ -14,10 +14,12 @@ return new class extends Migration
     {
         Schema::create('product_models', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(ProductBrand::class);
+            $table->foreignIdFor(ProductBrand::class)->nullable()->constrained();
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['name', 'product_brand_id'], 'unique_product_model_name_per_brand');
         });
     }
 

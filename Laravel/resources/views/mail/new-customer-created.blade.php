@@ -4,8 +4,8 @@
     {{ __('customer/mail.welcome_line1') }}
     {{ __('customer/mail.account_created') }}
 
-    {{ __('customer/mail.mail', ['email' => $email]) }}
-    {{ __('customer/mail.temporary_password', ['password' => $password]) }}
+    {{ __('customer/mail.mail') }} {{ $email }}
+    {{ __('customer/mail.temporary_password') }} {!! $password !!}
 
     {{ __('customer/mail.login_instruction') }}
 

@@ -24,7 +24,25 @@ Route::get('/', static function () {
     ]);
 })->name('home');
 
-Route::get('/la', \App\Livewire\ListProductBrands::class);
+Route::get('/la', function () {
+    $service  = new \App\Services\ProductAvailabilityService('2025-06-15', '2025-06-20');
+    $products = $service->getProductsWithAvailability();
+
+    foreach ($products as $entry) {
+        echo 'Producto: '.$entry['product']->name.'<br>';
+        echo '¿Disponible?: '.($entry['has_stock'] ? '✅' : '❌').'<br>';
+
+        foreach ($entry['branches_with_stock'] as $branch) {
+            echo " - Sucursal con stock: {$branch['branch_name']}, disponible: {$branch['available']}".'<br>';
+        }
+
+        foreach ($entry['branches_without_stock'] as $branch) {
+            echo " - Sucursal sin stock: {$branch['branch_name']}".'<br>';
+        }
+
+        echo '<br>';
+    }
+});
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -147,6 +165,7 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         })->name('reservations.failure');
 
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
+        Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');
     });
 });
 

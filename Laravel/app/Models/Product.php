@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -40,11 +41,6 @@ class Product extends Model
 
     protected $with = ['categories', 'product_model', 'product_model.brand'];
 
-    public function model(): BelongsTo
-    {
-        return $this->belongsTo(ProductModel::class, 'product_model_id');
-    }
-
     public function product_model(): BelongsTo
     {
         return $this->belongsTo(ProductModel::class, 'product_model_id');
@@ -68,11 +64,42 @@ class Product extends Model
             ->as('stock');
     }
 
-    #[Scope]
-    protected function get_all_by_category(EloquentBuilder $query, Category $category): void
+    public function reservations(): HasManyThrough
     {
-        $query->whereHas('categories', function (EloquentBuilder $query) use ($category) {
+        return $this->hasManyThrough(Reservation::class, BranchProduct::class);
+    }
+
+    public function branch_products(): HasMany
+    {
+        return $this->hasMany(BranchProduct::class);
+    }
+
+    #[Scope]
+    protected function get_all_by_category(EloquentBuilder $query, Category $category): EloquentBuilder
+    {
+        return $query->whereHas('categories', function (EloquentBuilder $query) use ($category) {
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
+    }
+
+    public function branchesWithStockBetween(string $start, string $end): array
+    {
+        return $this->branch_products
+            ->filter(function ($bp) use ($start, $end) {
+                $reservationsCount = $bp->reservations()
+                    ->where(function ($query) use ($start, $end) {
+                        $query->whereBetween('start_date', [$start, $end])
+                            ->orWhereBetween('end_date', [$start, $end])
+                            ->orWhere(function ($q) use ($start, $end) {
+                                $q->where('start_date', '<=', $start)
+                                    ->where('end_date', '>=', $end);
+                            });
+                    })
+                    ->count();
+
+                return $bp->quantity > $reservationsCount;
+            })
+            ->pluck('branch.name', 'id')
+            ->toArray();
     }
 }

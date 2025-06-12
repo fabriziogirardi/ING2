@@ -17,11 +17,13 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->json('images_json')->nullable();
-            $table->foreignIdFor(ProductModel::class);
+            $table->foreignIdFor(ProductModel::class)->nullable()->constrained();
             $table->decimal('price', 12);
             $table->smallInteger('min_days');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['name', 'product_model_id'], 'unique_product_name_per_model');
         });
     }
 

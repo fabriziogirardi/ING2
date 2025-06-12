@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -15,8 +14,6 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class BranchProduct extends Pivot
 {
-    public $incrementing = true;
-
     protected $table = 'branch_product';
 
     protected $fillable = [
@@ -25,9 +22,13 @@ class BranchProduct extends Pivot
         'quantity',
     ];
 
+    protected $with = [
+        'reservations',
+    ];
+
     public function reservations(): HasMany
     {
-        return $this->HasMany(Reservation::class);
+        return $this->HasMany(Reservation::class, 'branch_product_id', 'id');
     }
 
     public function product(): BelongsTo
@@ -38,12 +39,5 @@ class BranchProduct extends Pivot
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
-    }
-
-    public function stock(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => $this->quantity,
-        );
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\ReservationReturned;
+use App\Models\ReturnedReservation;
 use App\Models\User;
 
-class ReservationReturnedPolicy
+class ReturnedReservationPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -18,7 +18,7 @@ class ReservationReturnedPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ReservationReturned $reservationReturned): bool
+    public function view(User $user, ReturnedReservation $reservationReturned): bool
     {
         return false;
     }
@@ -34,7 +34,7 @@ class ReservationReturnedPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ReservationReturned $reservationReturned): bool
+    public function update(User $user, ReturnedReservation $reservationReturned): bool
     {
         return false;
     }
@@ -42,7 +42,7 @@ class ReservationReturnedPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ReservationReturned $reservationReturned): bool
+    public function delete(User $user, ReturnedReservation $reservationReturned): bool
     {
         return false;
     }
@@ -50,7 +50,7 @@ class ReservationReturnedPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, ReservationReturned $reservationReturned): bool
+    public function restore(User $user, ReturnedReservation $reservationReturned): bool
     {
         return false;
     }
@@ -58,7 +58,7 @@ class ReservationReturnedPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, ReservationReturned $reservationReturned): bool
+    public function forceDelete(User $user, ReturnedReservation $reservationReturned): bool
     {
         return false;
     }
