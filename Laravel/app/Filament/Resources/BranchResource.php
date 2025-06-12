@@ -28,7 +28,7 @@ class BranchResource extends Resource
 
     protected static ?string $navigationLabel = 'Sucursales';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     public static function form(Form $form): Form
     {
@@ -38,14 +38,21 @@ class BranchResource extends Resource
                     ->label('Nombre')
                     ->columnSpan(2)
                     ->required()
+                    ->unique()
                     ->minLength(3)
                     ->maxLength(255)
                     ->string(),
+                TextInput::make('address')
+                    ->label('Dirección')
+                    ->columnSpan(2)
+                    ->placeholder('Ingrese una dirección'),
                 Map::make('map')
                     ->label('Dirección')
                     ->columnSpan(2)
                     ->required()
                     ->geolocate()
+                    ->autocomplete('address')
+                    ->autocompleteReverse()
                     ->defaultZoom(15)
                     ->defaultLocation(fn ($get) => $get('default_location') ?: ['-34.921346366044', '-57.954496631585'])
                     ->draggable()
@@ -90,7 +97,6 @@ class BranchResource extends Resource
 
                     }),
                 Hidden::make('default_location'),
-                Hidden::make('address'),
                 Hidden::make('place_id'),
                 Hidden::make('latitude'),
                 Hidden::make('longitude'),
@@ -115,11 +121,13 @@ class BranchResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('Nombre'),
-                TextColumn::make('address')->label('Direccion')->limit(60),
-                // MapColumn::make('address')->label('Direccion'),
+                TextColumn::make('name')
+                    ->label('Nombre'),
+                TextColumn::make('address')
+                    ->label('Dirección')
+                    ->limit(60),
                 TextColumn::make('description')
-                    ->label('Descripcion')
+                    ->label('Descripción')
                     ->limit(50),
             ])
             ->filters([

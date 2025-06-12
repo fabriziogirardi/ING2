@@ -41,7 +41,7 @@ class Branch extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class)
-            ->withPivot('quantity')
+            ->withPivot('id', 'quantity')
             ->using(BranchProduct::class)
             ->as('stock');
     }

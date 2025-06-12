@@ -18,8 +18,6 @@ class ProductBrand extends Model
     /** @use HasFactory<\Database\Factories\ProductBrandFactory> */
     use HasFactory, SoftDeletes;
 
-    use softDeletes;
-
     protected $fillable = [
         'name',
     ];
@@ -29,15 +27,13 @@ class ProductBrand extends Model
         parent::boot();
 
         static::deleting(static function (ProductBrand $brand) {
-            $brand->models()->delete();
-        });
-
-        static::restoring(static function (ProductBrand $brand) {
-            $brand->models()->withTrashed()->restore();
+            $brand->product_models->each(function ($model) {
+                $model->delete();
+            });
         });
     }
 
-    public function models(): HasMany
+    public function product_models(): HasMany
     {
         return $this->hasMany(ProductModel::class);
     }

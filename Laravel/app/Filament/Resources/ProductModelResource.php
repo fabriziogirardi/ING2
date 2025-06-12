@@ -38,7 +38,7 @@ class ProductModelResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre'),
-                Tables\Columns\TextColumn::make('brand.name')
+                Tables\Columns\TextColumn::make('product_brand.name')
                     ->label('Marca'),
             ])
             ->filters([

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Employee;
 
-use App\Http\Requests\StoreReservationReturnedRequest;
-use App\Http\Requests\UpdateReservationReturnedRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Employee\StoreReturnedReservationRequest;
+use App\Http\Requests\UpdateReturnedReservationRequest;
 use App\Models\ReturnedReservation;
 
-class ReservationReturnedController extends Controller
+class ReturnedReservationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class ReservationReturnedController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReservationReturnedRequest $request)
+    public function store(StoreReturnedReservationRequest $request)
     {
         //
     }
@@ -51,7 +52,7 @@ class ReservationReturnedController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReservationReturnedRequest $request, ReturnedReservation $reservationReturned)
+    public function update(UpdateReturnedReservationRequest $request, ReturnedReservation $reservationReturned)
     {
         //
     }

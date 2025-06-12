@@ -51,6 +51,7 @@ class EmployeeResource extends Resource
                         TextInput::make('email')
                             ->label('Correo Electrónico')
                             ->required()
+                            ->unique(ignoreRecord: Employee::class)
                             ->email(),
                         DatePicker::make('birth_date')
                             ->label('Fecha de Nacimiento')
