@@ -6,8 +6,7 @@ use App\Models\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-readonly
-class ProductAvailabilityService
+readonly class ProductAvailabilityService
 {
     public function __construct(
         private string $start,

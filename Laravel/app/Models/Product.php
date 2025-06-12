@@ -81,7 +81,7 @@ class Product extends Model
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
     }
-    
+
     public function branchesWithStockBetween(string $start, string $end): array
     {
         return $this->branch_products
@@ -96,7 +96,7 @@ class Product extends Model
                             });
                     })
                     ->count();
-                
+
                 return $bp->quantity > $reservationsCount;
             })
             ->pluck('branch.name', 'branch_id')

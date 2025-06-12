@@ -22,7 +22,7 @@ return new class extends Migration
             $table->smallInteger('min_days');
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->unique(['name', 'product_model_id'], 'unique_product_name_per_model');
         });
     }
