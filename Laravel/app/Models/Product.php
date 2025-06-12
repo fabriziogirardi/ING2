@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -24,18 +25,32 @@ class Product extends Model
         'product_model_id',
         'price',
         'min_days',
+        'images_json',
     ];
 
     protected $with = ['categories'];
+
+    public function hasStock() : bool
+    {
+        // Implement logic to determine if the product should be displayed in grayscale
+
+        // Implementacion momentanea para simular el comportamiento
+        return rand(0, 1) === 1;
+    }
 
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class)->without('children');
     }
 
-    public function branches()
+    public function branches(): BelongsToMany
     {
         return $this->belongsToMany(Branch::class)->using(BranchProduct::class)->withPivot('quantity')->withTimestamps();
+    }
+
+    public function model(): BelongsTo
+    {
+        return $this->belongsTo(ProductModel::class, 'product_model_id');
     }
 
     #[Scope]

@@ -1,6 +1,7 @@
 <?php
 
 use App\Facades\GoogleMaps;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
@@ -135,3 +136,8 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
     });
 });
 // endregion
+
+// region Catálogo
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+// enregion
