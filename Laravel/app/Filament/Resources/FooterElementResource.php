@@ -18,30 +18,24 @@ class FooterElementResource extends Resource
 {
     protected static ?string $model = FooterElement::class;
 
-    protected static ?string $modelLabel = 'Red Social';
+    protected static ?string $modelLabel = 'enlace';
 
-    protected static ?string $pluralModelLabel = 'Redes Sociales';
+    protected static ?string $pluralModelLabel = 'enlaces';
 
-    protected static ?string $navigationLabel = 'Redes Sociales';
+    protected static ?string $navigationLabel = 'Enlaces del footer';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-link';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('title')
-                    ->label('Título')
-                    ->columnSpan(2)
-                    ->required(),
                 IconPicker::make('icon')
                     ->label('Ícono')
                     ->columns(6)
                     ->allowedIcons(allowedIcons: [
                         'heroicon-o-globe-alt',
-                        'heroicon-o-phone',
                         'heroicon-o-envelope',
-                        'heroicon-o-map-pin',
                         'heroicon-o-chat-bubble-left-right',
                         'heroicon-o-share',
                         'heroicon-o-link',
@@ -58,8 +52,9 @@ class FooterElementResource extends Resource
                     ])
                     ->preload()
                     ->required(),
-                TextInput::make('text')
-                    ->label('Texto/Enlace')
+                TextInput::make('link')
+                    ->label('Link')
+                    ->unique()
                     ->required(),
             ]);
     }
@@ -69,8 +64,7 @@ class FooterElementResource extends Resource
         return $table
             ->columns([
                 IconColumn::make('icon')->label('Icono'),
-                TextColumn::make('title')->label('Título'),
-                TextColumn::make('text')->label('Texto/Enlace'),
+                TextColumn::make('link')->label('Link'),
             ])
             ->filters([
                 //

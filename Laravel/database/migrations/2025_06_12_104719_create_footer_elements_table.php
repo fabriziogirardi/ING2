@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('footer_elements', function (Blueprint $table) {
             $table->id();
             $table->string('icon')->nullable();
-            $table->string('text');
-            $table->string('title');
+            $table->string('link')->unique();
             $table->timestamps();
         });
     }

@@ -18,8 +18,7 @@ class FooterElement extends Model
 
     protected $fillable = [
         'icon',
-        'text',
-        'title',
+        'link',
     ];
 
     public function getFormattedText(): string

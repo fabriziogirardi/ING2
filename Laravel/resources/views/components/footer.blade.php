@@ -16,19 +16,11 @@
                     </li>
                 </ul>
                 <div class="sm:items-center sm:justify-between sm:flex md:justify-end">
-                    <div class="flex flex-col items-start justify-center mt-4 space-y-2 sm:mt-0">
+                    <div class="flex justify-center mt-4 space-x-6 sm:mt-0">
                         @foreach($footerElements as $element)
-                            @if($element->isUrl())
-                                <a href="{{ $element->text }}" class="text-gray-400 hover:text-gray-500 flex items-center space-x-2" target="_blank" rel="noopener noreferrer">
-                                    <i class="{{ str_replace('-', ' fa-', $element->icon) }}"></i>
-                                    <span>{{ $element->title }}</span>
-                                </a>
-                            @else
-                                <span class="text-gray-400 flex items-center space-x-2">
-                                    <i class="{{ str_replace('-', ' fa-', $element->icon) }}"></i>
-                                    <span>{{ $element->text }}</span>
-                                </span>
-                            @endif
+                            <a href="{{ $element->link }}" class="text-gray-500 hover:text-gray-900 dark:hover:text-white dark:text-gray-400">
+                                <x-dynamic-component :component="$element->icon" class="w-4 h-4" />
+                            </a>
                         @endforeach
                     </div>
                 </div>
