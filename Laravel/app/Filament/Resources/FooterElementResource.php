@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentIconPicker\Forms\IconPicker;
+use Guava\FilamentIconPicker\Layout;
 use Guava\FilamentIconPicker\Tables\IconColumn;
 
 class FooterElementResource extends Resource
@@ -35,6 +36,27 @@ class FooterElementResource extends Resource
                     ->required(),
                 IconPicker::make('icon')
                     ->label('Ícono')
+                    ->columns(6)
+                    ->allowedIcons(allowedIcons: [
+                        'heroicon-o-globe-alt',
+                        'heroicon-o-phone',
+                        'heroicon-o-envelope',
+                        'heroicon-o-map-pin',
+                        'heroicon-o-chat-bubble-left-right',
+                        'heroicon-o-share',
+                        'heroicon-o-link',
+                        'fab-facebook',
+                        'fab-twitter',
+                        'fab-instagram',
+                        'fab-linkedin',
+                        'fab-youtube',
+                        'fab-whatsapp',
+                        'fab-telegram',
+                        'fab-tiktok',
+                        'fab-pinterest',
+                        'fab-snapchat',
+                    ])
+                    ->preload()
                     ->required(),
                 TextInput::make('text')
                     ->label('Texto/Enlace')
