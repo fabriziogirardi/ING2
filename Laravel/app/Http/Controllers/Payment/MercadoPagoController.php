@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\MercadoPagoAuthenticateRequest;
+use App\Models\BranchProduct;
+use App\Models\Reservation;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\MercadoPagoConfig;
 
@@ -11,28 +15,54 @@ class MercadoPagoController extends Controller
 {
     public function show(MercadoPagoAuthenticateRequest $request)
     {
+        $requestData = $request->validated();
+
         MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
+
         $client = new PreferenceClient;
+
+        $product = BranchProduct::find($request->validated('branch_product_id'))->product;
+
+        $code = Str::of(Str::random(8))->upper();
+
+        while (Reservation::where('code', $code)->exists()) {
+            $code = Str::of(Str::random(8))->upper();
+        }
+
+        $linkSucess = URL::signedRoute(
+            'customer.reservation.store',
+            [
+                'branch_product_id' => $requestData['branch_product_id'],
+                'customer_id'       => auth()->user()->id,
+                'start_date'        => $requestData['start_date'],
+                'end_date'          => $requestData['end_date'],
+                'code'              => $code,
+                'total_amount'      => $requestData['total_amount'],
+            ],
+            absolute: false
+        );
 
         $preference = $client->create([
             'items' => [
                 [
-                    'title'      => $request->validated('title'),
+                    'title'      => "Reserva de la maquinaria: {$product->name}",
                     'quantity'   => 1,
-                    'unit_price' => (float) $request->validated('unit_price'),
+                    'unit_price' => (float) $requestData['total_amount'],
                 ],
             ],
-            'excluded_payment_types' => [
-                [
-                    'id' => 'ticket',
+            'payment_methods' => [
+                'excluded_payment_types' => [
+                    [
+                        'id' => 'ticket',
+                    ],
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://19e9-2802-8012-f83-801-7072-e76d-c997-2158.ngrok-free.app/payment/success',
-                'failure' => 'https://19e9-2802-8012-f83-801-7072-e76d-c997-2158.ngrok-free.app/payment/failure',
-                'pending' => 'https://19e9-2802-8012-f83-801-7072-e76d-c997-2158.ngrok-free.app/payment/pending',
+                'success' => 'https://15f6-181-23-57-180.ngrok-free.app'.$linkSucess,
+                'failure' => 'https://15f6-181-23-57-180.ngrok-free.app/customer/reservations/failure',
             ],
-            'auto_return' => 'approved',
+            'external_reference' => $request->validated('branch_product_id'),
+            'auto_return'        => 'approved',
         ]);
 
         $preference->auto_return = 'approved';
@@ -42,6 +72,8 @@ class MercadoPagoController extends Controller
         return view('payment.mp-payment', [
             'preferenceId' => $preference->id,
             'publicKey'    => $publicKey,
+            'requestData'  => $requestData,
+            'productName'  => $product->name,
         ]);
     }
 }

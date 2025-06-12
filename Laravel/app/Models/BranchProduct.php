@@ -16,7 +16,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class BranchProduct extends Pivot
 {
     public $incrementing = true;
-    
+
     protected $table = 'branch_product';
 
     protected $fillable = [
@@ -24,7 +24,7 @@ class BranchProduct extends Pivot
         'product_id',
         'quantity',
     ];
-    
+
     public function reservations(): HasMany
     {
         return $this->HasMany(Reservation::class);
@@ -39,7 +39,7 @@ class BranchProduct extends Pivot
     {
         return $this->belongsTo(Branch::class);
     }
-    
+
     public function stock(): Attribute
     {
         return Attribute::make(

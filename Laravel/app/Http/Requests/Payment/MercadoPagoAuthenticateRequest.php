@@ -22,8 +22,22 @@ class MercadoPagoAuthenticateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'      => 'required|string',
-            'unit_price' => 'numeric|required',
+            'branch_product_id' => [
+                'required',
+                'integer',
+                'exists:branch_product,id',
+            ],
+            'start_date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                'after:start_date',
+            ],
+            'total_amount' => 'numeric|required',
         ];
     }
 }

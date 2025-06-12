@@ -11,9 +11,9 @@ use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
 use App\Http\Controllers\Payment\MercadoPagoController;
+use App\Http\Controllers\Reservation\ReservationController;
 use App\Models\Branch;
 use App\Models\Category;
-use App\Models\Customer;
 use App\Models\Manager;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -131,8 +131,23 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
-        Route::get('/payment', [MercadoPagoController::class, 'show']);
+        Route::get('/payment/test', function () {
+            return view('payment.test-payment');
+        });
+
+        Route::get('/payment', [MercadoPagoController::class, 'show'])->name('payment');
+
+        Route::resource('reservation', ReservationController::class)->except(['store']);
+
+        Route::get('/reservations/success/{branch_product_id}/{customer_id}/{start_date}/{end_date}/{code}/{total_amount}', [ReservationController::class, 'store'])
+            ->name('reservation.store');
+
+        Route::get('/reservations/failure', function (Request $request) {
+            return view('payment.failure');
+        })->name('reservations.failure');
+
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
     });
 });
+
 // endregion

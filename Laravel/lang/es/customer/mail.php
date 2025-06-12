@@ -7,5 +7,5 @@ return [
     'mail'               => 'Email: :email',
     'temporary_password' => 'Contraseña temporal: :password',
     'login_instruction'  => 'Inicia sesión usando estas credenciales y podras cambiar tu contraseña desde tu perfil.',
-    'thanks'             => 'Gracias, Alkil.ar',
+    'thanks'             => 'Gracias, Alkil.com.ar',
 ];
