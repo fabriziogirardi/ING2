@@ -2,6 +2,7 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Employee\RetiredReservationController;
@@ -158,6 +159,12 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         Route::get('/payment/test', function () {
             return view('payment.test-payment');
         });
+
+        Route::get('/reset-password', [ResetPasswordController::class, 'show'])
+            ->name('password.reset');
+
+        Route::post('/reset-password', [ResetPasswordController::class, 'store'])
+            ->name('password.reset.post');
 
         Route::get('/payment', [MercadoPagoController::class, 'show'])->name('payment');
 
