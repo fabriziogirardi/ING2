@@ -10,6 +10,7 @@
         "blade-ui-kit/blade-heroicons": "*",
         "cheesegrits/filament-google-maps": "^3.0",
         "filament/filament": "^3.3",
+        "guava/filament-icon-picker": "^2.0",
         "laravel/framework": "^v12.1.1",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.6",

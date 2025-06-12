@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Person::class)->nullable()->unique()->constrained();
             $table->string('password')->nullable();
-            $table->boolean('active')->default(true);
+            $table->boolean('is_active')->default(true);
             $table->decimal('rating', 3, 2)->default(3.00);
             $table->timestamps();
             $table->softDeletes();

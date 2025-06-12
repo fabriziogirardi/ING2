@@ -2,17 +2,20 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
+use App\Http\Controllers\Employee\RetiredReservationController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
+use App\Http\Controllers\Payment\MercadoPagoController;
+use App\Http\Controllers\Reservation\ReservationController;
 use App\Models\Branch;
 use App\Models\Category;
-use App\Models\Manager;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -133,6 +136,12 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
     Route::group(['middleware' => 'auth:employee'], static function () {
         Route::get('/logout', [EmployeeLoginController::class, 'logout'])->name('logout');
 
+        Route::get('/reservation/retire', [RetiredReservationController::class, 'show'])
+            ->name('reservation.retire');
+
+        Route::post('/reservation/retire', [RetiredReservationController::class, 'store'])
+            ->name('reservation.retire.post');
+
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
     });
@@ -147,8 +156,30 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
+        Route::get('/payment/test', function () {
+            return view('payment.test-payment');
+        });
+
+        Route::get('/reset-password', [ResetPasswordController::class, 'show'])
+            ->name('password.reset');
+
+        Route::post('/reset-password', [ResetPasswordController::class, 'store'])
+            ->name('password.reset.post');
+
+        Route::get('/payment', [MercadoPagoController::class, 'show'])->name('payment');
+
+        Route::resource('reservation', ReservationController::class)->except(['store']);
+
+        Route::get('/reservations/success/{branch_product_id}/{customer_id}/{start_date}/{end_date}/{code}/{total_amount}', [ReservationController::class, 'store'])
+            ->name('reservation.store');
+
+        Route::get('/reservations/failure', function (Request $request) {
+            return view('payment.failure');
+        })->name('reservations.failure');
+
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
         Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');
     });
 });
+
 // endregion
