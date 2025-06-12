@@ -29,6 +29,8 @@ class MercadoPagoController extends Controller
             $code = Str::of(Str::random(8))->upper();
         }
 
+        URL::forceHttps();
+
         $linkSucess = URL::signedRoute(
             'customer.reservation.store',
             [
@@ -39,7 +41,6 @@ class MercadoPagoController extends Controller
                 'code'              => $code,
                 'total_amount'      => $requestData['total_amount'],
             ],
-            absolute: false
         );
 
         $preference = $client->create([
@@ -58,7 +59,7 @@ class MercadoPagoController extends Controller
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://15f6-181-23-57-180.ngrok-free.app'.$linkSucess,
+                'success' => $linkSucess,
                 'failure' => 'https://15f6-181-23-57-180.ngrok-free.app/customer/reservations/failure',
             ],
             'external_reference' => $request->validated('branch_product_id'),

@@ -4,6 +4,7 @@ use App\Facades\GoogleMaps;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
+use App\Http\Controllers\Employee\RetiredReservationController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Brand\BrandController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Http\Controllers\Reservation\ReservationController;
 use App\Models\Branch;
 use App\Models\Category;
-use App\Models\Manager;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -134,6 +134,12 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
     Route::group(['middleware' => 'auth:employee'], static function () {
         Route::get('/logout', [EmployeeLoginController::class, 'logout'])->name('logout');
+
+        Route::get('/reservation/retire', [RetiredReservationController::class, 'show'])
+            ->name('reservation.retire');
+
+        Route::post('/reservation/retire', [RetiredReservationController::class, 'store'])
+            ->name('reservation.retire.post');
 
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
