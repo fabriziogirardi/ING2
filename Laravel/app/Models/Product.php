@@ -99,7 +99,7 @@ class Product extends Model
 
                 return $bp->quantity > $reservationsCount;
             })
-            ->pluck('branch.name', 'branch_id')
+            ->pluck('branch.name', 'id')
             ->toArray();
     }
 }
