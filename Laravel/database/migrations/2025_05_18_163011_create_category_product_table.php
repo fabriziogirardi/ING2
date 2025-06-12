@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Category::class)->nullable()->constrained();
             $table->foreignIdFor(Product::class)->nullable()->constrained();
-            
+
             $table->unique(['category_id', 'product_id'], 'unique_category_product_combination');
         });
     }

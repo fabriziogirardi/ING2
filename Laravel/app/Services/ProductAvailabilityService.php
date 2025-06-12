@@ -6,17 +6,12 @@ use App\Models\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-class ProductAvailabilityService
+readonly class ProductAvailabilityService
 {
-    protected string $start;
-
-    protected string $end;
-
-    public function __construct(string $start, string $end)
-    {
-        $this->start = $start;
-        $this->end   = $end;
-    }
+    public function __construct(
+        private string $start,
+        private string $end,
+    ) {}
 
     public function getProductsWithAvailability(int $perPage = 15): LengthAwarePaginator
     {

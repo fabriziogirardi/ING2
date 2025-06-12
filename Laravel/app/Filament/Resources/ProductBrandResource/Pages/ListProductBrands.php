@@ -17,6 +17,8 @@ class ListProductBrands extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->createAnother(false)
+                ->label('Agregar marca')
                 ->name('Agregar marca')
                 ->form([
                     TextInput::make('name')

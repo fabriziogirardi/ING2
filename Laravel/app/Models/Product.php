@@ -20,9 +20,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory;
-
-    use softDeletes;
+    use HasFactory, softDeletes;
 
     protected $fillable = [
         'name',
@@ -59,14 +57,14 @@ class Product extends Model
     public function branches(): BelongsToMany
     {
         return $this->belongsToMany(Branch::class)
-            ->withPivot('quantity')
+            ->withPivot('id', 'quantity')
             ->using(BranchProduct::class)
             ->as('stock');
     }
 
     public function reservations(): HasManyThrough
     {
-        return $this->hasManyThrough(Reservation::class, BranchProduct::class);
+        return $this->hasManyThrough(Reservation::class, BranchProduct::class, 'product_id', 'branch_product_id', 'id', 'id');
     }
 
     public function branch_products(): HasMany
@@ -80,5 +78,26 @@ class Product extends Model
         return $query->whereHas('categories', function (EloquentBuilder $query) use ($category) {
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
+    }
+
+    public function branchesWithStockBetween(string $start, string $end): array
+    {
+        return $this->branch_products
+            ->filter(function ($bp) use ($start, $end) {
+                $reservationsCount = $bp->reservations()
+                    ->where(function ($query) use ($start, $end) {
+                        $query->whereBetween('start_date', [$start, $end])
+                            ->orWhereBetween('end_date', [$start, $end])
+                            ->orWhere(function ($q) use ($start, $end) {
+                                $q->where('start_date', '<=', $start)
+                                    ->where('end_date', '>=', $end);
+                            });
+                    })
+                    ->count();
+
+                return $bp->quantity > $reservationsCount;
+            })
+            ->pluck('branch.name', 'id')
+            ->toArray();
     }
 }
