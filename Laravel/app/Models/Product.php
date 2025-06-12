@@ -81,4 +81,25 @@ class Product extends Model
             $query->whereIn('categories.id', $category->all_children);
         })->without('categories');
     }
+    
+    public function branchesWithStockBetween(string $start, string $end): array
+    {
+        return $this->branch_products
+            ->filter(function ($bp) use ($start, $end) {
+                $reservationsCount = $bp->reservations()
+                    ->where(function ($query) use ($start, $end) {
+                        $query->whereBetween('start_date', [$start, $end])
+                            ->orWhereBetween('end_date', [$start, $end])
+                            ->orWhere(function ($q) use ($start, $end) {
+                                $q->where('start_date', '<=', $start)
+                                    ->where('end_date', '>=', $end);
+                            });
+                    })
+                    ->count();
+                
+                return $bp->quantity > $reservationsCount;
+            })
+            ->pluck('branch.name', 'branch_id')
+            ->toArray();
+    }
 }
