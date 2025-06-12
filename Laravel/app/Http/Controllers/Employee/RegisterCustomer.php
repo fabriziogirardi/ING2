@@ -53,7 +53,7 @@ class RegisterCustomer extends Controller
             )
         );
 
-        return redirect('/')->with('success', __('customer/auth.register_success'));
+        return redirect('/')->with(['toast' => 'success', 'message' => 'Cliente registrado']);
     }
 
     /**
