@@ -40,7 +40,7 @@ class LoginController extends Controller
 
         $signedRoute = URL::temporarySignedRoute(
             'manager.verify-token',
-            now()->addMinutes(2),
+            now()->addMinutes(3),
             ['manager' => $manager->id]
         );
 
