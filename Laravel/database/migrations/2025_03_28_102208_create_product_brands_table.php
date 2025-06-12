@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_brands', function (Blueprint $table) {
+        Schema::create('product_brands', static function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

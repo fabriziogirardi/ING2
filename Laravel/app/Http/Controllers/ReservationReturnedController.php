@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReservationReturnedRequest;
 use App\Http\Requests\UpdateReservationReturnedRequest;
-use App\Models\ReservationReturned;
+use App\Models\ReturnedReservation;
 
 class ReservationReturnedController extends Controller
 {
@@ -35,7 +35,7 @@ class ReservationReturnedController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ReservationReturned $reservationReturned)
+    public function show(ReturnedReservation $reservationReturned)
     {
         //
     }
@@ -43,7 +43,7 @@ class ReservationReturnedController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ReservationReturned $reservationReturned)
+    public function edit(ReturnedReservation $reservationReturned)
     {
         //
     }
@@ -51,7 +51,7 @@ class ReservationReturnedController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReservationReturnedRequest $request, ReservationReturned $reservationReturned)
+    public function update(UpdateReservationReturnedRequest $request, ReturnedReservation $reservationReturned)
     {
         //
     }
@@ -59,7 +59,7 @@ class ReservationReturnedController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ReservationReturned $reservationReturned)
+    public function destroy(ReturnedReservation $reservationReturned)
     {
         //
     }

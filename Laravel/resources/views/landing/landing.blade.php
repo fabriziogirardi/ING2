@@ -28,7 +28,7 @@
         <div class="pl-4 flex items-center">
           <a class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
             <!--Icon from: http://www.potlabicons.com/ -->
-            <img src="logotipo.png" alt="Logo" class="h-16 w-48 mr-2" />
+            <img src="logotipo.png" alt="Logo" class="cursor-not-allowed h-16 w-48 mr-2" />
           </a>
         </div>
         <div class="block lg:hidden pr-4">

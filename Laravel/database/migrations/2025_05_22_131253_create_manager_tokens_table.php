@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('manager_tokens', function (Blueprint $table) {
+        Schema::create('manager_tokens', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Manager::class);
+            $table->foreignIdFor(Manager::class)->nullable()->unique()->constrained();
             $table->string('token')->unique();
             $table->timestamp('expires_at');
             $table->timestamps();

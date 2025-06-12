@@ -1,6 +1,6 @@
 <?php
 
-namespace Products;
+namespace Tests\Feature\Products;
 
 use App\Models\Customer;
 use App\Models\Employee;
@@ -136,10 +136,6 @@ class BrandTest extends TestCase
         $response = $this->delete(route('manager.brand.destroy', ['brand' => $brand->id]));
 
         $response->assertSessionHas('success', 'exito');
-
-        $this->assertDatabaseMissing('product_brands', [
-            'id' => $brand->id,
-        ]);
     }
 
     public function test_manager_can_edit_brand_that_exists(): void

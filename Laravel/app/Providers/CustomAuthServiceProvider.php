@@ -48,7 +48,7 @@ class CustomAuthServiceProvider extends ServiceProvider
                 return route('employee.login');
             }
 
-            return route('login');
+            return route('customer.login');
         });
     }
 }

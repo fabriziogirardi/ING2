@@ -1,6 +1,6 @@
 <?php
 
-namespace Manager;
+namespace Tests\Feature\Manager;
 
 use App\Models\Branch;
 use App\Models\Manager;

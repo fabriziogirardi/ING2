@@ -38,6 +38,7 @@ class EmployeeController extends Controller
         ], [
             'first_name' => $request->validated('first_name'),
             'last_name'  => $request->validated('last_name'),
+            'birth_date' => $request->validated('birth_date'),
         ]);
 
         Employee::create([
@@ -48,5 +49,12 @@ class EmployeeController extends Controller
         return redirect()->route('manager.employee.index')->with([
             'success' => __('manager.employee.created'),
         ]);
+    }
+
+    public function restore(string $id)
+    {
+        Employee::withTrashed()->findOrFail($id)->restore();
+
+        return redirect()->route('manager.employee.index');
     }
 }

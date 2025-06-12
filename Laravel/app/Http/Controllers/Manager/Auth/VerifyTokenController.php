@@ -34,6 +34,6 @@ class VerifyTokenController extends Controller
         Auth()->guard('manager')->login($manager);
         $manager->token->delete();
 
-        return redirect()->to(route('manager.dashboard'));
+        return redirect()->to(route('filament.manager.pages.dashboard'));
     }
 }

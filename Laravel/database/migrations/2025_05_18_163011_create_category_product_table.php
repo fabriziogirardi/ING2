@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_product', function (Blueprint $table) {
+        Schema::create('category_product', static function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Category::class);
-            $table->foreignIdFor(Product::class);
-            $table->timestamps();
+            $table->foreignIdFor(Category::class)->nullable()->constrained();
+            $table->foreignIdFor(Product::class)->nullable()->constrained();
+
+            $table->unique(['category_id', 'product_id'], 'unique_category_product_combination');
         });
     }
 
