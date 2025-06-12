@@ -9,12 +9,17 @@ use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
-    public function __invoke(ResetPasswordRequest $request)
+    public function show()
+    {
+        return view('customer.reset-password');
+    }
+
+    public function store(ResetPasswordRequest $request)
     {
         Auth::guard('customer')->user()->update([
             'password' => Hash::make($request->input('new_password')),
         ]);
 
-        return redirect('/')->with('success', __('customer/auth.reset_password_success'));
+        return redirect('/')->with(['toast' => 'success', 'message' => 'Contraseña actualizada']);
     }
 }
