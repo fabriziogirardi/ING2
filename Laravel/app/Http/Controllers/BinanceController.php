@@ -46,8 +46,6 @@ class BinanceController extends Controller
             'end_date'          => $end_date,
         ]);
 
-        BranchProduct::findOrFail($request->branch_product_id)->decrement('quantity');
-
         return view('payment.ConfirmBinancePayment',[
             'code' => $code,
         ]);
