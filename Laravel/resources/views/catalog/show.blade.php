@@ -70,26 +70,12 @@
                                     <div id="dropdown" class="z-10 hidden bg-white divide-y divide-blue-300 rounded-lg shadow-sm w-44">
                                         <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDelayButton">
                                             @foreach($product->branchesWithStockBetween($start_date, $end_date) as $id => $branchName)
-                                                @php
-                                                    $branchProduct = App\Models\BranchProduct::where('branch_id', $id)
-                                                        ->where('product_id', $product->id)
-                                                        ->first();
-                                                @endphp
-                                                @if($branchProduct)
-                                                    <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
-                                                        <div class="flex items-center w-full">
-                                                            <input
-                                                                type="radio"
-                                                                id="branch_{{ $id }}"
-                                                                value="{{ $branchProduct->id }}"
-                                                                name="branch_product_id"
-                                                                wire:model="selectedBranchProduct"
-                                                                class="hover:bg-blue-300 text-blue-400"
-                                                            >
-                                                            <label for="branch_{{ $id }}" class="flex-1 ml-3">{{ $branchName }}</label>
-                                                        </div>
-                                                    </li>
-                                                @endif
+                                                <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
+                                                    <div class="flex items-center w-full">
+                                                        <input type="radio" value="{{ $id }}" name="branch_product_id" class="hover:bg-blue-300 text-blue-400">
+                                                        <label for="branch_product_id" class="flex-1 ml-3">{{ $branchName }}</label>
+                                                    </div>
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
