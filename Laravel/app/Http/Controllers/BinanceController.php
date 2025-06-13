@@ -16,7 +16,7 @@ class BinanceController extends Controller
     {
         $start = Carbon::parse($request->start_date);
         $end = Carbon::parse($request->end_date);
-        $days = $start->diffInDays($end);
+        $days = $start->diffInDays($end)+1;
 
         $branchProduct = BranchProduct::findOrFail($request->branch_product_id);
         $total = $branchProduct->product->price * $days;
