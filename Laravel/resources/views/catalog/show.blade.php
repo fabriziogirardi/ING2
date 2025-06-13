@@ -47,12 +47,13 @@
                             {{ $product->name }}
                         </h1>
                         <p class="mb-2 text-gray-500 flex justify-center">
-                            {{ $product->description }}
+                            {!! html_entity_decode($product->description) !!}
                         </p>
 
                         <div class="border-t border-gray-200 w-full"></div>
 
                         <form method="GET" action="{{ route('customer.payment') }}">
+                            @csrf
                             <div class="grid grid-cols-3 gap-x-4 pt-4 items-center grid-flow-col">
 
                                 <input type="hidden" name="start_date" value="{{ $start_date }}">
@@ -74,15 +75,21 @@
                                                         ->where('product_id', $product->id)
                                                         ->first();
                                                 @endphp
-                                                <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
-                                                    <div class="flex items-center w-full">
-                                                        <input type="radio" id="branch_{{ $id }}" value="{{ $id }}" name="branch" wire:model="selectedBranch" class="hover:bg-blue-300 text-blue-400">
-                                                        <label for="branch_{{ $id }}" class="flex-1 ml-3">{{ $branchName }}</label>
-                                                        @if($branchProduct)
-                                                            <input type="hidden" name="branch_product_id" value="{{ $branchProduct->id }}" @disabled($loop->first ? false : true)>
-                                                        @endif
-                                                    </div>
-                                                </li>
+                                                @if($branchProduct)
+                                                    <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
+                                                        <div class="flex items-center w-full">
+                                                            <input
+                                                                type="radio"
+                                                                id="branch_{{ $id }}"
+                                                                value="{{ $branchProduct->id }}"
+                                                                name="branch_product_id"
+                                                                wire:model="selectedBranchProduct"
+                                                                class="hover:bg-blue-300 text-blue-400"
+                                                            >
+                                                            <label for="branch_{{ $id }}" class="flex-1 ml-3">{{ $branchName }}</label>
+                                                        </div>
+                                                    </li>
+                                                @endif
                                             @endforeach
                                         </ul>
                                     </div>
