@@ -1,6 +1,7 @@
 <?php
 
 use App\Facades\GoogleMaps;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin QueryBuilder
@@ -44,14 +45,6 @@ class Product extends Model
         return $this->belongsTo(ProductModel::class, 'product_model_id');
     }
 
-    public function hasStock(): bool
-    {
-        // Implement logic to determine if the product should be displayed in grayscale
-
-        // Implementacion momentanea para simular el comportamiento
-        return rand(0, 1) === 1;
-    }
-
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
@@ -78,16 +71,6 @@ class Product extends Model
     public function branch_products(): HasMany
     {
         return $this->hasMany(BranchProduct::class);
-    }
-
-    public function branches(): BelongsToMany
-    {
-        return $this->belongsToMany(Branch::class)->using(BranchProduct::class)->withPivot('quantity')->withTimestamps();
-    }
-
-    public function model(): BelongsTo
-    {
-        return $this->belongsTo(ProductModel::class, 'product_model_id');
     }
 
     #[Scope]
@@ -117,5 +100,20 @@ class Product extends Model
             })
             ->pluck('branch.name', 'id')
             ->toArray();
+    }
+
+    public function getFirstImage()
+    {
+        return Storage::disk('public')->url(
+            $this->images_json[0],
+        );
+    }
+
+    public function getImages()
+    {
+        return collect($this->images_json)
+            ->map(function ($image) {
+                return Storage::disk('public')->url($image);
+            });
     }
 }
