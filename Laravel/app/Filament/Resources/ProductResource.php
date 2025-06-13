@@ -58,7 +58,7 @@ class ProductResource extends Resource
                     ->required()
                     ->disabled(fn (Get $get): bool => ! $get('product_model.product_brand_id'))
                     ->placeholder(fn (Get $get): string => $get('product_model.product_brand_id') ? 'Selecciona un modelo' : 'Selecciona una marca primero')
-                    ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->models->pluck('name', 'id') ?? collect()),
+                    ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->product_models->pluck('name', 'id') ?? collect()),
                 TextInput::make('name')
                     ->columnSpan(2)
                     ->label('Nombre del producto')
@@ -67,7 +67,7 @@ class ProductResource extends Resource
                         return $rule->where('product_model_id', $get('product_model_id'));
                     }),
                 TextInput::make('price')
-                    ->label('Precio')
+                    ->label('Precio por día')
                     ->prefixIcon('heroicon-o-currency-dollar')
                     ->required()
                     ->numeric()
@@ -78,7 +78,7 @@ class ProductResource extends Resource
                     ->label('Días mínimos de alquiler')
                     ->numeric()
                     ->required()
-                    ->minValue(0)
+                    ->minValue(1)
                     ->maxValue(365)
                     ->default(1),
                 Select::make('categories')

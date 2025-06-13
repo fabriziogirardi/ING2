@@ -52,7 +52,7 @@
 
                         <div class="border-t border-gray-200 w-full"></div>
 
-                        <form method="GET" action="{{ route('customer.payment') }}">
+                        <form method="GET" action="{{ Auth::getCurrentGuard() === 'employee' ? route('employee.payment') : route('customer.payment') }}">
                             @csrf
                             <div class="grid grid-cols-3 gap-x-4 pt-4 items-center grid-flow-col">
 
@@ -67,12 +67,12 @@
                                     </button>
 
                                     <!-- Dropdown menu -->
-                                    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-blue-300 rounded-lg shadow-sm w-44">
+                                    <div id="dropdown" class="z-10 bg-white divide-y divide-blue-300 rounded-lg shadow-sm w-44">
                                         <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDelayButton">
                                             @foreach($product->branchesWithStockBetween($start_date, $end_date) as $id => $branchName)
                                                 <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
                                                     <div class="flex items-center w-full">
-                                                        <input type="radio" value="{{ $id }}" name="branch_product_id" class="hover:bg-blue-300 text-blue-400">
+                                                        <input type="radio" value="{{ $id }}" name="branch_product_id" class="hover:bg-blue-300 text-blue-400" required>
                                                         <label for="branch_product_id" class="flex-1 ml-3">{{ $branchName }}</label>
                                                     </div>
                                                 </li>
@@ -86,7 +86,7 @@
                                 <div class="col-span-2">
                                     <button type="submit" class="inline-flex items-center justify-center w-full text-lg font-bold text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-yellow-200 rounded-lg py-2.5 text-center transition-colors duration-300 ease-in-out">
                                         <i class="fa-solid fa-file-signature mr-2"></i>
-                                        Alquilar
+                                        {{ Auth::getCurrentGuard() === 'employee' ? 'Alquilar Presencialmente' : 'Alquilar' }}
                                     </button>
                                 </div>
                             </div>
