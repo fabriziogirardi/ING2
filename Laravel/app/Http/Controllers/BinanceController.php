@@ -39,7 +39,7 @@ class BinanceController extends Controller
         $end_date = Carbon::parse($request->end_date)->format('Y-m-d');
 
         Reservation::create([
-            'customer_id'       => auth()->id(),
+            'customer_id'       => auth('employee')->id(),
             'branch_product_id' => $request->branch_product_id,
             'code'              => $code,
             'start_date'        => $start_date,
