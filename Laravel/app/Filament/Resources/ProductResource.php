@@ -58,7 +58,7 @@ class ProductResource extends Resource
                     ->required()
                     ->disabled(fn (Get $get): bool => ! $get('product_model.product_brand_id'))
                     ->placeholder(fn (Get $get): string => $get('product_model.product_brand_id') ? 'Selecciona un modelo' : 'Selecciona una marca primero')
-                    ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->models->pluck('name', 'id') ?? collect()),
+                    ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->product_models->pluck('name', 'id') ?? collect()),
                 TextInput::make('name')
                     ->columnSpan(2)
                     ->label('Nombre del producto')
