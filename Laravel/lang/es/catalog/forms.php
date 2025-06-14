@@ -1,0 +1,24 @@
+<?php
+
+return [
+    'per_day' => 'por dia',
+    'reservation_from_to' => 'Reservando desde :start al :end',
+    'select_branch_with_stock' => 'Seleccione una sucursal con stock',
+    'rent_in_person' => 'Alquilar Presencialmente',
+    'rent' => 'Alquilar',
+    'available_payment_methods' => 'Medios de pago disponibles',
+    'crypto_payment_note' => 'el pago en criptomonedas sólo está disponible presencialmente',
+    'catalog' => 'Catálogo',
+    'select_dates_to_see_availability' => 'Eliga la fecha de comienzo y fin de su reserva para ver la disponibilidad',
+    'no_products_available' => 'No hay maquinarias disponibles.',
+    'see_more' => 'Ver más',
+    'min_days_to_reserve' => 'Mínimo :days días para reservar',
+    'not_available' => 'No disponible',
+    'catalog_title' => 'Catálogo de Maquinarias',
+    'catalog_subtitle' => 'Descubre nuestra gran seleccion de maquinarias.',
+    'rental_date' => 'Fecha de alquiler',
+    'select_date_start' => 'Seleccione fecha de inicio',
+    'select_date_end' => 'Seleccione fecha de fin',
+    'to' => 'a',
+    'search' => 'Buscar',
+];
