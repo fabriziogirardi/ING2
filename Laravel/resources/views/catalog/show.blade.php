@@ -81,10 +81,11 @@
                                     </div>
                                 </div>
 
-                                <input type="hidden" name="total_amount" value="{{ $product->price * \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) }}">
+                                <input type="hidden" name="total_amount" value="{{ $product->price * \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date))+1 }}">
 
                                 <div class="col-span-2">
-                                    <button type="submit" class="inline-flex items-center justify-center w-full text-lg font-bold text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-yellow-200 rounded-lg py-2.5 text-center transition-colors duration-300 ease-in-out">
+                                    <button type="submit" class="inline-flex items-center justify-center w-full text-lg font-bold text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-yellow-200 rounded-lg py-2.5 text-center transition-colors duration-300 ease-in-out @class([ 'grayscale' => $product->branchesWithStockBetween($start_date, $end_date) <= 0])
+                                    " {{ $product->branchesWithStockBetween($start_date, $end_date) <= 0 ? 'disabled' : '' }}>
                                         <i class="fa-solid fa-file-signature mr-2"></i>
                                         {{ Auth::getCurrentGuard() === 'employee' ? 'Alquilar Presencialmente' : 'Alquilar' }}
                                     </button>
