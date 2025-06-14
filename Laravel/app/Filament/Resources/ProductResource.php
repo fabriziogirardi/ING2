@@ -112,7 +112,8 @@ class ProductResource extends Resource
                     ->panelLayout(
                         'grid'
                     )
-                    ->reorderable(),
+                    ->reorderable()
+                    ->required(),
             ]);
     }
 
