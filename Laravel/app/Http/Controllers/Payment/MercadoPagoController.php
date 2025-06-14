@@ -29,13 +29,16 @@ class MercadoPagoController extends Controller
             $code = Str::of(Str::random(8))->upper();
         }
 
+        $startDate = date('Y-m-d', strtotime($requestData['start_date']));
+        $endDate = date('Y-m-d', strtotime($requestData['end_date']));
+
         $linkSucess = URL::signedRoute(
             'customer.reservation.store',
             [
                 'branch_product_id' => $requestData['branch_product_id'],
                 'customer_id'       => auth()->user()->id,
-                'start_date'        => \Carbon\Carbon::createFromFormat('d-m-Y', $requestData['start_date'])->format('Y-m-d'),
-                'end_date'          => \Carbon\Carbon::createFromFormat('d-m-Y', $requestData['end_date'])->format('Y-m-d'),
+                'start_date'        => $startDate,
+                'end_date'          => $endDate,
                 'code'              => $code,
                 'total_amount'      => $requestData['total_amount'],
             ],
@@ -58,8 +61,8 @@ class MercadoPagoController extends Controller
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://8b11-181-23-54-79.ngrok-free.app' . $linkSucess,
-                'failure' => 'https://15f6-181-23-57-180.ngrok-free.app/customer/reservations/failure',
+                'success' => 'https://d817-181-23-54-79.ngrok-free.app' . $linkSucess,
+                'failure' => 'https://d817-181-23-54-79.ngrok-free.app/customer/reservations/failure',
             ],
             'external_reference' => $request->validated('branch_product_id'),
             'auto_return'        => 'approved',

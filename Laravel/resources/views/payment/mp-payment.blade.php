@@ -1,12 +1,3 @@
-@php
-    $labels = [
-        'branch_product_id' => __('reservation/forms.mp_payment_label_branch_product'),
-        'start_date'        => __('reservation/forms.mp_payment_label_start_date'),
-        'end_date'          => __('reservation/forms.mp_payment_label_end_date'),
-        'total_amount'        => __('reservation/forms.mp_payment_label_unit_price'),
-    ];
-@endphp
-
 <x-layouts.app>
     <x-slot:title>
         {{ __('reservation/forms.mp_payment_title_slot') }}
@@ -18,12 +9,10 @@
                 {{ __('reservation/forms.mp_payment_heading') }}
             </h5>
             <div class="mb-4">
-                <p><strong>{{ $labels['branch_product_id'] }}:</strong> {{ $productName }}</p>
-                @foreach($requestData as $key => $value)
-                    @if($key !== 'branch_product_id')
-                        <p><strong>{{ $labels[$key] ?? $key }}:</strong> {{ $value }}</p>
-                    @endif
-                @endforeach
+                <p><strong>Nombre del producto:</strong> {{ $productName }}</p>
+                <p><strong>Fecha de inicio de la reserva:</strong> {{ $requestData['start_date']}}</p>
+                <p><strong>Fecha de fin de la reserva:</strong> {{ $requestData['end_date']}}</p>
+                <p><strong>Precio Total a pagar:</strong> ${{$requestData['total_amount']}}</p>
             </div>
             <div id="walletBrick_container"></div>
         </div>

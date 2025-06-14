@@ -2,7 +2,7 @@
 
 use App\Facades\GoogleMaps;
 use App\Http\Controllers\BinanceController;
-use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
@@ -19,6 +19,7 @@ use App\Http\Controllers\Reservation\ReservationController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\ProductAvailabilityService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
@@ -28,7 +29,7 @@ Route::get('/', static function () {
 })->name('home');
 
 Route::get('/la', function () {
-    $service  = new \App\Services\ProductAvailabilityService('2025-06-15', '2025-06-20');
+    $service  = new ProductAvailabilityService('2025-06-15', '2025-06-20');
     $products = $service->getProductsWithAvailability();
 
     foreach ($products as $entry) {
