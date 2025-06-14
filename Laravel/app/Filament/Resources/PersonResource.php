@@ -19,7 +19,11 @@ use Filament\Tables\Table;
 class PersonResource extends Resource
 {
     protected static ?string $model = Person::class;
+    protected static ?string $modelLabel = 'persona';
 
+    protected static ?string $pluralModelLabel = 'personas';
+
+    protected static ?string $navigationLabel = 'Personas';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -48,6 +52,7 @@ class PersonResource extends Resource
                     ->label('Fecha de Nacimiento')
                     ->required()
                     ->displayFormat('d/m/Y')
+                    ->maxDate(now()->subYears(18))
                     ->date(),
                 Select::make('government_id_type_id')
                     ->label('Tipo de documento')

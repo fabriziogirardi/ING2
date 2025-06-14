@@ -28,7 +28,23 @@ class ProductModelResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('product_brand_id')
+                    ->label('Marca')
+                    ->relationship('brand', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Selecciona una marca'),
+                TextInput::make('name')
+                    ->label('Nombre del modelo')
+                    ->required()
+                    ->unique(modifyRuleUsing: function (Unique $rule, callable $get) {
+                        return $rule
+                            ->where('product_brand_id', $get('product_brand_id'))
+                            ->where('name', $get('name'));
+                    })
+                    ->minLength(1)
+                    ->maxLength(255),
             ]);
     }
 

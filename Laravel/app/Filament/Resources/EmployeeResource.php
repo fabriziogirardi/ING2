@@ -57,6 +57,7 @@ class EmployeeResource extends Resource
                             ->label('Fecha de Nacimiento')
                             ->required()
                             ->displayFormat('d/m/Y')
+                            ->maxDate(now()->subYears(18))
                             ->date(),
                         Select::make('government_id_type_id')
                             ->label('Tipo de documento')

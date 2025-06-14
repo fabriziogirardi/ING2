@@ -67,7 +67,7 @@ class ProductResource extends Resource
                         return $rule->where('product_model_id', $get('product_model_id'));
                     }),
                 TextInput::make('price')
-                    ->label('Precio')
+                    ->label('Precio por día')
                     ->prefixIcon('heroicon-o-currency-dollar')
                     ->required()
                     ->numeric()
@@ -78,7 +78,7 @@ class ProductResource extends Resource
                     ->label('Días mínimos de alquiler')
                     ->numeric()
                     ->required()
-                    ->minValue(0)
+                    ->minValue(1)
                     ->maxValue(365)
                     ->default(1),
                 Select::make('categories')
@@ -112,7 +112,8 @@ class ProductResource extends Resource
                     ->panelLayout(
                         'grid'
                     )
-                    ->reorderable(),
+                    ->reorderable()
+                    ->required(),
             ]);
     }
 

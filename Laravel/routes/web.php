@@ -1,6 +1,8 @@
 <?php
 
 use App\Facades\GoogleMaps;
+use App\Http\Controllers\BinanceController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
@@ -144,6 +146,10 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
+
+        Route::get('/payment', [BinanceController::class, 'showPaymentForm'])->name('payment');
+        Route::get('/payment/confirm', [BinanceController::class, 'confirmPayment'])->name('payment_confirm');
+
     });
 });
 // endregion
@@ -183,3 +189,8 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 });
 
 // endregion
+
+// region Catálogo
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+// enregion
