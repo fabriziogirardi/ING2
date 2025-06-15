@@ -36,7 +36,7 @@ class ProductDetailsTest extends TestCase
     {
         $this->actingAs($this->manager, 'manager');
         $response = $this->get(route('catalog.show', ['product' => $this->product]));
-        $response->assertViewIs('catalog.show');
+        $response->assertViewIs('catalog.show-old');
         $response->assertViewHas('product', $this->product);
     }
 
@@ -44,7 +44,7 @@ class ProductDetailsTest extends TestCase
     {
         $this->actingAs($this->employee, 'employee');
         $response = $this->get(route('catalog.show', ['product' => $this->product->id]));
-        $response->assertViewIs('catalog.show');
+        $response->assertViewIs('catalog.show-old');
         $response->assertViewHas('product', $this->product);
     }
 
@@ -52,7 +52,7 @@ class ProductDetailsTest extends TestCase
     {
         $this->actingAs($this->customer, 'customer');
         $response = $this->get(route('catalog.show', ['product' => $this->product]));
-        $response->assertViewIs('catalog.show');
+        $response->assertViewIs('catalog.show-old');
         $response->assertViewHas('product', $this->product);
     }
 

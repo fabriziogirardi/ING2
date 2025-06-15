@@ -101,19 +101,4 @@ class Product extends Model
             ->pluck('branch.name', 'id')
             ->toArray();
     }
-
-    public function getFirstImage()
-    {
-        return Storage::disk('public')->url(
-            $this->images_json[0],
-        );
-    }
-
-    public function getImages()
-    {
-        return collect($this->images_json)
-            ->map(function ($image) {
-                return Storage::disk('public')->url($image);
-            });
-    }
 }

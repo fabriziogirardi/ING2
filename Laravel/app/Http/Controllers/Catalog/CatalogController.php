@@ -12,25 +12,15 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $start_date = $request->input('start');
-        $end_date   = $request->input('end');
-        $products   = null;
+        $today      = Carbon::today()->format('m/d/Y');
+        $start_date = $request->input('start_date') ?? $today;
+        $end_date   = $request->input('end_date') ?? Carbon::today()->addDays(3)->format('m/d/Y');
 
-        if ($start_date && $end_date) {
-            session(['start_date' => $start_date, 'end_date' => $end_date]);
-            $service = new ProductAvailabilityService($start_date, $end_date);
-            $products = $service->getProductsWithAvailability();
+        session(['start_date' => $start_date, 'end_date' => $end_date]);
 
-            $diff = Carbon::parse($start_date)->diffInDays(Carbon::parse($end_date));
-            $products->getCollection()->transform(function ($item) use ($diff) {
-                $minDays = $item['product']->min_days ?? 1;
-                $item['meets_min_days'] = $diff >= $minDays;
-                $item['min_days'] = $minDays;
-                return $item;
-            });
-        } else {
-            session()->forget(['start_date', 'end_date']);
-        }
+        $service = new ProductAvailabilityService($start_date, $end_date);
+
+        $products = $service->getProductsWithAvailability();
 
         return view('catalog.index', [
             'products'   => $products,
@@ -41,13 +31,15 @@ class CatalogController extends Controller
 
     public function show(Product $product)
     {
-        $start_date = session('start_date');
-        $end_date   = session('end_date');
+        $start_date = session('start_date') ?? now()->toDateString();
+        $end_date   = session('end_date') ?? now()->addDays(3)->toDateString();
+        $today      = Carbon::today()->format('m/d/Y');
 
         return view('catalog.show', [
             'product'    => $product,
             'start_date' => $start_date,
             'end_date'   => $end_date,
+            'today'      => $today,
         ]);
     }
 }

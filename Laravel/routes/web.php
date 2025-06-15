@@ -48,7 +48,7 @@ Route::get('/la', function () {
     }
 });
 
-Route::view('/newcatalog', 'catalog.index-new', ['products' => Product::all()])->name('catalog.new');
+Route::view('/newcatalog', 'catalog.index', ['products' => Product::all()])->name('catalog.new');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
