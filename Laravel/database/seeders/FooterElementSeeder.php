@@ -13,12 +13,12 @@ class FooterElementSeeder extends Seeder
     public function run(): void
     {
         FooterElement::create([
-            'icon'  => 'fab-square-facebook',
-            'link'  => 'https://www.facebook.com/alkilar.com.ar/',
+            'icon' => 'fab-square-facebook',
+            'link' => 'https://www.facebook.com/alkilar.com.ar/',
         ]);
         FooterElement::create([
-            'icon'  => 'fab-square-x-twitter',
-            'link'  => 'https://x.com/alkilarcomar',
+            'icon' => 'fab-square-x-twitter',
+            'link' => 'https://x.com/alkilarcomar',
         ]);
     }
 }

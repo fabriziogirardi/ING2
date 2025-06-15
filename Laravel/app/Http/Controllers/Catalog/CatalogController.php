@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\ProductAvailabilityService;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {

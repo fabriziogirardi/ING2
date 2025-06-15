@@ -11,6 +11,7 @@ use Illuminate\View\Component;
 class ProductCard extends Component
 {
     public bool $meetsMinDays;
+
     public Product $product;
 
     public function __construct(
@@ -19,7 +20,7 @@ class ProductCard extends Component
         public string $endDate,
     ) {
         $this->meetsMinDays = Carbon::parse($startDate)
-            ->diffInDays(Carbon::parse($endDate))+1 >= $productData['product']->min_days;
+            ->diffInDays(Carbon::parse($endDate)) + 1 >= $productData['product']->min_days;
         $this->product = $productData['product'];
     }
 
