@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @mixin QueryBuilder
@@ -100,20 +99,5 @@ class Product extends Model
             })
             ->pluck('branch.name', 'id')
             ->toArray();
-    }
-
-    public function getFirstImage()
-    {
-        return Storage::disk('public')->url(
-            $this->images_json[0],
-        );
-    }
-
-    public function getImages()
-    {
-        return collect($this->images_json)
-            ->map(function ($image) {
-                return Storage::disk('public')->url($image);
-            });
     }
 }

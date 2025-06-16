@@ -1,125 +1,138 @@
 <x-layouts.app>
     <x-slot:title>
-        {{ $product->name }}
+        {{ __('catalog/forms.catalog') }}
     </x-slot:title>
-    <section class="h-screen bg-white md:py-16 flex items-center mb-16">
-        <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
-            <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16 items-center justify-center">
-                <div id="controls-carousel" class="relative w-full max-w-lg mx-auto" data-carousel="slide">
+
+<section class="py-8 bg-gray-50 md:py-16 dark:bg-gray-900 antialiased">
+    <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+        <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
+            <div class="shrink-0 w-full max-w-md lg:max-w-lg mx-auto">
+                <div id="default-carousel" class="relative w-full" data-carousel="slide">
                     <!-- Carousel wrapper -->
-                    <div class="relative aspect-square overflow-hidden rounded-lg">
-                        @foreach($product->getImages() as $image)
+                    <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                        @foreach($product->images_json as $image)
                             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                                <img src="{{ $image }}" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                                <img src="{{ Storage::url($image) }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 object-cover" alt="...">
                             </div>
                         @endforeach
                     </div>
-                    <!-- Slider controls -->
-                    <button type="button" class="absolute top-0 -start-10 z-30 flex items-center justify-center h-full px-4 group" data-carousel-prev>
-                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full cursor-pointer group-hover:bg-blue-400/50 active:ring-4 active:ring-yellow-200 transition-colors duration-300 ease-in-out">
-                            <i class="fa-solid fa-chevron-left"></i>
-                            <span class="sr-only">Previous</span>
-                        </span>
-                    </button>
-                    <button type="button" class="absolute top-0 -end-10 z-30 flex items-center justify-center h-full px-4 group" data-carousel-next>
-                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full group-hover:bg-blue-400/50 cursor-pointer active:ring-4 active:ring-yellow-200 transition-colors duration-300 ease-in-out">
-                            <i class="fa-solid fa-chevron-right"></i>
-                            <span class="sr-only">Next</span>
-                        </span>
-                    </button>
+                    @if(count($product->images_json) > 1)
+                        <div class="absolute top-0 left-0 right-0 bottom-0 bg-gray-900/30"></div>
+                        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+                            @for($i = 0; $i < count($product->images_json); $i++)
+                                <button type="button" class="w-3 h-3 rounded-full bg-white/50 hover:bg-white" aria-current="{{ $i === 0 ? 'true' : 'false' }}" aria-label="Imagen {{ $i + 1 }}" data-carousel-slide-to="{{ $i }}"></button>
+                            @endfor
+                        </div>
+                        <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                                </svg>)
+                                <span class="sr-only">Anterior</span>
+                            </span>
+                        </button>
+                        <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                                </svg>
+                                <span class="sr-only">Siguiente</span>
+                            </span>
+                        </button>
+                    @endif
+                </div>
+            </div>
+
+            <div class="mt-6 sm:mt-8 lg:mt-0">
+                <h1
+                    class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+                >
+                    {{ $product->name }}
+                </h1>
+                <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
+                    <p
+                        class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white"
+                    >
+                        ${{ $product->price }} <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
+                    </p>
+                </div>
+                <div>
+                    <h1
+                        class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+                    >
+                        {{ __('catalog/forms.days_to_reserve') }} {{ \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) }}
+                    </h1>
                 </div>
 
-                <div class="mt-6 sm:mt-8 lg:mt-0 h-screen bg-gray-50 px-8">
-                    <div class="flex flex-col justify-center items-center h-full">
-                        <div class="flex flex-row flex-wrap pb-6 justify-center gap-x-2">
-                            @foreach($product->categories as $category)
-                                <a href="#" class="border-2 rounded-full px-2 py-0.5 border-yellow-400 text-yellow-400 font-bold">{{ $category->name }}</a>
-                            @endforeach
-                        </div>
 
-                        <div class="flex items-center gap-x-3 pb-4 justify-center">
-                            <p>{{ $product->product_model->brand->name }}</p>
-                            <p>|</p>
-                            <p>{{ $product->product_model->name }}</p>
-                        </div>
-                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl flex justify-center">
-                            {{ $product->name }}
-                        </h1>
-                        <p class="mb-2 text-gray-500 flex justify-center">
-                            {!! html_entity_decode($product->description) !!}
-                        </p>
+                <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
 
-                        <div class="flex items-center justify-center mb-2">
-                            <span class="text-blue-600 font-semibold text-lg">
-                                ${{ number_format($product->price) }} {{ __('catalog/forms.per_day') }}
-                            </span>
-                        </div>
-                        <p class="text-gray-600 text-center mb-2">
-                            {{ __('catalog/forms.reservation_from_to', [
-                                'start' => \Carbon\Carbon::parse($start_date)->format('d/m/Y'),
-                                'end' => \Carbon\Carbon::parse($end_date)->format('d/m/Y')
-                            ]) }}
-                        </p>
+                    @if(Auth::getCurrentGuard() === 'customer')
+                    <a
+                        href="#"
+                        title=""
+                        class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        role="button"
+                    >
+                        <x-heroicon-o-heart class="h-6 w-6 me-2" />
+                        {{ __('catalog/forms.add_to_wishlist') }}
+                    </a>
 
-                        <div class="border-t border-gray-200 w-full"></div>
+                    <livewire:payment.mercadopago :branches-with-stock="$branches_with_stock" :start-date="$start_date" :end-date="$end_date" />
+                    @endif
 
-                        <form method="GET" action="{{ Auth::getCurrentGuard() === 'employee' ? route('employee.payment') : route('customer.payment') }}">
-                            @csrf
-                            <div class="grid grid-cols-3 gap-x-4 pt-4 items-center grid-flow-col">
-
+                    @if(Auth::getCurrentGuard() === 'employee')
+                            <form method="GET" action="{{ route('employee.payment') }}" class="sm:ml-4">
+                                @csrf
                                 <input type="hidden" name="start_date" value="{{ $start_date }}">
                                 <input type="hidden" name="end_date" value="{{ $end_date }}">
 
-                                <div>
-                                    <button data-dropdown-toggle="dropdown" class="text-gray-700 hover:text-white bg-gray-100 hover:bg-blue-400 active:ring-4 active:outline-none active:ring-yellow-200 font-medium rounded-lg text-sm px-5 py-1 text-center flex flex-row items-center" type="button">
+                                <div class="flex items-center space-x-4">
+                                    <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                                         <i class="fa-solid fa-shop mr-2"></i>
                                         {{ __('catalog/forms.select_branch_with_stock') }}
-                                        <i class="fa-solid fa-chevron-down ml-2"></i>
+                                        <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                        </svg>
                                     </button>
-
-                                    <!-- Dropdown menu -->
-                                    <div id="dropdown" class="z-10 bg-white divide-y divide-blue-300 rounded-lg shadow-sm w-44 hidden">
-                                        <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDelayButton">
-                                            @foreach($product->branchesWithStockBetween($start_date, $end_date) as $id => $branchName)
+                                    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                                            @foreach($branches_with_stock as $branch_id => $branch_name)
                                                 <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
                                                     <div class="flex items-center w-full">
-                                                        <input type="radio" value="{{ $id }}" name="branch_product_id" class="hover:bg-blue-300 text-blue-400" required>
-                                                        <label for="branch_product_id" class="flex-1 ml-3">{{ $branchName }}</label>
+                                                        <input type="radio" value="{{ $branch_id }}" name="branch_product_id" class="hover:bg-blue-300 text-blue-400" required>
+                                                        <label for="branch_product_id" class="flex-1 ml-3">{{ $branch_name }}</label>
                                                     </div>
                                                 </li>
                                             @endforeach
                                         </ul>
                                     </div>
-                                </div>
-
-                                <input type="hidden" name="total_amount" value="{{ $product->price * (\Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1) }}">
-
-                                <div class="col-span-2">
-                                    <button type="submit" class="inline-flex items-center justify-center w-full text-lg font-bold text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-yellow-200 rounded-lg py-2.5 text-center transition-colors duration-300 ease-in-out @class([ 'grayscale' => $product->branchesWithStockBetween($start_date, $end_date) <= 0])
-                                    " {{ $product->branchesWithStockBetween($start_date, $end_date) <= 0 ? 'disabled' : '' }}>
+                                    <button type="submit" class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                                         <i class="fa-solid fa-file-signature mr-2"></i>
-                                        {{ Auth::getCurrentGuard() === 'employee' ? __('catalog/forms.rent_in_person') : __('catalog/forms.rent') }}
+                                        {{ __('catalog/forms.rent_in_person') }}
                                     </button>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                    @endif
+{{--                    <a--}}
+{{--                        href="#"--}}
+{{--                        title=""--}}
+{{--                        class="text-white mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center"--}}
+{{--                        role="button"--}}
+{{--                    >--}}
+{{--                        <x-heroicon-o-currency-dollar class="h-6 w-6 me-2" />--}}
+{{--                        {{ __('catalog/forms.rent') }}--}}
+{{--                    </a>--}}
+                </div>
 
-                        <div class="flex flex-col justify-center pt-4">
-                            <h2 class="text-xl font-bold">{{ __('catalog/forms.available_payment_methods') }}</h2>
-                            <div class="grid grid-cols-2 justify-center items-center gap-x-3">
-                                <div class="grayscale-100 hover:grayscale-0 transition-all duration-300 ease-in-out">
-                                    <img src="{{ asset('mercadoPago.png') }}" alt="mercadoPago"/>
-                                </div>
-                                <div class="grayscale-100 hover:grayscale-0 transition-all duration-300 ease-in-out relative px-6">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Binance_logo.svg/1280px-Binance_logo.svg.png" alt="binance"/>
-                                    <span class="text-red-700 absolute top-0 right-3">*</span>
-                                </div>
-                                <p class="text-gray-400 col-span-2 text-center"><span class="text-red-700">*</span>{{ __('catalog/forms.crypto_payment_note') }}</p>
-                            </div>
-                        </div>
-                    </div>
+                <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+
+                <div class="mb-6 text-gray-500">
+                    {!! $product->description !!}
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
 </x-layouts.app>

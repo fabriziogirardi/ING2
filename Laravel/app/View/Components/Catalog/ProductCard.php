@@ -3,18 +3,27 @@
 namespace App\View\Components\Catalog;
 
 use App\Models\Product;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class ProductCard extends Component
 {
-    /**
-     * Create a new component instance.
-     */
+    public bool $meetsMinDays;
+
+    public Product $product;
+
     public function __construct(
-        public Product $product,
-    ) {}
+        public array $productData,
+        public string $startDate,
+        public string $endDate,
+    ) {
+        $this->meetsMinDays = Carbon::parse($startDate)
+            ->diffInDays(Carbon::parse($endDate)) + 1 >= $productData['product']->min_days;
+        $this->product = $productData['product'];
+        $branchId = session('branch_id');
+    }
 
     /**
      * Get the view / contents that represent the component.

@@ -48,7 +48,7 @@ Route::get('/la', function () {
     }
 });
 
-Route::view('/newcatalog', 'catalog.index-new', ['products' => Product::all()])->name('catalog.new');
+Route::view('/newcatalog', 'catalog.index', ['products' => Product::all()])->name('catalog.new');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -196,4 +196,4 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 // region Catálogo
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
-// enregion
+// endregion
