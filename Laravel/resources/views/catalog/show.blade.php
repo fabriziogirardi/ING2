@@ -27,7 +27,7 @@
                             <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                                 <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                                </svg>
+                                </svg>)
                                 <span class="sr-only">Anterior</span>
                             </span>
                         </button>
@@ -56,8 +56,18 @@
                         ${{ $product->price }} <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
                     </p>
                 </div>
+                <div>
+                    <h1
+                        class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+                    >
+                        {{ __('catalog/forms.days_to_reserve') }} {{ \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) }}
+                    </h1>
+                </div>
+
 
                 <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
+
+                    @if(Auth::getCurrentGuard() === 'customer')
                     <a
                         href="#"
                         title=""
@@ -69,6 +79,21 @@
                     </a>
 
                     <livewire:payment.mercadopago :branches-with-stock="$branches_with_stock" :start-date="$start_date" :end-date="$end_date" />
+                    @endif
+
+                    @if(Auth::getCurrentGuard() === 'employee')
+                        <form method="GET" action="{{ route('employee.payment') }}" class="sm:ml-4">
+                            @csrf
+                            <input type="hidden" name="start_date" value="{{ $start_date }}">
+                            <input type="hidden" name="end_date" value="{{ $end_date }}">
+                            <input type="hidden" name="branch_product_id" value="{{ session('branch_id') }}">
+                            <input type="hidden" name="total_amount" value="{{ $product->price * (\Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1) }}">
+                            <button type="submit" class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                <i class="fa-solid fa-file-signature mr-2"></i>
+                                {{ __('catalog/forms.rent_in_person') }}
+                            </button>
+                        </form>
+                    @endif
 {{--                    <a--}}
 {{--                        href="#"--}}
 {{--                        title=""--}}

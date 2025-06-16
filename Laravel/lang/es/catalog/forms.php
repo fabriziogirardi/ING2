@@ -22,4 +22,5 @@ return [
     'to'                               => 'a',
     'search'                           => 'Buscar',
     'add_to_wishlist'                  => 'Añadir a la lista de deseos',
+    'days_to_reserve'                  => 'Cantidad de dias a reservar: ',
 ];
