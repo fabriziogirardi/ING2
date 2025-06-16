@@ -82,17 +82,37 @@
                     @endif
 
                     @if(Auth::getCurrentGuard() === 'employee')
-                        <form method="GET" action="{{ route('employee.payment') }}" class="sm:ml-4">
-                            @csrf
-                            <input type="hidden" name="start_date" value="{{ $start_date }}">
-                            <input type="hidden" name="end_date" value="{{ $end_date }}">
-                            <input type="hidden" name="branch_product_id" value="{{ session('branch_id') }}">
-                            <input type="hidden" name="total_amount" value="{{ $product->price * (\Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1) }}">
-                            <button type="submit" class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                <i class="fa-solid fa-file-signature mr-2"></i>
-                                {{ __('catalog/forms.rent_in_person') }}
-                            </button>
-                        </form>
+                            <form method="GET" action="{{ route('employee.payment') }}" class="sm:ml-4">
+                                @csrf
+                                <input type="hidden" name="start_date" value="{{ $start_date }}">
+                                <input type="hidden" name="end_date" value="{{ $end_date }}">
+
+                                <div class="flex items-center space-x-4">
+                                    <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                        <i class="fa-solid fa-shop mr-2"></i>
+                                        {{ __('catalog/forms.select_branch_with_stock') }}
+                                        <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                        </svg>
+                                    </button>
+                                    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                                            @foreach($branches_with_stock as $branch_id => $branch_name)
+                                                <li class="flex items-center justify-between px-4 py-2 hover:bg-blue-300">
+                                                    <div class="flex items-center w-full">
+                                                        <input type="radio" value="{{ $branch_id }}" name="branch_product_id" class="hover:bg-blue-300 text-blue-400" required>
+                                                        <label for="branch_product_id" class="flex-1 ml-3">{{ $branch_name }}</label>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    <button type="submit" class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                        <i class="fa-solid fa-file-signature mr-2"></i>
+                                        {{ __('catalog/forms.rent_in_person') }}
+                                    </button>
+                                </div>
+                            </form>
                     @endif
 {{--                    <a--}}
 {{--                        href="#"--}}

@@ -14,8 +14,6 @@ class ProductCard extends Component
 
     public Product $product;
 
-    public bool $hasStockInBranch;
-
     public function __construct(
         public array $productData,
         public string $startDate,
@@ -25,8 +23,6 @@ class ProductCard extends Component
             ->diffInDays(Carbon::parse($endDate)) + 1 >= $productData['product']->min_days;
         $this->product = $productData['product'];
         $branchId = session('branch_id');
-        $this->hasStockInBranch = $this->productData['branches_with_stock']
-            ->contains(fn($branch) => $branch['branch_id'] == $branchId && $branch['available'] > 0);
     }
 
     /**
