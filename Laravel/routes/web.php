@@ -196,4 +196,4 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 // region Catálogo
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
-// enregion
+// endregion

@@ -15,10 +15,11 @@ return [
     'min_days_to_reserve'              => 'Mínimo :days días para reservar',
     'not_available'                    => 'No disponible',
     'catalog_title'                    => 'Catálogo de Maquinarias',
-    'catalog_subtitle'                 => 'Descubre nuestra gran seleccion de maquinarias.',
+    'catalog_subtitle'                 => 'Descubre nuestra gran selección de maquinarias.',
     'rental_date'                      => 'Fecha de alquiler',
     'select_date_start'                => 'Seleccione fecha de inicio',
     'select_date_end'                  => 'Seleccione fecha de fin',
     'to'                               => 'a',
     'search'                           => 'Buscar',
+    'add_to_wishlist'                  => 'Añadir a la lista de deseos',
 ];
