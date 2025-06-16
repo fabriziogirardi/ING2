@@ -36,10 +36,11 @@ class CatalogController extends Controller
         $today      = Carbon::today()->format('m/d/Y');
 
         return view('catalog.show', [
-            'product'    => $product,
-            'start_date' => $start_date,
-            'end_date'   => $end_date,
-            'today'      => $today,
+            'product'             => $product,
+            'branches_with_stock' => $product->branchesWithStockBetween($start_date, $end_date),
+            'start_date'          => $start_date,
+            'end_date'            => $end_date,
+            'today'               => $today,
         ]);
     }
 }

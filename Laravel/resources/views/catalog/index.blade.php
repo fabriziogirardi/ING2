@@ -6,10 +6,10 @@
     <section class="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-1">
 
             <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
-                <div class="py-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ __('catalog/forms.catalog_title') }}</h1>
-                    <h2 class="mt-2">{{ __('catalog/forms.catalog_subtitle') }}</h2>
-                </div>
+{{--                <div class="py-8">--}}
+{{--                    <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ __('catalog/forms.catalog_title') }}</h1>--}}
+{{--                    <h2 class="mt-2">{{ __('catalog/forms.catalog_subtitle') }}</h2>--}}
+{{--                </div>--}}
                 <h2 id="filter-heading" class="sr-only">Product filters</h2>
                 <form action="" method="GET">
                     <div class="flex flex-row justify-between items-center py-4">
@@ -54,7 +54,7 @@
                 <!-- Heading & Filters -->
                 <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
                     <div>
-                        <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Catalogo</h2>
+                        <h2 class="mt-3 text-xl font-semibold text-gray-900 sm:text-2xl">Catalogo</h2>
                     </div>
                 </div>
                 <div class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">

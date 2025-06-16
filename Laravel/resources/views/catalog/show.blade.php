@@ -3,7 +3,7 @@
         {{ __('catalog/forms.catalog') }}
     </x-slot:title>
 
-<section class="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
+<section class="py-8 bg-gray-50 md:py-16 dark:bg-gray-900 antialiased">
     <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
             <div class="shrink-0 w-full max-w-md lg:max-w-lg mx-auto">
@@ -68,17 +68,16 @@
                         {{ __('catalog/forms.add_to_wishlist') }}
                     </a>
 
-
-
-                    <a
-                        href="#"
-                        title=""
-                        class="text-white mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center"
-                        role="button"
-                    >
-                        <x-heroicon-o-currency-dollar class="h-6 w-6 me-2" />
-                        {{ __('catalog/forms.rent') }}
-                    </a>
+                    <livewire:payment.mercadopago :branches-with-stock="$branches_with_stock" :start-date="$start_date" :end-date="$end_date" />
+{{--                    <a--}}
+{{--                        href="#"--}}
+{{--                        title=""--}}
+{{--                        class="text-white mt-4 sm:mt-0 bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center"--}}
+{{--                        role="button"--}}
+{{--                    >--}}
+{{--                        <x-heroicon-o-currency-dollar class="h-6 w-6 me-2" />--}}
+{{--                        {{ __('catalog/forms.rent') }}--}}
+{{--                    </a>--}}
                 </div>
 
                 <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
