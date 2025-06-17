@@ -16,6 +16,9 @@ use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
 use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Http\Controllers\Reservation\ReservationController;
+use App\Http\Controllers\Wishlist\WishlistController;
+use App\Http\Controllers\Wishlist\WishlistItemController;
+use App\Http\Controllers\Wishlist\WishlistSublistController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Product;
@@ -186,6 +189,18 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
             return view('payment.failure');
         })->name('reservations.failure');
 
+        Route::resource('wishlist', WishlistController::class)->except(['index']);
+
+        Route::resource('wishlist sublist', WishlistSublistController::class)->except(['index']);
+
+        Route::resource('wishlist item', WishlistItemController::class)->except(['index']);
+
+        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+
+        Route::get('/wishlist/{wishlist}', [WishlistSublistController::class, 'index'])->name('wishlist-sublist.index');
+
+        Route::get('/wishlist/{wishlist}/{sublist}', [WishlistItemController::class, 'index'])->name('wishlist-item.index');
+
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
         Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');
     });
@@ -196,4 +211,5 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 // region Catálogo
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+
 // endregion
