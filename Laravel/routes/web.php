@@ -1,6 +1,8 @@
 <?php
 
 use App\Facades\GoogleMaps;
+use App\Http\Controllers\BinanceController;
+use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\Reservation\ReservationController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\ProductAvailabilityService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
@@ -26,7 +29,7 @@ Route::get('/', static function () {
 })->name('home');
 
 Route::get('/la', function () {
-    $service  = new \App\Services\ProductAvailabilityService('2025-06-15', '2025-06-20');
+    $service  = new ProductAvailabilityService('2025-06-15', '2025-06-20');
     $products = $service->getProductsWithAvailability();
 
     foreach ($products as $entry) {
@@ -44,6 +47,8 @@ Route::get('/la', function () {
         echo '<br>';
     }
 });
+
+Route::view('/newcatalog', 'catalog.index', ['products' => Product::all()])->name('catalog.new');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -144,6 +149,10 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
+
+        Route::get('/payment', [BinanceController::class, 'showPaymentForm'])->name('payment');
+        Route::get('/payment/confirm', [BinanceController::class, 'confirmPayment'])->name('payment_confirm');
+
     });
 });
 // endregion
@@ -182,4 +191,9 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
     });
 });
 
+// endregion
+
+// region Catálogo
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 // endregion
