@@ -17,9 +17,9 @@ class ProductModelResource extends Resource
 {
     protected static ?string $model = ProductModel::class;
 
-    protected static ?string $modelLabel = 'modelo de producto';
+    protected static ?string $modelLabel = 'Modelos de Maquinarias';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationLabel = 'Modelos';
 

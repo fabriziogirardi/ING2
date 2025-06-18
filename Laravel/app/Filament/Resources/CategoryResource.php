@@ -19,7 +19,7 @@ class CategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'categorías';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
