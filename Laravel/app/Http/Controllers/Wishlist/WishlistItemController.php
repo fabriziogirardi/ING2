@@ -3,21 +3,24 @@
 namespace App\Http\Controllers\Wishlist;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Wishlist;
 use App\Models\WishlistSublist;
 use App\Models\WishlistItem;
 use App\Http\Requests\Wishlist\StoreItemRequest;
+use Auth;
+use Illuminate\Support\Facades\Date;
 
 class WishlistItemController extends Controller
 {
     public function index(Wishlist $wishlist, WishlistSublist $sublist)
-    {
-        return view('customer.wishlist-item.index', [
+    { view('customer.wishlist-item.index', [
             'items' => $sublist->items()->get(),
         ]);
     }
-    public function store(WishlistSublist $sublist, StoreItemRequest $request)
+    public function store(StoreItemRequest $request)
     {
+        $sublist = WishlistSublist::findOrFail($request->input('wishlist_sublist_id'));
         $sublist->items()->create($request->validated());
         return redirect()->back()->with('success', 'Producto agregado.');
     }

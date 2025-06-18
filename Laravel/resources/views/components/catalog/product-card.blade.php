@@ -14,17 +14,18 @@
                     <div class="tooltip-arrow" data-popper-arrow=""></div>
                 </div>
 
-                <button type="button" data-tooltip-target="tooltip-add-to-favorites" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900">
-                    <span class="sr-only"> Add to Favorites </span>
+                <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" data-tooltip-target="tooltip-add-to-favorites" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900">
+                    <span class="sr-only"> Agregar a lista de deseados </span>
                     <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z" />
                     </svg>
                 </button>
                 <div id="tooltip-add-to-favorites" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300" data-popper-placement="top">
-                    Add to favorites
+                    Agregar a lista de deseados
                     <div class="tooltip-arrow" data-popper-arrow=""></div>
                 </div>
             </div>
+
         </div>
 
         <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline">{{ $product->name }}</a>
@@ -65,3 +66,89 @@
         </div>
     </div>
 </div>
+
+
+<!-- Main modal -->
+<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+
+        <!-- Modal content -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Agregar “{{ $product->name }}” a la lista de deseados</h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+        <form action="{{ route('customer.wishlist-item.store') }}" method="POST">
+            @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <input type="hidden" name="start_date" value="{{ $startDate }}">
+        <input type="hidden" name="end_date" value="{{ $endDate }}">
+                <div class="mb-4">
+                <label for="wishlist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la lista</label>
+                <select id="wishlist_id" name="wishlist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value="">-- elige lista --</option>
+                    @foreach($wishlists as $list)
+                        <option value="{{ $list->id }}">{{ $list->name }}</option>
+                    @endforeach
+                </select>
+                @error('wishlist_id')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+                </div>
+
+            <div class="mb-4">
+                <label for="sublist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la sublista</label>
+                <select id="sublist_id" name="wishlist_sublist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value="">-- elige sublista --</option>
+                </select>
+                @error('sublist_id')
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+                Agregar producto a Sublista
+            </button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Convertimos la colección PHP en un objeto JS:
+    const wishlists = @json($wishlists->mapWithKeys(function($list) {
+        return [
+            $list->id => $list->sublists->map(fn($s) => ['id'=>$s->id,'name'=>$s->name])->toArray()
+        ];
+    }));
+
+    document.getElementById('wishlist_id').addEventListener('change', function() {
+        const subSelect = document.getElementById('sublist_id');
+        const selectedList = this.value;
+
+        // Reset options
+        subSelect.innerHTML = '<option value="">-- elige sublista --</option>';
+
+        if (wishlists[selectedList]) {
+            wishlists[selectedList].forEach(function(s) {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.text  = s.name;
+                subSelect.appendChild(opt);
+            });
+            subSelect.disabled = false;
+        } else {
+            subSelect.disabled = true;
+        }
+    });
+</script>

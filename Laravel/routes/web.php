@@ -191,15 +191,23 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 
         Route::resource('wishlist', WishlistController::class)->except(['index']);
 
-        Route::resource('wishlist sublist', WishlistSublistController::class)->except(['index']);
+        Route::resource('wishlist-sublist', WishlistSublistController::class)->except(['index']);
 
-        Route::resource('wishlist item', WishlistItemController::class)->except(['index']);
+        Route::resource('wishlist-item', WishlistItemController::class)->except(['index']);
 
         Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
 
         Route::get('/wishlist/{wishlist}', [WishlistSublistController::class, 'index'])->name('wishlist-sublist.index');
 
         Route::get('/wishlist/{wishlist}/{sublist}', [WishlistItemController::class, 'index'])->name('wishlist-item.index');
+
+        // Mostrar el form: pasamos el Machine sobre el que agregaremos el ítem
+        Route::get('/catalog/{product}/{startDate}/{endDate}/wishlist-items/create', [WishlistItemController::class, 'create'])
+            ->name('wishlist-items.create');
+
+        // Procesar el envío
+        Route::post('/wishlist-items', [WishlistItemController::class, 'store'])
+            ->name('wishlist-items.store');
 
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
         Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');

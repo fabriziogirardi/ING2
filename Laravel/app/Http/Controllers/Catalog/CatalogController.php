@@ -41,6 +41,10 @@ class CatalogController extends Controller
             'start_date'          => $start_date,
             'end_date'            => $end_date,
             'today'               => $today,
+            'wishlists'           => \Illuminate\Support\Facades\Auth::guard('customer')->user()
+                                    ->wishlists()
+                                    ->with('sublists:id,wishlist_id,name')
+                                    ->get(['id', 'name']),
         ]);
     }
 }
