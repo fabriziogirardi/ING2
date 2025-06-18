@@ -210,10 +210,10 @@ class ProductResource extends Resource
                 Tables\Actions\RestoreAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
-                 Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                     Tables\Actions\RestoreBulkAction::make(),
-                 ]),
+                    Tables\Actions\RestoreBulkAction::make(),
+                ]),
             ]);
     }
 

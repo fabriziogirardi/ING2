@@ -56,12 +56,12 @@ class ProductBrandResource extends Resource
                             ->maxLength(255),
                     ]),
                 Tables\Actions\DeleteAction::make()->requiresConfirmation(),
-                Tables\Actions\RestoreAction::make()->requiresConfirmation()
+                Tables\Actions\RestoreAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make()
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
