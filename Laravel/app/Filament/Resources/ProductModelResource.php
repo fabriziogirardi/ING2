@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductModelResource\Pages;
+use App\Models\ProductBrand;
 use App\Models\ProductModel;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -28,7 +29,23 @@ class ProductModelResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('product_brand_id')
+                    ->label('Marca')
+                    ->relationship('brand', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Selecciona una marca'),
+                TextInput::make('name')
+                    ->label('Nombre del modelo')
+                    ->required()
+                    ->unique(modifyRuleUsing: function (Unique $rule, callable $get) {
+                        return $rule
+                            ->where('product_brand_id', $get('product_brand_id'))
+                            ->where('name', $get('name'));
+                    })
+                    ->minLength(1)
+                    ->maxLength(255),
             ]);
     }
 
@@ -42,7 +59,7 @@ class ProductModelResource extends Resource
                     ->label('Marca'),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make()->default('with'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -65,10 +82,13 @@ class ProductModelResource extends Resource
                             ->minLength(1)
                             ->maxLength(255),
                     ]),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make()->requiresConfirmation()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -76,7 +96,7 @@ class ProductModelResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+
         ];
     }
 
