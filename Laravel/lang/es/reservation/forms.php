@@ -3,7 +3,7 @@
 return [
     'mp_payment_title_slot'           => 'Confirmación de Reserva con Mercado Pago',
     'mp_payment_heading'              => 'Confirme los datos de la reserva antes de pagar',
-    'mp_payment_label_branch_product' => 'Producto a Reservar',
+    'mp_payment_label_branch_product' => 'Maquinaria a Reservar',
     'mp_payment_label_start_date'     => 'Fecha de Inicio',
     'mp_payment_label_end_date'       => 'Fecha de Fin',
     'mp_payment_label_unit_price'     => 'Precio a pagar',

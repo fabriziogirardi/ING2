@@ -34,7 +34,7 @@ class ReservationResource extends Resource
                 TextColumn::make('customer.person.full_name')
                     ->label('Cliente'),
                 TextColumn::make('branch_product.product.name')
-                    ->label('Producto'),
+                    ->label('Maquinaria'),
                 TextColumn::make('branch_product.branch.name')
                     ->label('Sucursal'),
                 TextColumn::make('start_date')
