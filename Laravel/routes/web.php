@@ -12,6 +12,7 @@ use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
+use App\Http\Controllers\Manager\ForumSections\ForumSectionController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
 use App\Http\Controllers\Payment\MercadoPagoController;
@@ -48,7 +49,9 @@ Route::get('/la', function () {
     }
 });
 
-Route::view('/newcatalog', 'catalog.index', ['products' => Product::all()])->name('catalog.new');
+Route::get('/newcatalog', function () {
+    return view('catalog.index', ['products' => \App\Models\Product::all()]);
+})->name('catalog.new');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -127,6 +130,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('model/{id}/restore', [ModelController::class, 'restore'])->name('model.restore');
         Route::resource('branch', BranchController::class);
         Route::resource('product', ProductController::class);
+        Route::resource('sections', ForumSectionController::class);
+        Route::post('sections/{id}/restore', [ForumSectionController::class, 'restore'])->name('sections.restore');
     });
 });
 // endregion

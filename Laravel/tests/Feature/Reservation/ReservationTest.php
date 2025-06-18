@@ -1,6 +1,6 @@
 <?php
 
-namespace Reservation;
+namespace Tests\Feature\Reservation;
 
 use App\Mail\NewReservationCreated;
 use App\Models\Branch;
