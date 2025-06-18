@@ -16,7 +16,9 @@ class ForumSectionResource extends Resource
 {
     protected static ?string $model = ForumSection::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    protected static ?string $pluralModelLabel = 'Secciónes del Foro';
 
     public static function form(Form $form): Form
     {
@@ -25,7 +27,8 @@ class ForumSectionResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->unique()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Nombre'),
             ]);
     }
 
@@ -33,22 +36,20 @@ class ForumSectionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-            ])
-            ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                Tables\Columns\TextColumn::make('name')->label('Nombre'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->successNotificationTitle(__('manager/section.deleted')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading('No hay secciones del foro registradas');
     }
 
     public static function getRelations(): array
@@ -56,6 +57,11 @@ class ForumSectionResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 
     public static function getPages(): array
