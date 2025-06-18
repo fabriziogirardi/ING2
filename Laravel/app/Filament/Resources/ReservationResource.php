@@ -17,6 +17,12 @@ class ReservationResource extends Resource
 {
     protected static ?string $model = Reservation::class;
 
+    protected static ?string $modelLabel = 'reserva';
+
+    protected static ?string $pluralModelLabel = 'reservas';
+
+    protected static ?string $navigationLabel = 'Reservas';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -34,7 +40,7 @@ class ReservationResource extends Resource
                 TextColumn::make('customer.person.full_name')
                     ->label('Cliente'),
                 TextColumn::make('branch_product.product.name')
-                    ->label('Producto'),
+                    ->label('Maquinaria'),
                 TextColumn::make('branch_product.branch.name')
                     ->label('Sucursal'),
                 TextColumn::make('start_date')

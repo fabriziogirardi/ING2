@@ -9,15 +9,16 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class ProductBrandResource extends Resource
 {
     protected static ?string $model = ProductBrand::class;
 
-    protected static ?string $modelLabel = 'Marcas de productos';
+    protected static ?string $modelLabel = 'Marcas de Maquinarias';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationLabel = 'Marcas';
 
@@ -43,7 +44,7 @@ class ProductBrandResource extends Resource
                     ->label('Cantidad de modelos'),
             ])
             ->filters([
-                //
+                TrashedFilter::make()->default('with'),
             ])
             ->actions([
                 EditAction::make()
@@ -54,12 +55,13 @@ class ProductBrandResource extends Resource
                             ->unique(ProductBrand::class, 'name')
                             ->maxLength(255),
                     ]),
-                Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation(),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make()->requiresConfirmation()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make()
                 ]),
             ]);
     }

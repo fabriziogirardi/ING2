@@ -45,7 +45,7 @@ class ListProducts extends ListRecords
                         ->options(fn (Get $get): Collection => ProductBrand::find($get('model.product_brand_id'))?->models->pluck('name', 'id') ?? collect()),
                     TextInput::make('name')
                         ->columnSpan(2)
-                        ->label('Nombre del producto')
+                        ->label('Nombre de la maquinaria')
                         ->required()
                         ->unique(ignoreRecord: true, modifyRuleUsing: function ($rule, callable $get) {
                             return $rule->where('product_model_id', $get('product_model_id'));

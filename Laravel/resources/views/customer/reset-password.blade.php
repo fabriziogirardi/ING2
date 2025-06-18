@@ -29,7 +29,7 @@
                             <x-forms.error-description message="{{ $errors->first('error') }}" class="sm:col-span-2" />
                         @endif
                         <div class="flex items-center">
-                            <x-forms.submit text="Marcar reserva como retirada" icon-left="fa-solid fa-right-to-bracket" submit="true" full-width="true" />
+                            <x-forms.submit text="Confirmar cambio de contraseña" icon-left="fa-solid fa-right-to-bracket" submit="true" full-width="true" />
                         </div>
                     </form>
                 </div>

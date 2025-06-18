@@ -1,5 +1,5 @@
 <div>
-    <div class="bg-gray-100 h-160 px-32 py-20">
+    <div class="bg-gray-50 h-160 px-32 py-20">
         <h1 class="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
             Nuestras sucursales
         </h1>
@@ -8,7 +8,7 @@
         </div>
         <div id="map" class="z-40 h-160 border border-gray-300 rounded-lg shadow"></div>
     </div>
-    <div class="bg-gray-100 pb-64"></div>
+    <div class="bg-gray-50 pb-64"></div>
 
     <script>
         async function initMap() {

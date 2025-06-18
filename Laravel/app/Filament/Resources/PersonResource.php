@@ -21,6 +21,12 @@ class PersonResource extends Resource
 {
     protected static ?string $model = Person::class;
 
+    protected static ?string $modelLabel = 'persona';
+
+    protected static ?string $pluralModelLabel = 'personas';
+
+    protected static ?string $navigationLabel = 'Personas';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form

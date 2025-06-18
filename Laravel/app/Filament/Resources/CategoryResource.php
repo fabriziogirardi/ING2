@@ -19,7 +19,7 @@ class CategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'categorías';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -27,7 +27,25 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('parent_id')
+                    ->label('Categoría padre')
+                    ->relationship('parent', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('Selecciona una categoría padre o deja en blanco para raíz'),
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
+                    ->required()
+                    ->unique(modifyRuleUsing: function ($rule, callable $get) {
+                        return $rule->where('parent_id', $get('parent_id'));
+                    }),
+                Forms\Components\TextInput::make('slug')
+                    ->label('Slug')
+                    ->disabled(true)
+                    ->formatStateUsing(fn () => 'Este campo se genera automáticamente al guardar'),
+                Forms\Components\TextInput::make('description')
+                    ->label('Descripción')
+                    ->maxLength(255),
             ]);
     }
 
@@ -76,6 +94,7 @@ class CategoryResource extends Resource
                             ->label('Descripción')
                             ->maxLength(255),
                     ]),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -95,8 +114,8 @@ class CategoryResource extends Resource
     {
         return [
             'index' => Pages\ListCategories::route('/'),
-            // 'create' => Pages\CreateCategory::route('/create'),
-            // 'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 

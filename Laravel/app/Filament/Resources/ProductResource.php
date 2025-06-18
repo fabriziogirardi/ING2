@@ -25,11 +25,11 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $modelLabel = 'producto';
+    protected static ?string $modelLabel = 'maquinaria';
 
-    protected static ?string $pluralModelLabel = 'productos';
+    protected static ?string $pluralModelLabel = 'maquinarias';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -61,24 +61,25 @@ class ProductResource extends Resource
                     ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->product_models->pluck('name', 'id') ?? collect()),
                 TextInput::make('name')
                     ->columnSpan(2)
-                    ->label('Nombre del producto')
+                    ->label('Nombre de la maquinaria')
                     ->required()
                     ->unique(ignoreRecord: true, modifyRuleUsing: function ($rule, callable $get) {
                         return $rule->where('product_model_id', $get('product_model_id'));
                     }),
                 TextInput::make('price')
-                    ->label('Precio')
+                    ->label('Precio por día')
                     ->prefixIcon('heroicon-o-currency-dollar')
                     ->required()
                     ->numeric()
                     ->minValue(0)
                     ->maxValue(999999.99)
+                    ->default(0)
                     ->step(0.01),
                 TextInput::make('min_days')
                     ->label('Días mínimos de alquiler')
                     ->numeric()
                     ->required()
-                    ->minValue(0)
+                    ->minValue(1)
                     ->maxValue(365)
                     ->default(1),
                 Select::make('categories')
@@ -109,10 +110,12 @@ class ProductResource extends Resource
                     ->label('Imágenes')
                     ->multiple()
                     ->image()
+                    ->required()
                     ->panelLayout(
                         'grid'
                     )
-                    ->reorderable(),
+                    ->reorderable()
+                    ->required(),
             ]);
     }
 
@@ -121,7 +124,7 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nombre del producto'),
+                    ->label('Nombre de la maquinaria'),
                 TextColumn::make('product_model.product_brand.name')
                     ->label('Marca'),
                 TextColumn::make('product_model.name')
@@ -143,14 +146,14 @@ class ProductResource extends Resource
                     ->limitedRemainingText(),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make()->default('with'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->form([
                         TextInput::make('name')
                             ->columnSpan(2)
-                            ->label('Nombre del producto')
+                            ->label('Nombre de la maquinaria')
                             ->required()
                             ->unique(ignoreRecord: true, modifyRuleUsing: function ($rule, callable $get) {
                                 return $rule->where('product_model_id', $get('product_model_id'));
@@ -203,11 +206,14 @@ class ProductResource extends Resource
                             )
                             ->reorderable(),
                     ]),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //    Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                     Tables\Actions\RestoreBulkAction::make(),
+                 ]),
             ]);
     }
 
