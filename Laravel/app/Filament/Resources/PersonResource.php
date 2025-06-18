@@ -6,6 +6,7 @@ use App\Filament\Resources\PersonResource\Pages;
 use App\Filament\Resources\PersonResource\RelationManagers\CustomerRelationManager;
 use App\Filament\Resources\PersonResource\RelationManagers\EmployeeRelationManager;
 use App\Models\Person;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -48,7 +49,8 @@ class PersonResource extends Resource
                     ->label('Fecha de Nacimiento')
                     ->required()
                     ->displayFormat('d/m/Y')
-                    ->date(),
+                    ->date()
+                    ->maxDate(Carbon::now()->subYears(18)),
                 Select::make('government_id_type_id')
                     ->label('Tipo de documento')
                     ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
@@ -104,9 +106,9 @@ class PersonResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 
