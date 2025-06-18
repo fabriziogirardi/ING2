@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Models\Employee;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
@@ -57,8 +58,8 @@ class EmployeeResource extends Resource
                             ->label('Fecha de Nacimiento')
                             ->required()
                             ->displayFormat('d/m/Y')
-                            ->maxDate(now()->subYears(18))
-                            ->date(),
+                            ->date()
+                            ->maxDate(Carbon::now()->subYears(18)),
                         Select::make('government_id_type_id')
                             ->label('Tipo de documento')
                             ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
@@ -141,7 +142,8 @@ class EmployeeResource extends Resource
                                     ->label('Fecha de Nacimiento')
                                     ->required()
                                     ->displayFormat('d/m/Y')
-                                    ->date(),
+                                    ->date()
+                                    ->maxDate(Carbon::now()->subYears(18)),
                                 Select::make('government_id_type_id')
                                     ->label('Tipo de documento')
                                     ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
@@ -166,8 +168,22 @@ class EmployeeResource extends Resource
                             ->dehydrated(fn (?string $state): bool => filled($state))
                             ->required(fn (string $operation): bool => $operation === 'create'),
                     ]),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Bloquear cuenta')
+                    ->icon('heroicon-o-lock-closed')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Estás seguro de que querés bloquear esta cuenta?')
+                    ->modalDescription('Esta acción impedirá el acceso del usuario hasta que se desbloquee.')
+                    ->modalSubmitActionLabel('Sí, bloquear cuenta'),
+                Tables\Actions\RestoreAction::make()
+                    ->label('Reanudar cuenta')
+                    ->icon('heroicon-o-lock-open')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Querés reanudar el acceso a esta cuenta?')
+                    ->modalDescription('El usuario podrá volver a iniciar sesión normalmente.')
+                    ->modalSubmitActionLabel('Sí, reanudar cuenta'),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

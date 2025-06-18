@@ -61,7 +61,8 @@ class CustomerResource extends Resource
                             ->label('Fecha de Nacimiento')
                             ->required()
                             ->displayFormat('d/m/Y')
-                            ->date(),
+                            ->date()
+                            ->maxDate(Carbon::now()->subYears(18)),
                         Select::make('government_id_type_id')
                             ->label('Tipo de documento')
                             ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
@@ -122,9 +123,9 @@ class CustomerResource extends Resource
                     ->disabled(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 
@@ -139,7 +140,7 @@ class CustomerResource extends Resource
         return [
             'index'  => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
-            'edit'   => Pages\EditCustomer::route('/{record}/edit'),
+            // 'edit'   => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }
 

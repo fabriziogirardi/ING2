@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -49,7 +50,8 @@ class ListCustomers extends ListRecords
                                 ->label('Fecha de Nacimiento')
                                 ->required()
                                 ->displayFormat('d/m/Y')
-                                ->date(),
+                                ->date()
+                                ->maxDate(Carbon::now()->subYears(18)),
                             Select::make('government_id_type_id')
                                 ->label('Tipo de documento')
                                 ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
