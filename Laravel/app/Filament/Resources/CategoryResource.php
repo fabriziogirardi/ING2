@@ -76,6 +76,7 @@ class CategoryResource extends Resource
                             ->label('Descripción')
                             ->maxLength(255),
                     ]),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
