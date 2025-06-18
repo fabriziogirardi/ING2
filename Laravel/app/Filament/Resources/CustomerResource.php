@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
+use Carbon\Carbon;
 use Exception;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -115,17 +116,17 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->disabled()
-                    ->extraAttributes(['class' => 'cursor-not-allowed pointer-events-auto hover:no-underline']),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make()
-                    ->disabled(),
+                //                Tables\Actions\EditAction::make()
+                //                    ->disabled()
+                //                    ->extraAttributes(['class' => 'cursor-not-allowed pointer-events-auto hover:no-underline']),
+
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                // Tables\Actions\RestoreAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
-//                Tables\Actions\BulkActionGroup::make([
-//                    Tables\Actions\DeleteBulkAction::make(),
-//                ]),
+                //                Tables\Actions\BulkActionGroup::make([
+                //                    Tables\Actions\DeleteBulkAction::make(),
+                //                ]),
             ]);
     }
 
