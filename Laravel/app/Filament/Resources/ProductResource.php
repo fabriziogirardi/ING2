@@ -73,6 +73,7 @@ class ProductResource extends Resource
                     ->numeric()
                     ->minValue(0)
                     ->maxValue(999999.99)
+                    ->default(0)
                     ->step(0.01),
                 TextInput::make('min_days')
                     ->label('Días mínimos de alquiler')
@@ -109,6 +110,7 @@ class ProductResource extends Resource
                     ->label('Imágenes')
                     ->multiple()
                     ->image()
+                    ->required()
                     ->panelLayout(
                         'grid'
                     )
@@ -144,7 +146,7 @@ class ProductResource extends Resource
                     ->limitedRemainingText(),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make()->default('with'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -204,11 +206,14 @@ class ProductResource extends Resource
                             )
                             ->reorderable(),
                     ]),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //    Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                     Tables\Actions\RestoreBulkAction::make(),
+                 ]),
             ]);
     }
 
