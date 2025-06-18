@@ -11,7 +11,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentIconPicker\Forms\IconPicker;
-use Guava\FilamentIconPicker\Layout;
 use Guava\FilamentIconPicker\Tables\IconColumn;
 
 class FooterElementResource extends Resource
