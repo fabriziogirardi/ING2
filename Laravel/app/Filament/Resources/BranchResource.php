@@ -15,6 +15,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Http;
 
 class BranchResource extends Resource
@@ -130,7 +132,7 @@ class BranchResource extends Resource
                     ->limit(50),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make()->default('with'),
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -150,6 +152,14 @@ class BranchResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getPages(): array
