@@ -9,8 +9,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductBrandResource extends Resource
 {
@@ -44,7 +45,7 @@ class ProductBrandResource extends Resource
                     ->label('Cantidad de modelos'),
             ])
             ->filters([
-                TrashedFilter::make()->default('with'),
+                //
             ])
             ->actions([
                 EditAction::make()
@@ -71,6 +72,14 @@ class ProductBrandResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getPages(): array

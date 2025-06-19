@@ -19,6 +19,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 
 class ProductResource extends Resource
@@ -146,7 +148,7 @@ class ProductResource extends Resource
                     ->limitedRemainingText(),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make()->default('with'),
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -222,6 +224,14 @@ class ProductResource extends Resource
         return [
             BranchesRelationManager::class,
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getPages(): array

@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rules\Unique;
 
 class ProductModelResource extends Resource
@@ -58,7 +60,7 @@ class ProductModelResource extends Resource
                     ->label('Marca'),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make()->default('with'),
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -97,6 +99,14 @@ class ProductModelResource extends Resource
         return [
 
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getPages(): array
