@@ -16,7 +16,7 @@ class WishlistFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(),
-            'name'    => $this->faker->word(),
+            'name'        => $this->faker->word(),
         ];
     }
 }

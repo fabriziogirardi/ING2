@@ -14,11 +14,10 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
-use function Illuminate\Support\php_binary;
 
 class SubwishlistManage extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public Wishlist $wishlist;
 
@@ -26,6 +25,7 @@ class SubwishlistManage extends Component implements HasForms, HasTable
     {
         $this->wishlist = $wishlist;
     }
+
     public function table(Table $table): Table
     {
         return $table
@@ -38,7 +38,7 @@ class SubwishlistManage extends Component implements HasForms, HasTable
                     ->label('Cantidad de items'),
             ])
             ->recordUrl(
-                fn ($record) => route('customer.itemslist', ['wishlist' => $this->wishlist->id,'subwishlist' => $record->id])
+                fn ($record) => route('customer.itemslist', ['wishlist' => $this->wishlist->id, 'subwishlist' => $record->id])
             )
             ->headerActions([
                 Action::make('back_to_wishlist')
@@ -73,7 +73,7 @@ class SubwishlistManage extends Component implements HasForms, HasTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->disabled(fn (WishlistSublist $record) => $record->items()->count() > 0)
-                    ->action(fn (WishlistSublist $record) => $record->delete())
+                    ->action(fn (WishlistSublist $record) => $record->delete()),
             ]);
     }
 

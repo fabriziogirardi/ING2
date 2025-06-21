@@ -36,8 +36,8 @@ class CatalogController extends Controller
         $end_date   = session('end_date') ?? now()->addDays(3)->toDateString();
         $today      = Carbon::today()->format('m/d/Y');
         $wishlist   = '';
-        if (Auth::getCurrentGuard() === 'customer'){
-            $wishlist   = \Illuminate\Support\Facades\Auth::guard('customer')->user()
+        if (Auth::getCurrentGuard() === 'customer') {
+            $wishlist = \Illuminate\Support\Facades\Auth::guard('customer')->user()
                 ->wishlists()
                 ->with('sublists:id,wishlist_id,name')
                 ->get(['id', 'name']);

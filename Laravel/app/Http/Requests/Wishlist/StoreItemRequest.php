@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Wishlist;
 
-use App\Models\WishlistSublist;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreItemRequest extends FormRequest
 {
@@ -21,8 +19,8 @@ class StoreItemRequest extends FormRequest
                 // Hay que verificar que no haya maquinas duplicadas en la misma sublista
             ],
             'wishlist_sublist_id' => ['required'],
-            'start_date' => ['required', 'date'],
-            'end_date'   => ['required', 'date'],
+            'start_date'          => ['required', 'date'],
+            'end_date'            => ['required', 'date'],
         ];
     }
 }

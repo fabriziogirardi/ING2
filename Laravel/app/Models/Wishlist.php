@@ -24,4 +24,3 @@ class Wishlist extends Model
         return $this->hasMany(WishlistSublist::class, 'wishlist_id');
     }
 }
-

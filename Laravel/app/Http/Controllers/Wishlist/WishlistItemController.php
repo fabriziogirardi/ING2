@@ -3,26 +3,25 @@
 namespace App\Http\Controllers\Wishlist;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\Wishlist;
-use App\Models\WishlistSublist;
-use App\Models\WishlistItem;
 use App\Http\Requests\Wishlist\StoreItemRequest;
-use Auth;
+use App\Models\Wishlist;
+use App\Models\WishlistItem;
+use App\Models\WishlistSublist;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Date;
 
 class WishlistItemController extends Controller
 {
     public function index(Wishlist $wishlist, WishlistSublist $subwishlist)
     {
         $subwishlist->load('items');
+
         return view('customer.wishlist.itemswishlist-index', ['subwishlist' => $subwishlist]);
     }
+
     public function store(StoreItemRequest $request)
     {
         $startDate = Carbon::parse($request->start_date)->format('Y-m-d');
-        $endDate = Carbon::parse($request->end_date)->format('Y-m-d');
+        $endDate   = Carbon::parse($request->end_date)->format('Y-m-d');
 
         $exists = WishlistItem::where('wishlist_sublist_id', $request->wishlist_sublist_id)
             ->where('product_id', $request->product_id)
@@ -43,12 +42,14 @@ class WishlistItemController extends Controller
     public function show(WishlistItem $item)
     {
         $item->load('product');
+
         return view('items.show', compact('item'));
     }
 
     public function destroy(WishlistItem $item)
     {
         $item->delete();
+
         return redirect()->back()->with('success', 'Producto eliminado.');
     }
 }

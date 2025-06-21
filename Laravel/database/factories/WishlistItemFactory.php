@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use App\Models\WishlistItem;
 use App\Models\WishlistSublist;
-use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WishlistItemFactory extends Factory
@@ -24,4 +24,3 @@ class WishlistItemFactory extends Factory
         ];
     }
 }
-

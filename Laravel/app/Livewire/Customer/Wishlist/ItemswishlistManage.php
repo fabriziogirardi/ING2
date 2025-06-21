@@ -11,13 +11,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use App\Services\ProductAvailabilityService;
-use Carbon\Carbon;
 use Livewire\Component;
 
 class ItemswishlistManage extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public WishlistSublist $subwishlist;
 
@@ -25,6 +23,7 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
     {
         $this->subwishlist = $subwishlist;
     }
+
     public function table(Table $table): Table
     {
         return $table
@@ -52,13 +51,12 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
                 Action::make('Reservar')
                     ->button()
                     ->color(fn ($record) => $this->isReservable($record) ? 'info' : 'gray')
-                    ->label(fn ($record) =>
-                    $this->isReservable($record)
+                    ->label(fn ($record) => $this->isReservable($record)
                         ? 'Reservar'
                         : $this->getUnavailabilityReason($record)
                     )
-                    ->tooltip(fn ($record) => !$this->isReservable($record) ? $this->getUnavailabilityReason($record) : null)
-                    ->disabled(fn ($record) => !$this->isReservable($record))
+                    ->tooltip(fn ($record) => ! $this->isReservable($record) ? $this->getUnavailabilityReason($record) : null)
+                    ->disabled(fn ($record) => ! $this->isReservable($record))
                     ->action(function ($record) {
                         if ($this->isReservable($record)) {
                             return redirect()->route('catalog.show', ['product' => $record->product_id]);
@@ -70,7 +68,7 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(fn (WishlistItem $record) => $record->delete())
+                    ->action(fn (WishlistItem $record) => $record->delete()),
             ]);
     }
 
@@ -82,32 +80,33 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
     protected function getUnavailabilityReason(WishlistItem $record): ?string
     {
         $start_date = $record->start_date;
-        $end_date = $record->end_date;
-        $today = \Carbon\Carbon::today()->toDateString();
+        $end_date   = $record->end_date;
+        $today      = \Carbon\Carbon::today()->toDateString();
 
         if (\Carbon\Carbon::parse($start_date)->lt(\Carbon\Carbon::parse($today))) {
             return 'La fecha de inicio ya no es válida';
         }
 
-        $days = \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1;
+        $days     = \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1;
         $min_days = $record->product->min_days;
         if ($days < $min_days) {
             return "La reserva debe ser de al menos $min_days días";
         }
 
-        $service = new \App\Services\ProductAvailabilityService($start_date, $end_date);
+        $service  = new \App\Services\ProductAvailabilityService($start_date, $end_date);
         $products = $service->getProductsWithAvailability(100);
 
         $productData = $products->getCollection()->first(
             fn ($item) => $item['product']->id === $record->product_id
         );
 
-        if (!$productData || !$productData['has_stock']) {
+        if (! $productData || ! $productData['has_stock']) {
             return 'No hay stock actualmente';
         }
 
         return null;
     }
+
     public function render()
     {
         return view('livewire.wishlist.itemswishlist');

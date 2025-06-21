@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Wishlist;
 
 use App\Http\Controllers\Controller;
-use App\Models\Wishlist;
 use App\Http\Requests\Wishlist\StoreWishlistRequest;
-use App\Models\WishlistSublist;
-use Illuminate\Http\Response;
+use App\Models\Wishlist;
 
 class WishlistController extends Controller
 {
     public function index(Wishlist $wishlist)
     {
         $wishlist->load('sublists');
+
         return view('customer.wishlist.subwishlist-index', ['wishlist' => $wishlist]);
     }
 
@@ -33,6 +32,7 @@ class WishlistController extends Controller
         }
 
         $wishlist->delete();
+
         return redirect()->back()->with('success', 'Lista eliminada.');
     }
 }

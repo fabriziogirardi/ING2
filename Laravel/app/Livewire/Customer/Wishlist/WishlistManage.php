@@ -17,7 +17,7 @@ use Livewire\Component;
 
 class WishlistManage extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public function table(Table $table): Table
     {
@@ -44,9 +44,10 @@ class WishlistManage extends Component implements HasForms, HasTable
                             ->label('Nombre de la lista')
                             ->rule(function () {
                                 $customerId = auth('customer')->user()->id;
+
                                 return Rule::unique('wishlists', 'name')
                                     ->where('customer_id', $customerId);
-                            })
+                            }),
                     ])
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['customer_id'] = auth('customer')->user()->id;
@@ -61,7 +62,7 @@ class WishlistManage extends Component implements HasForms, HasTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->disabled(fn (Wishlist $record) => $record->sublists()->count() > 0)
-                    ->action(fn (Wishlist $record) => $record->delete())
+                    ->action(fn (Wishlist $record) => $record->delete()),
             ]);
     }
 

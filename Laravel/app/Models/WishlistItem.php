@@ -25,9 +25,9 @@ class WishlistItem extends Model
     {
         return $this->belongsTo(WishlistSublist::class, 'wishlist_sublist_id');
     }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 }
-
