@@ -189,17 +189,13 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
             return view('payment.failure');
         })->name('reservations.failure');
 
+        // Wishlist Routes
         Route::resource('wishlist', WishlistController::class)->except(['index']);
-
         Route::resource('wishlist-sublist', WishlistSublistController::class)->except(['index']);
-
         Route::resource('wishlist-item', WishlistItemController::class)->except(['index']);
-
-        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-
-        Route::get('/wishlist/{wishlist}', [WishlistSublistController::class, 'index'])->name('wishlist-sublist.index');
-
-        Route::get('/wishlist/{wishlist}/{sublist}', [WishlistItemController::class, 'index'])->name('wishlist-item.index');
+        Route::view('/wishlist', 'customer.wishlist.wishlist-index')->name('wishlist');
+        Route::get('/wishlist/{wishlist}', [WishlistController::class, 'index'])->name('subwishlist');
+        Route::get('/wishlist/{wishlist}/{subwishlist}', [WishlistItemController::class, 'index'])->name('itemslist');
 
         // Mostrar el form: pasamos el Machine sobre el que agregaremos el ítem
         Route::get('/catalog/{product}/{startDate}/{endDate}/wishlist-items/create', [WishlistItemController::class, 'create'])

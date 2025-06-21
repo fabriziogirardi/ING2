@@ -14,6 +14,7 @@
                     <div class="tooltip-arrow" data-popper-arrow=""></div>
                 </div>
 
+                @if (Auth::getCurrentGuard() === 'customer')
                 <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" data-tooltip-target="tooltip-add-to-favorites" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                     <span class="sr-only"> Agregar a lista de deseados </span>
                     <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -24,6 +25,7 @@
                     Agregar a lista de deseados
                     <div class="tooltip-arrow" data-popper-arrow=""></div>
                 </div>
+                @endif
             </div>
 
         </div>
@@ -69,7 +71,8 @@
 
 
 <!-- Main modal -->
-<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+@if (Auth::getCurrentGuard() === 'customer')
+<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-100/50 backdrop-blur-sm">
     <div class="relative p-4 w-full max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
 
@@ -92,7 +95,7 @@
                 <div class="mb-4">
                 <label for="wishlist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la lista</label>
                 <select id="wishlist_id" name="wishlist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option value="">-- elige lista --</option>
+                    <option value="">(Seleccione una lista)</option>
                     @foreach($wishlists as $list)
                         <option value="{{ $list->id }}">{{ $list->name }}</option>
                     @endforeach
@@ -105,7 +108,7 @@
             <div class="mb-4">
                 <label for="sublist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la sublista</label>
                 <select id="sublist_id" name="wishlist_sublist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option value="">-- elige sublista --</option>
+                    <option value="">(Seleccione una sublista)</option>
                 </select>
                 @error('sublist_id')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
@@ -137,7 +140,7 @@
         const selectedList = this.value;
 
         // Reset options
-        subSelect.innerHTML = '<option value="">-- elige sublista --</option>';
+        subSelect.innerHTML = '<option value="">(Seleccione una sublista)</option>';
 
         if (wishlists[selectedList]) {
             wishlists[selectedList].forEach(function(s) {
@@ -152,3 +155,4 @@
         }
     });
 </script>
+@endif

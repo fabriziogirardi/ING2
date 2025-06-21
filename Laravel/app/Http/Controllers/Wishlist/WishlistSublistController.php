@@ -9,12 +9,10 @@ use App\Http\Requests\Wishlist\StoreSublistRequest;
 
 class WishlistSublistController extends Controller
 {
-    public function index(Wishlist $wishlist)
+    public function index(WishlistSublist $subwishlist)
     {
-        return view('customer.wishlist-sublist.index', [
-            'sublists' => $wishlist->sublists()->get(),
-            'wishlist' =>  $wishlist,
-        ]);
+        $subwishlist->load('items');
+        dd($subwishlist);
     }
     public function store(Wishlist $wishlist, StoreSublistRequest $request)
     {

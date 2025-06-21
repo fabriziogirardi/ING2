@@ -60,7 +60,7 @@
                     <h1
                         class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
                     >
-                        {{ __('catalog/forms.days_to_reserve') }} {{ \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) }}
+                        {{ __('catalog/forms.days_to_reserve') }} {{ \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1 }}
                     </h1>
                 </div>
 
@@ -137,6 +137,7 @@
 
 </x-layouts.app>
 
+@if (Auth::getCurrentGuard() === 'customer')
 <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
@@ -220,3 +221,4 @@
         }
     });
 </script>
+@endif

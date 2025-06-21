@@ -9,20 +9,35 @@ use App\Models\WishlistSublist;
 use App\Models\WishlistItem;
 use App\Http\Requests\Wishlist\StoreItemRequest;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Date;
 
 class WishlistItemController extends Controller
 {
-    public function index(Wishlist $wishlist, WishlistSublist $sublist)
-    { view('customer.wishlist-item.index', [
-            'items' => $sublist->items()->get(),
-        ]);
+    public function index(Wishlist $wishlist, WishlistSublist $subwishlist)
+    {
+        $subwishlist->load('items');
+        return view('customer.wishlist.itemswishlist-index', ['subwishlist' => $subwishlist]);
     }
     public function store(StoreItemRequest $request)
     {
+        $startDate = Carbon::parse($request->start_date)->format('Y-m-d');
+        $endDate = Carbon::parse($request->end_date)->format('Y-m-d');
+
+        $exists = WishlistItem::where('wishlist_sublist_id', $request->wishlist_sublist_id)
+            ->where('product_id', $request->product_id)
+            ->where('start_date', $startDate)
+            ->where('end_date', $endDate)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with(['toast' => 'info', 'message' => 'Ya existe un producto con esas fechas.']);
+        }
+
         $sublist = WishlistSublist::findOrFail($request->input('wishlist_sublist_id'));
         $sublist->items()->create($request->validated());
-        return redirect()->back()->with('success', 'Producto agregado.');
+
+        return redirect()->back()->with(['toast' => 'success', 'message' => 'Producto guardado a tu lista de deseos.']);
     }
 
     public function show(WishlistItem $item)

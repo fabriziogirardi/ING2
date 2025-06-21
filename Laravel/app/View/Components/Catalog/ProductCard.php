@@ -7,6 +7,7 @@ use App\Models\Wishlist;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class ProductCard extends Component
@@ -25,10 +26,12 @@ class ProductCard extends Component
             ->diffInDays(Carbon::parse($endDate)) + 1 >= $productData['product']->min_days;
         $this->product = $productData['product'];
         $branchId = session('branch_id');
-        $this->wishlists = \Illuminate\Support\Facades\Auth::guard('customer')->user()
-            ->wishlists()
-            ->with('sublists:id,wishlist_id,name')
-            ->get(['id', 'name']);
+        if (Auth::getCurrentGuard() === 'customer') {
+            $this->wishlists = \Illuminate\Support\Facades\Auth::guard('customer')->user()
+                ->wishlists()
+                ->with('sublists:id,wishlist_id,name')
+                ->get(['id', 'name']);
+        }
     }
 
     /**

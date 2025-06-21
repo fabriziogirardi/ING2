@@ -10,11 +10,10 @@ use Illuminate\Http\Response;
 
 class WishlistController extends Controller
 {
-    public function index()
+    public function index(Wishlist $wishlist)
     {
-        return view('customer.wishlist-list.index', [
-            'wishlists' => Wishlist::paginate(10),
-        ]);
+        $wishlist->load('sublists');
+        return view('customer.wishlist.subwishlist-index', ['wishlist' => $wishlist]);
     }
 
     public function store(StoreWishlistRequest $request)
