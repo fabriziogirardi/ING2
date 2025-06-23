@@ -34,7 +34,6 @@ class Product extends Model
         });
         
         static::restoring(function (Product $instance) {
-            $instance->branch_products()->withTrashed()->restore();
             $productModel = $instance->product_model()->withTrashed()->first();
             if ($productModel) {
                 $productModel->restore();

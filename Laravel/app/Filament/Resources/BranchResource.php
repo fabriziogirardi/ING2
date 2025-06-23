@@ -179,10 +179,10 @@ class BranchResource extends Resource
                             return;
                         }
                         
-                        $branch_products = BranchProduct::where("branch_id", $record->id)->get();
-                        $branch_products->map(function (BranchProduct $branch_product) {
-                            $branch_product->delete();
-                        });
+                        //$branch_products = BranchProduct::where("branch_id", $record->id)->get();
+                        //$branch_products->map(function (BranchProduct $branch_product) {
+                        //    $branch_product->delete();
+                        //});
                         
                         $record->delete();
                     }),
