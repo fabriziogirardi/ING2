@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -159,7 +160,13 @@ class EmployeeResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('¿Estás seguro de que querés bloquear esta cuenta?')
                     ->modalDescription('Esta acción impedirá el acceso del usuario hasta que se desbloquee.')
-                    ->modalSubmitActionLabel('Sí, bloquear cuenta'),
+                    ->modalSubmitActionLabel('Sí, bloquear cuenta')
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Cuenta bloqueada')
+                            ->body('El usuario ya no podrá iniciar sesión.')
+                            ->success(),
+                    ),
                 Tables\Actions\RestoreAction::make()
                     ->label('Reanudar cuenta')
                     ->icon('heroicon-o-lock-open')
@@ -167,7 +174,13 @@ class EmployeeResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('¿Querés reanudar el acceso a esta cuenta?')
                     ->modalDescription('El usuario podrá volver a iniciar sesión normalmente.')
-                    ->modalSubmitActionLabel('Sí, reanudar cuenta'),
+                    ->modalSubmitActionLabel('Sí, reanudar cuenta')
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Cuenta reanudada')
+                            ->body('El usuario ahora puede iniciar sesión nuevamente.')
+                            ->success(),
+                    ),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

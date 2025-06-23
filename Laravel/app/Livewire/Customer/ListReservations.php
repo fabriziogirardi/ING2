@@ -27,7 +27,7 @@ class ListReservations extends Component implements HasForms, HasTable
                 TextColumn::make('code')
                     ->label('Código'),
                 TextColumn::make('branch_product.product.name')
-                    ->label('Producto'),
+                    ->label('Maquinaria'),
                 TextColumn::make('branch_product.branch.name')
                     ->label('Sucursal'),
                 TextColumn::make('start_date')

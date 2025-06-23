@@ -19,9 +19,9 @@ class ProductModelResource extends Resource
 {
     protected static ?string $model = ProductModel::class;
 
-    protected static ?string $modelLabel = 'modelo de producto';
+    protected static ?string $modelLabel = 'modelo de maquinaria';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationLabel = 'Modelos';
 
@@ -71,7 +71,7 @@ class ProductModelResource extends Resource
                     ]),
                 Tables\Columns\TextColumn::make('products_count')
                     ->counts('products')
-                    ->label('Cantidad de productos')
+                    ->label('Cantidad de maquinarias')
                     ->extraAttributes(fn ($record) => [
                         'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
@@ -106,7 +106,7 @@ class ProductModelResource extends Resource
                         if ($record->products()->exists()) {
                             Notification::make()
                                 ->title('No se puede eliminar')
-                                ->body('Este modelo tiene productos asociados.')
+                                ->body('Este modelo tiene maquinarias asociadas.')
                                 ->danger()
                                 ->send();
 

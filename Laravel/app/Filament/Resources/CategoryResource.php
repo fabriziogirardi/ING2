@@ -20,7 +20,7 @@ class CategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'categorías';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -64,7 +64,7 @@ class CategoryResource extends Resource
                     ->label('Subcategorías')
                     ->counts('children'),
                 TextColumn::make('products_count')
-                    ->label('Productos')
+                    ->label('Maquinarias')
                     ->counts('products'),
                 TextColumn::make('description')
                     ->label('Descripción')
@@ -116,7 +116,7 @@ class CategoryResource extends Resource
                         if ($record->products()->count() > 0) {
                             Notification::make()
                                 ->title('No se puede eliminar')
-                                ->body('Esta categoría tiene productos asociados. Por favor, elimina los productos antes de eliminar esta categoría.')
+                                ->body('Esta categoría tiene maquinarias asociadas. Por favor, elimina las maquinarias antes de eliminar esta categoría.')
                                 ->danger()
                                 ->send();
 

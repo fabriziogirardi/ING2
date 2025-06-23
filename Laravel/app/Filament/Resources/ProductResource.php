@@ -29,11 +29,11 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $modelLabel = 'producto';
+    protected static ?string $modelLabel = 'maquinaria';
 
-    protected static ?string $pluralModelLabel = 'productos';
+    protected static ?string $pluralModelLabel = 'maquinarias';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -65,7 +65,7 @@ class ProductResource extends Resource
                     ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->product_models->pluck('name', 'id') ?? collect()),
                 TextInput::make('name')
                     ->columnSpan(2)
-                    ->label('Nombre del producto')
+                    ->label('Nombre de la maquinaria')
                     ->required()
                     ->unique(ignoreRecord: true, modifyRuleUsing: function ($rule, callable $get) {
                         return $rule->where('product_model_id', $get('product_model_id'));
@@ -130,7 +130,7 @@ class ProductResource extends Resource
             ->recordUrl(null)
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nombre del producto')
+                    ->label('Nombre de la maquinaria')
                     ->extraAttributes(fn ($record) => [
                         'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
@@ -179,7 +179,7 @@ class ProductResource extends Resource
                     ->form([
                         TextInput::make('name')
                             ->columnSpan(2)
-                            ->label('Nombre del producto')
+                            ->label('Nombre de la maquinaria')
                             ->required()
                             ->unique(ignoreRecord: true, modifyRuleUsing: function ($rule, callable $get) {
                                 return $rule->where('product_model_id', $get('product_model_id'));
@@ -249,8 +249,8 @@ class ProductResource extends Resource
 
                         if ($hasPendingReservations) {
                             Notification::make()
-                                ->title('No se puede eliminar el producto')
-                                ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de este producto.')
+                                ->title('No se puede eliminar ela maquinaria')
+                                ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de esta maquinaria.')
                                 ->danger()
                                 ->send();
 
