@@ -102,24 +102,40 @@ class EmployeeResource extends Resource
             ->searchPlaceholder('Buscar por correo')
             ->columns([
                 Tables\Columns\TextColumn::make('person.first_name')
-                    ->label('Nombre'),
+                    ->label('Nombre')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('person.last_name')
-                    ->label('Apellido'),
+                    ->label('Apellido')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('person.email')
                     ->label('Correo Electrónico')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('person.full_id_number')
-                    ->label('Tipo y número de documento'),
+                    ->label('Tipo y número de documento')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('person.birth_date')
                     ->label('Fecha de Nacimiento')
-                    ->date('d/m/Y'),
+                    ->date('d/m/Y')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->trashed())
                     ->form([
                         Fieldset::make('Datos personales')
                             ->relationship('person')
@@ -137,9 +153,21 @@ class EmployeeResource extends Resource
                             ->required(fn (string $operation): bool => $operation === 'create'),
                     ]),
                 Tables\Actions\DeleteAction::make()
-                    ->label('Deshabilitar'),
+                    ->label('Bloquear cuenta')
+                    ->icon('heroicon-o-lock-closed')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Estás seguro de que querés bloquear esta cuenta?')
+                    ->modalDescription('Esta acción impedirá el acceso del usuario hasta que se desbloquee.')
+                    ->modalSubmitActionLabel('Sí, bloquear cuenta'),
                 Tables\Actions\RestoreAction::make()
-                    ->label('Habilitar'),
+                    ->label('Reanudar cuenta')
+                    ->icon('heroicon-o-lock-open')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Querés reanudar el acceso a esta cuenta?')
+                    ->modalDescription('El usuario podrá volver a iniciar sesión normalmente.')
+                    ->modalSubmitActionLabel('Sí, reanudar cuenta'),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

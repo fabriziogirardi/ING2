@@ -112,9 +112,21 @@ class CustomerResource extends Resource
                             ->dehydrated(fn (?string $state): bool => filled($state)),
                     ]),
                 Tables\Actions\DeleteAction::make()
-                    ->label('Deshabilitar'),
+                    ->label('Bloquear cuenta')
+                    ->icon('heroicon-o-lock-closed')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Estás seguro de que querés bloquear esta cuenta?')
+                    ->modalDescription('Esta acción impedirá el acceso del usuario hasta que se desbloquee.')
+                    ->modalSubmitActionLabel('Sí, bloquear cuenta'),
                 Tables\Actions\RestoreAction::make()
-                    ->label('Habilitar'),
+                    ->label('Reanudar cuenta')
+                    ->icon('heroicon-o-lock-open')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Querés reanudar el acceso a esta cuenta?')
+                    ->modalDescription('El usuario podrá volver a iniciar sesión normalmente.')
+                    ->modalSubmitActionLabel('Sí, reanudar cuenta'),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
