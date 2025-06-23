@@ -27,7 +27,10 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(WishlistItem::where('wishlist_sublist_id', $this->subwishlist->id))
+            ->query(
+                WishlistItem::where('wishlist_sublist_id', $this->subwishlist->id)
+                    ->whereHas('product')
+            )
             ->columns([
                 TextColumn::make('product.name')
                     ->label('Nombre producto'),

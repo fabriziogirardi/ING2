@@ -6,6 +6,7 @@ use App\Models\Wishlist;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\TextColumn;
@@ -61,8 +62,17 @@ class WishlistManage extends Component implements HasForms, HasTable
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->disabled(fn (Wishlist $record) => $record->sublists()->count() > 0)
-                    ->action(fn (Wishlist $record) => $record->delete()),
+                    ->action(function (Wishlist $record) {
+                        if ($record->sublists()->count() > 0) {
+                            Notification::make()
+                                ->title('No es posible eliminar la lista porque no esta vacia.')
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+                        $record->delete();
+                    }),
             ]);
     }
 

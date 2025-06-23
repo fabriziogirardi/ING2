@@ -30,20 +30,13 @@ class WishlistItemController extends Controller
             ->exists();
 
         if ($exists) {
-            return redirect()->back()->with(['toast' => 'info', 'message' => 'Ya existe un producto con esas fechas.']);
+            return redirect()->back()->with(['toast' => 'danger', 'message' => 'Ya existe una maquinaria guardada con esas fechas.']);
         }
 
         $sublist = WishlistSublist::findOrFail($request->input('wishlist_sublist_id'));
         $sublist->items()->create($request->validated());
 
-        return redirect()->back()->with(['toast' => 'success', 'message' => 'Producto guardado a tu lista de deseos.']);
-    }
-
-    public function show(WishlistItem $item)
-    {
-        $item->load('product');
-
-        return view('items.show', compact('item'));
+        return redirect()->back()->with(['toast' => 'success', 'message' => 'Maquinaria guardada en tu lista de deseos.']);
     }
 
     public function destroy(WishlistItem $item)

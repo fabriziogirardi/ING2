@@ -7,6 +7,7 @@ use App\Models\WishlistSublist;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\TextColumn;
@@ -72,8 +73,17 @@ class SubwishlistManage extends Component implements HasForms, HasTable
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->disabled(fn (WishlistSublist $record) => $record->items()->count() > 0)
-                    ->action(fn (WishlistSublist $record) => $record->delete()),
+                    ->action(function (WishlistSublist $record) {
+                        if ($record->items()->count() > 0) {
+                            Notification::make()
+                                ->title('No es posible eliminar la sublista porque no esta vacia.')
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+                        $record->delete();
+                    }),
             ]);
     }
 
