@@ -19,11 +19,13 @@ use Filament\Tables\Table;
 class PersonResource extends Resource
 {
     protected static ?string $model = Person::class;
+
     protected static ?string $modelLabel = 'persona';
 
     protected static ?string $pluralModelLabel = 'personas';
 
     protected static ?string $navigationLabel = 'Personas';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -118,9 +120,9 @@ class PersonResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
+                // Tables\Actions\BulkActionGroup::make([
                 //    Tables\Actions\DeleteBulkAction::make(),
-                //]),
+                // ]),
             ]);
     }
 
@@ -135,9 +137,9 @@ class PersonResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPeople::route('/'),
-            //'create' => Pages\CreatePerson::route('/create'),
-            //'edit'   => Pages\EditPerson::route('/{record}/edit'),
+            'index' => Pages\ListPeople::route('/'),
+            // 'create' => Pages\CreatePerson::route('/create'),
+            // 'edit'   => Pages\EditPerson::route('/{record}/edit'),
         ];
     }
 }

@@ -50,7 +50,7 @@ class ProductModelResource extends Resource
                     ->maxLength(255),
             ]);
     }
-    
+
     /**
      * @throws \Exception
      */
@@ -62,18 +62,18 @@ class ProductModelResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 Tables\Columns\TextColumn::make('product_brand.name')
                     ->label('Marca')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 Tables\Columns\TextColumn::make('products_count')
                     ->counts('products')
                     ->label('Cantidad de productos')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
             ])
             ->filters([
@@ -109,11 +109,12 @@ class ProductModelResource extends Resource
                                 ->body('Este modelo tiene productos asociados.')
                                 ->danger()
                                 ->send();
+
                             return;
                         }
-                        
+
                         $record->delete();
-                        
+
                         Notification::make()
                             ->title('Modelo eliminado')
                             ->body('El modelo ha sido eliminado correctamente.')
@@ -123,9 +124,9 @@ class ProductModelResource extends Resource
                 Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
+                // Tables\Actions\BulkActionGroup::make([
                 //    Tables\Actions\DeleteBulkAction::make(),
-                //]),
+                // ]),
             ]);
     }
 
@@ -135,7 +136,7 @@ class ProductModelResource extends Resource
             //
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()

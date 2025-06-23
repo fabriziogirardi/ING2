@@ -3,36 +3,19 @@
 namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Forms\PersonAdvancedForm;
-use App\Filament\Forms\PersonForm;
 use App\Filament\Resources\EmployeeResource;
-use App\Filament\Resources\PersonResource;
 use App\Models\Customer;
-use App\Models\Employee;
-use App\Models\GovernmentIdType;
-use App\Models\Person;
 use Filament\Actions;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\HtmlString;
-use Illuminate\Validation\Rules\Unique;
-use Illuminate\Validation\ValidationException;
 
 class ListEmployees extends ListRecords
 {
     protected static string $resource = EmployeeResource::class;
 
     protected static ?string $title = 'Empleados';
-    
+
     protected function getHeaderActions(): array
     {
         return [
@@ -47,6 +30,7 @@ class ListEmployees extends ListRecords
                                     if ($get('soft_deleted_exists')) {
                                         return 'Contraseña (Existente)';
                                     }
+
                                     return 'Contraseña (Nueva)';
                                 })
                                 ->password()
@@ -55,12 +39,14 @@ class ListEmployees extends ListRecords
                                     if ($get('soft_deleted_exists')) {
                                         return 'Se mantendrá la contraseña existente';
                                     }
+
                                     return 'Ingrese una contraseña para el empleado';
                                 })
                                 ->helperText(function (Get $get) {
                                     if ($get('soft_deleted_exists')) {
                                         return '🔄 Al reactivar este empleado, mantendrá su contraseña anterior.';
                                     }
+
                                     return '🔐 Ingrese una contraseña para el empleado.';
                                 })
                                 ->suffixIcon(function (Get $get) {
@@ -71,10 +57,9 @@ class ListEmployees extends ListRecords
                                         ? ['style' => 'background-color: #fef3c7; border-color: #f59e0b;']
                                         : [];
                                 })
-                                ->required(fn (Get $get) =>
-                                    !empty($get('email_search')) &&
+                                ->required(fn (Get $get) => ! empty($get('email_search')) &&
                                     $get('relation_exists') === false &&
-                                    !$get('soft_deleted_exists')
+                                    ! $get('soft_deleted_exists')
                                 ),
                         ]
                     )
@@ -85,7 +70,7 @@ class ListEmployees extends ListRecords
                 ->using(function (array $data) {
                     try {
                         $personId = PersonAdvancedForm::getOrCreatePersonId($data, PersonAdvancedForm::TYPE_EMPLOYEE);
-                        
+
                         return Customer::create([
                             'person_id' => $personId,
                         ]);
@@ -93,6 +78,7 @@ class ListEmployees extends ListRecords
                         // Si es una restauración, extraer el ID y retornar el registro restaurado
                         if (str_starts_with($e->getMessage(), 'RESTORED:')) {
                             $customerId = (int) str_replace('RESTORED:', '', $e->getMessage());
+
                             return Customer::find($customerId);
                         }
                         throw $e;

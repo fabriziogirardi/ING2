@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('government_id_types', function (Blueprint $table) {
             $table->softDeletes();
-            
+
         });
     }
 

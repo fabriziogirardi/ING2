@@ -5,7 +5,6 @@ namespace App\Filament\Resources\PersonResource\Pages;
 use App\Filament\Resources\PersonResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Table;
 
 class ListPeople extends ListRecords
 {
@@ -14,7 +13,7 @@ class ListPeople extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            //Actions\CreateAction::make(),
+            // Actions\CreateAction::make(),
         ];
     }
 }

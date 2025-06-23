@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\ProductAvailabilityService;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CatalogController extends Controller
 {
@@ -18,14 +18,15 @@ class CatalogController extends Controller
 
         if ($start_date && $end_date) {
             session(['start_date' => $start_date, 'end_date' => $end_date]);
-            $service = new ProductAvailabilityService($start_date, $end_date);
+            $service  = new ProductAvailabilityService($start_date, $end_date);
             $products = $service->getProductsWithAvailability();
 
             $diff = Carbon::parse($start_date)->diffInDays(Carbon::parse($end_date));
             $products->getCollection()->transform(function ($item) use ($diff) {
-                $minDays = $item['product']->min_days ?? 1;
+                $minDays                = $item['product']->min_days ?? 1;
                 $item['meets_min_days'] = $diff >= $minDays;
-                $item['min_days'] = $minDays;
+                $item['min_days']       = $minDays;
+
                 return $item;
             });
         } else {

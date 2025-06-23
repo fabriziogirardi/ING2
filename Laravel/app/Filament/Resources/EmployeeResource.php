@@ -6,17 +6,12 @@ use App\Filament\Forms\PersonAdvancedForm;
 use App\Filament\Forms\PersonForm;
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Models\Employee;
-use App\Models\Person;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -36,7 +31,7 @@ class EmployeeResource extends Resource
     protected static ?string $navigationGroup = 'Cuentas';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    
+
     public static function form(Form $form): Form
     {
         return $form->schema(
@@ -52,15 +47,14 @@ class EmployeeResource extends Resource
                         ->minLength(3)
                         ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                         ->dehydrated(fn (?string $state): bool => filled($state))
-                        ->required(fn (Get $get) =>
-                            !empty($get('email_search')) &&
+                        ->required(fn (Get $get) => ! empty($get('email_search')) &&
                             $get('relation_exists') === false
                         ),
                 ]
             )
         );
     }
-    
+
     protected static function getNewPersonFields(): array
     {
         return [
@@ -173,9 +167,9 @@ class EmployeeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListEmployees::route('/'),
-            //'create' => Pages\CreateEmployee::route('/create'),
-            //'edit'   => Pages\EditEmployee::route('/{record}/edit'),
+            'index' => Pages\ListEmployees::route('/'),
+            // 'create' => Pages\CreateEmployee::route('/create'),
+            // 'edit'   => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }
 

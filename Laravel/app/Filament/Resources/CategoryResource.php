@@ -69,7 +69,7 @@ class CategoryResource extends Resource
                 TextColumn::make('description')
                     ->label('Descripción')
                     ->limit(20)
-                    ->placeholder("Sin descripción"),
+                    ->placeholder('Sin descripción'),
                 TextColumn::make('slug')
                     ->label('Slug')
                     ->limit(20)
@@ -109,22 +109,22 @@ class CategoryResource extends Resource
                                 ->body('Esta categoría tiene subcategorías. Por favor, elimina las subcategorías antes de eliminar esta categoría.')
                                 ->danger()
                                 ->send();
-                            
+
                             return;
                         }
-                        
+
                         if ($record->products()->count() > 0) {
                             Notification::make()
                                 ->title('No se puede eliminar')
                                 ->body('Esta categoría tiene productos asociados. Por favor, elimina los productos antes de eliminar esta categoría.')
                                 ->danger()
                                 ->send();
-                            
+
                             return;
                         }
-                        
+
                         $record->delete();
-                        
+
                         Notification::make()
                             ->title('Categoría eliminada')
                             ->body('La categoría ha sido eliminada correctamente.')
@@ -133,9 +133,9 @@ class CategoryResource extends Resource
                     })->requiresConfirmation(),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
+                // Tables\Actions\BulkActionGroup::make([
                 //    Tables\Actions\DeleteBulkAction::make(),
-                //]),
+                // ]),
             ]);
     }
 
@@ -150,8 +150,8 @@ class CategoryResource extends Resource
     {
         return [
             'index' => Pages\ListCategories::route('/'),
-            //'create' => Pages\CreateCategory::route('/create'),
-            //'edit' => Pages\EditCategory::route('/{record}/edit'),
+            // 'create' => Pages\CreateCategory::route('/create'),
+            // 'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 

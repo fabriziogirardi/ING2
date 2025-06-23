@@ -6,7 +6,6 @@ use App\Filament\Resources\BranchResource\Pages;
 use App\Models\Branch;
 use App\Models\BranchProduct;
 use App\Models\Reservation;
-use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
@@ -25,20 +24,19 @@ use Illuminate\Support\Facades\Http;
 
 class BranchResource extends Resource
 {
-    protected static ?string $model            = Branch::class;
-    
-    protected static ?string $modelLabel       = 'sucursal';
-    
+    protected static ?string $model = Branch::class;
+
+    protected static ?string $modelLabel = 'sucursal';
+
     protected static ?string $pluralModelLabel = 'sucursales';
-    
-    protected static ?string $navigationLabel  = 'Sucursales';
-    
-    protected static ?string $navigationIcon   = 'heroicon-o-building-storefront';
-    
-    public static
-    function form(
+
+    protected static ?string $navigationLabel = 'Sucursales';
+
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+
+    public static function form(
         Form $form,
-    ) : Form {
+    ): Form {
         return $form
             ->schema([
                 TextInput::make('name')
@@ -61,7 +59,7 @@ class BranchResource extends Resource
                     ->autocomplete('address')
                     ->autocompleteReverse()
                     ->defaultZoom(15)
-                    ->defaultLocation(fn($get) => $get('default_location') ?: ['-34.921346366044', '-57.954496631585'])
+                    ->defaultLocation(fn ($get) => $get('default_location') ?: ['-34.921346366044', '-57.954496631585'])
                     ->draggable()
                     ->clickable()
                     ->mapControls([
@@ -78,22 +76,22 @@ class BranchResource extends Resource
                         if (isset($state['lng'])) {
                             $set('longitude', $state['lng']);
                         }
-                        
+
                         if (isset($state['lat'], $state['lng'])) {
                             $apiKey   = config('credentials.google_maps.private_api_key');
                             $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
                                 'latlng' => "{$state['lat']},{$state['lng']}",
                                 'key'    => $apiKey,
                             ]);
-                            
+
                             if ($response->successful()) {
                                 $results = $response->json('results');
-                                if (!empty($results)) {
+                                if (! empty($results)) {
                                     $first = $results[0];
-                                    
+
                                     // Dirección completa
                                     $set('address', $first['formatted_address'] ?? null);
-                                    
+
                                     // place_id
                                     if (isset($first['place_id'])) {
                                         $set('place_id', $first['place_id']);
@@ -122,30 +120,29 @@ class BranchResource extends Resource
                     ]),
             ]);
     }
-    
-    public static
-    function table(
+
+    public static function table(
         Table $table,
-    ) : Table {
+    ): Table {
         return $table
             ->recordUrl(null)
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('address')
                     ->label('Dirección')
                     ->limit(60)
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('description')
                     ->label('Descripción')
                     ->limit(50)
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
             ])
             ->filters([
@@ -156,34 +153,34 @@ class BranchResource extends Resource
                     ->hidden(fn (Branch $record) => $record->trashed()),
                 Tables\Actions\DeleteAction::make()
                     ->action(function (Branch $record) {
-                        $hasPendingReservations = Reservation::whereRelation("branch_product", "branch_id", $record->id)
+                        $hasPendingReservations = Reservation::whereRelation('branch_product', 'branch_id', $record->id)
                             ->where(function (Builder $q) {
                                 $q->where(function (Builder $subQ) {
                                     // Reservas futuras (no retiradas y end_date >= hoy)
-                                    $subQ->whereDoesntHave("retired")
-                                        ->where("end_date", ">=", now()->format("Y-m-d"));
+                                    $subQ->whereDoesntHave('retired')
+                                        ->where('end_date', '>=', now()->format('Y-m-d'));
                                 })->orWhere(function (Builder $subQ) {
                                     // Retiradas pero no devueltas
-                                    $subQ->whereHas("retired")->whereDoesntHave("returned");
+                                    $subQ->whereHas('retired')->whereDoesntHave('returned');
                                 });
                             })
                             ->exists();
-                        
+
                         if ($hasPendingReservations) {
                             Notification::make()
                                 ->title('No se puede eliminar la sucursal')
                                 ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de esta sucursal.')
                                 ->danger()
                                 ->send();
-                            
+
                             return;
                         }
-                        
-                        //$branch_products = BranchProduct::where("branch_id", $record->id)->get();
-                        //$branch_products->map(function (BranchProduct $branch_product) {
+
+                        // $branch_products = BranchProduct::where("branch_id", $record->id)->get();
+                        // $branch_products->map(function (BranchProduct $branch_product) {
                         //    $branch_product->delete();
-                        //});
-                        
+                        // });
+
                         $record->delete();
                     }),
                 Tables\Actions\RestoreAction::make()
@@ -191,20 +188,19 @@ class BranchResource extends Resource
                     ->color('danger'),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
+                // Tables\Actions\BulkActionGroup::make([
                 //    Tables\Actions\DeleteBulkAction::make(),
-                //]),
+                // ]),
             ]);
     }
-    
-    public static
-    function getRelations() : array
+
+    public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -212,9 +208,8 @@ class BranchResource extends Resource
                 SoftDeletingScope::class,
             ])->withTrashed();
     }
-    
-    public static
-    function getPages() : array
+
+    public static function getPages(): array
     {
         return [
             'index'  => Pages\ListBranches::route('/'),

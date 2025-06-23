@@ -19,7 +19,7 @@ class Branch extends Model
 {
     /** @use HasFactory<\Database\Factories\BranchFactory> */
     use HasFactory, SoftDeletes;
-    
+
     public static function boot()
     {
         parent::boot();
@@ -30,11 +30,11 @@ class Branch extends Model
             });
         });
 
-        //static::restoring(function (Branch $instance) {
+        // static::restoring(function (Branch $instance) {
         //    $instance->products()->withTrashed()->each(function ($product) {
         //        $product->pivot->restore();
         //    });
-        //});
+        // });
     }
 
     protected $fillable = [
@@ -64,7 +64,7 @@ class Branch extends Model
             ->wherePivot('deleted_at', null)
             ->as('stock');
     }
-    
+
     public function branch_products(): HasMany
     {
         return $this->hasMany(BranchProduct::class, 'branch_id', 'id');

@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\ProductResource\RelationManagers;
 
-use App\Models\Branch;
 use App\Models\BranchProduct;
-use App\Models\Reservation;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -17,7 +15,7 @@ use Filament\Tables\Table;
 class BranchesRelationManager extends RelationManager
 {
     protected static string $relationship = 'branches';
-    
+
     // Método moderno para modificar la consulta base
     public function modifyRelationshipQuery(\Illuminate\Database\Eloquent\Builder $query, ?string $filter = null): \Illuminate\Database\Eloquent\Builder
     {
@@ -39,7 +37,7 @@ class BranchesRelationManager extends RelationManager
                     ->maxValue(9999999),
             ]);
     }
-    
+
     /**
      * @throws \Exception
      */
@@ -74,19 +72,19 @@ class BranchesRelationManager extends RelationManager
                     ])
                     ->action(function (array $data, $livewire) {
                         $productId = $livewire->getOwnerRecord()->id;
-                        $branchId = $data['recordId'];
-                        
+                        $branchId  = $data['recordId'];
+
                         // Verificar si existe un registro soft deleted
                         $existingPivot = BranchProduct::withTrashed()
                             ->where('product_id', $productId)
                             ->where('branch_id', $branchId)
                             ->first();
-                        
+
                         if ($existingPivot && $existingPivot->trashed()) {
                             // Restaurar el registro soft deleted y actualizar la cantidad
                             $existingPivot->restore();
                             $existingPivot->update(['quantity' => $data['quantity']]);
-                            
+
                             Notification::make()
                                 ->title('Stock restaurado')
                                 ->body('El stock de la sucursal ha sido restaurado y actualizado.')
@@ -95,7 +93,7 @@ class BranchesRelationManager extends RelationManager
                         } elseif ($existingPivot) {
                             // Si existe y no está eliminado, actualizar cantidad
                             $existingPivot->update(['quantity' => $data['quantity']]);
-                            
+
                             Notification::make()
                                 ->title('Stock actualizado')
                                 ->body('La cantidad de stock ha sido actualizada.')
@@ -105,10 +103,10 @@ class BranchesRelationManager extends RelationManager
                             // Crear nuevo registro
                             BranchProduct::create([
                                 'product_id' => $productId,
-                                'branch_id' => $branchId,
-                                'quantity' => $data['quantity'],
+                                'branch_id'  => $branchId,
+                                'quantity'   => $data['quantity'],
                             ]);
-                            
+
                             Notification::make()
                                 ->title('Stock agregado')
                                 ->body('El stock ha sido agregado a la sucursal.')

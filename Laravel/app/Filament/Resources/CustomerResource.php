@@ -7,9 +7,7 @@ use App\Filament\Forms\PersonForm;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
 use Exception;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -20,7 +18,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Unique;
 
 class CustomerResource extends Resource
 {
@@ -35,7 +32,7 @@ class CustomerResource extends Resource
     protected static ?string $navigationGroup = 'Cuentas';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    
+
     public static function form(Form $form): Form
     {
         return $form->schema(
@@ -47,8 +44,7 @@ class CustomerResource extends Resource
                         ->placeholder('Código único del cliente')
                         ->maxLength(50)
                         ->unique(Customer::class, 'customer_code')
-                        ->required(fn (Get $get) =>
-                            !empty($get('email_search')) &&
+                        ->required(fn (Get $get) => ! empty($get('email_search')) &&
                             $get('relation_exists') === false
                         ),
                     Textarea::make('notes')
@@ -73,25 +69,25 @@ class CustomerResource extends Resource
                 Tables\Columns\TextColumn::make('person.first_name')
                     ->label('Nombre')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 Tables\Columns\TextColumn::make('person.last_name')
                     ->label('Apellido')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 Tables\Columns\TextColumn::make('person.email')
                     ->label('Correo Electrónico')
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 Tables\Columns\ViewColumn::make('rating')
                     ->view('filament.tables.columns.rating')
                     ->state(fn ($record) => $record->trashed() ? null : $record->rating)
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'hidden' : ''
+                        'class' => $record->trashed() ? 'hidden' : '',
                     ]),
             ])
             ->filters([
@@ -121,9 +117,9 @@ class CustomerResource extends Resource
                     ->label('Habilitar'),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
+                // Tables\Actions\BulkActionGroup::make([
                 //    Tables\Actions\DeleteBulkAction::make(),
-                //]),
+                // ]),
             ]);
     }
 
@@ -132,7 +128,7 @@ class CustomerResource extends Resource
         return [
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -144,9 +140,9 @@ class CustomerResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListCustomers::route('/'),
-            //'create' => Pages\CreateCustomer::route('/create'),
-            //'edit'   => Pages\EditCustomer::route('/{record}/edit'),
+            'index' => Pages\ListCustomers::route('/'),
+            // 'create' => Pages\CreateCustomer::route('/create'),
+            // 'edit'   => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }
 

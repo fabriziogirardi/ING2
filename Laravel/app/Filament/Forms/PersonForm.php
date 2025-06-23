@@ -8,7 +8,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Illuminate\Validation\Rules\Unique;
 
-class PersonForm {
+class PersonForm
+{
     public static function getFormFields(): array
     {
         return [

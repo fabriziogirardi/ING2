@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\BranchesRelationManager;
-use App\Models\BranchProduct;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBrand;
@@ -121,7 +120,7 @@ class ProductResource extends Resource
                     ->required(),
             ]);
     }
-    
+
     /**
      * @throws \Exception
      */
@@ -133,35 +132,35 @@ class ProductResource extends Resource
                 TextColumn::make('name')
                     ->label('Nombre del producto')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('product_model.product_brand.name')
                     ->label('Marca')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('product_model.name')
                     ->label('Modelo')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('price')
                     ->label('Precio')
                     ->money('ARS', 0, 'es')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('min_days')
                     ->label('Días mínimos')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 TextColumn::make('categories.fully_qualified_name')
                     ->label('Categorías')
                     ->limit(25)
                     ->badge()
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 ImageColumn::make('images_json')
                     ->label('Imágenes')
@@ -235,29 +234,29 @@ class ProductResource extends Resource
                     ]),
                 Tables\Actions\DeleteAction::make()
                     ->action(function (Product $record) {
-                        $hasPendingReservations = Reservation::whereRelation("branch_product", "product_id", $record->id)
+                        $hasPendingReservations = Reservation::whereRelation('branch_product', 'product_id', $record->id)
                             ->where(function (Builder $q) {
                                 $q->where(function (Builder $subQ) {
                                     // Reservas futuras (no retiradas y end_date >= hoy)
-                                    $subQ->whereDoesntHave("retired")
-                                        ->where("end_date", ">=", now()->format("Y-m-d"));
+                                    $subQ->whereDoesntHave('retired')
+                                        ->where('end_date', '>=', now()->format('Y-m-d'));
                                 })->orWhere(function (Builder $subQ) {
                                     // Retiradas pero no devueltas
-                                    $subQ->whereHas("retired")->whereDoesntHave("returned");
+                                    $subQ->whereHas('retired')->whereDoesntHave('returned');
                                 });
                             })
                             ->exists();
-                        
+
                         if ($hasPendingReservations) {
                             Notification::make()
                                 ->title('No se puede eliminar el producto')
                                 ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de este producto.')
                                 ->danger()
                                 ->send();
-                            
+
                             return;
                         }
-                        
+
                         $record->delete();
                     })
                     ->requiresConfirmation()
@@ -277,7 +276,7 @@ class ProductResource extends Resource
             BranchesRelationManager::class,
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -299,6 +298,7 @@ class ProductResource extends Resource
     {
         /** @var Product $model */
         $model = static::getModel();
+
         return $model::count();
     }
 }

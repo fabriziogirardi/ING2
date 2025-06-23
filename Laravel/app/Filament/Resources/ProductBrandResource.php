@@ -33,7 +33,7 @@ class ProductBrandResource extends Resource
                 //
             ]);
     }
-    
+
     /**
      * @throws \Exception
      */
@@ -46,13 +46,13 @@ class ProductBrandResource extends Resource
                     ->sortable()
                     ->label('Nombre de la marca')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
                 Tables\Columns\TextColumn::make('product_models_count')
                     ->counts('product_models')
                     ->label('Cantidad de modelos')
                     ->extraAttributes(fn ($record) => [
-                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
             ])
             ->filters([
@@ -76,11 +76,12 @@ class ProductBrandResource extends Resource
                                 ->body('Esta marca tiene modelos asociados.')
                                 ->danger()
                                 ->send();
+
                             return;
                         }
-                        
+
                         $record->delete();
-                        
+
                         Notification::make()
                             ->title('Marca eliminada')
                             ->body('La marca ha sido eliminada correctamente.')
@@ -90,9 +91,9 @@ class ProductBrandResource extends Resource
                 Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
-                //Tables\Actions\BulkActionGroup::make([
+                // Tables\Actions\BulkActionGroup::make([
                 //    Tables\Actions\DeleteBulkAction::make(),
-                //]),
+                // ]),
             ]);
     }
 
@@ -102,7 +103,7 @@ class ProductBrandResource extends Resource
             //
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -124,6 +125,7 @@ class ProductBrandResource extends Resource
     {
         /** @var \Illuminate\Database\Eloquent\Builder $model */
         $model = static::getModel();
+
         return $model::count();
     }
 }
