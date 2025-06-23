@@ -1,6 +1,6 @@
 <x-layouts.app>
     <x-slot:title>
-        Productos
+        Maquinarias Deseadas
     </x-slot:title>
 
     <div>

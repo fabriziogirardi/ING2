@@ -62,6 +62,10 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
                     ->disabled(fn ($record) => ! $this->isReservable($record))
                     ->action(function ($record) {
                         if ($this->isReservable($record)) {
+                            session([
+                                'start_date' => $record->start_date,
+                                'end_date' => $record->end_date,
+                            ]);
                             return redirect()->route('catalog.show', ['product' => $record->product_id]);
                         }
                     }),
@@ -84,6 +88,7 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
     {
         $start_date = $record->start_date;
         $end_date   = $record->end_date;
+
         $today      = \Carbon\Carbon::today()->toDateString();
 
         if (\Carbon\Carbon::parse($start_date)->lt(\Carbon\Carbon::parse($today))) {
