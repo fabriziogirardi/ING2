@@ -142,8 +142,10 @@ class EmployeeResource extends Resource
                             ->dehydrated(fn (?string $state): bool => filled($state))
                             ->required(fn (string $operation): bool => $operation === 'create'),
                     ]),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Deshabilitar'),
+                Tables\Actions\RestoreAction::make()
+                    ->label('Habilitar'),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

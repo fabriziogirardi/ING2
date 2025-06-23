@@ -115,8 +115,10 @@ class CustomerResource extends Resource
                             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                             ->dehydrated(fn (?string $state): bool => filled($state)),
                     ]),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Deshabilitar'),
+                Tables\Actions\RestoreAction::make()
+                    ->label('Habilitar'),
             ])
             ->bulkActions([
                 //Tables\Actions\BulkActionGroup::make([
