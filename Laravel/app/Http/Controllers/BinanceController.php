@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\BranchProduct;
+use App\Models\Customer;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\Customer;
 
 class BinanceController extends Controller
 {
@@ -34,7 +34,7 @@ class BinanceController extends Controller
     {
         $customer = Customer::whereRelation('person', 'email', $request->customer_email)->first();
 
-        if (!$customer) {
+        if (! $customer) {
             return back()->withErrors(['customer_email' => 'El correo no corresponde a ningún cliente registrado.'])->withInput();
         }
 

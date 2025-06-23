@@ -14,6 +14,9 @@
                     <a href="{{ route('customer.list-reservations') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ver Historial de Reservas</a>
                 </li>
                 <li>
+                    <a href="{{ route('customer.wishlist') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Lista de deseados</a>
+                </li>
+                <li>
                     <a href="{{ route('customer.password.reset') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Cambiar Contraseña</a>
                 </li>
             </ul>

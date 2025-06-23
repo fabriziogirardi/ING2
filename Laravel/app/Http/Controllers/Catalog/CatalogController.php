@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Services\ProductAvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CatalogController extends Controller
 {
@@ -34,6 +35,13 @@ class CatalogController extends Controller
         $start_date = session('start_date') ?? now()->toDateString();
         $end_date   = session('end_date') ?? now()->addDays(3)->toDateString();
         $today      = Carbon::today()->format('m/d/Y');
+        $wishlist   = '';
+        if (Auth::getCurrentGuard() === 'customer') {
+            $wishlist = \Illuminate\Support\Facades\Auth::guard('customer')->user()
+                ->wishlists()
+                ->with('sublists:id,wishlist_id,name')
+                ->get(['id', 'name']);
+        }
 
         return view('catalog.show', [
             'product'             => $product,
@@ -41,6 +49,7 @@ class CatalogController extends Controller
             'start_date'          => $start_date,
             'end_date'            => $end_date,
             'today'               => $today,
+            'wishlists'           => $wishlist,
         ]);
     }
 }

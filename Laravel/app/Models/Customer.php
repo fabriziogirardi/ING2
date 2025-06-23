@@ -6,6 +6,7 @@ use App\Mail\NewCustomerCreated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
@@ -74,6 +75,11 @@ class Customer extends Authenticatable
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
+    }
+
+    public function wishlists(): HasMany
+    {
+        return $this->HasMany(Wishlist::class);
     }
 
     public function scopeFindByGovernmentId(Builder $query, string $idNumber, int $idType): Builder
