@@ -17,6 +17,13 @@ use Filament\Tables\Table;
 class BranchesRelationManager extends RelationManager
 {
     protected static string $relationship = 'branches';
+    
+    // Método moderno para modificar la consulta base
+    public function modifyRelationshipQuery(\Illuminate\Database\Eloquent\Builder $query, ?string $filter = null): \Illuminate\Database\Eloquent\Builder
+    {
+        // Incluir registros soft deleted de la tabla pivot
+        return $query->withTrashed();
+    }
 
     public function form(Form $form): Form
     {
@@ -32,7 +39,10 @@ class BranchesRelationManager extends RelationManager
                     ->maxValue(9999999),
             ]);
     }
-
+    
+    /**
+     * @throws \Exception
+     */
     public function table(Table $table): Table
     {
         return $table
@@ -61,29 +71,54 @@ class BranchesRelationManager extends RelationManager
                         TextInput::make('quantity')
                             ->required()
                             ->label('Cantidad'),
-                    ]),
+                    ])
+                    ->action(function (array $data, $livewire) {
+                        $productId = $livewire->getOwnerRecord()->id;
+                        $branchId = $data['recordId'];
+                        
+                        // Verificar si existe un registro soft deleted
+                        $existingPivot = BranchProduct::withTrashed()
+                            ->where('product_id', $productId)
+                            ->where('branch_id', $branchId)
+                            ->first();
+                        
+                        if ($existingPivot && $existingPivot->trashed()) {
+                            // Restaurar el registro soft deleted y actualizar la cantidad
+                            $existingPivot->restore();
+                            $existingPivot->update(['quantity' => $data['quantity']]);
+                            
+                            Notification::make()
+                                ->title('Stock restaurado')
+                                ->body('El stock de la sucursal ha sido restaurado y actualizado.')
+                                ->success()
+                                ->send();
+                        } elseif ($existingPivot) {
+                            // Si existe y no está eliminado, actualizar cantidad
+                            $existingPivot->update(['quantity' => $data['quantity']]);
+                            
+                            Notification::make()
+                                ->title('Stock actualizado')
+                                ->body('La cantidad de stock ha sido actualizada.')
+                                ->success()
+                                ->send();
+                        } else {
+                            // Crear nuevo registro
+                            BranchProduct::create([
+                                'product_id' => $productId,
+                                'branch_id' => $branchId,
+                                'quantity' => $data['quantity'],
+                            ]);
+                            
+                            Notification::make()
+                                ->title('Stock agregado')
+                                ->body('El stock ha sido agregado a la sucursal.')
+                                ->success()
+                                ->send();
+                        }
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make()
-                    ->action(function (Branch $record, array $data) {
-                        if (Reservation::where('branch_product_id', $record->pivot_id)
-                            ->where('start_date', ">=", now()->format('Y-m-d'))
-                            ->whereDoesntHave('retired')
-                            ->exists()
-                        ) {
-                            Notification::make()
-                                ->title('No se puede eliminar')
-                                ->body('No se puede eliminar el stock de esta sucursal porque tiene reservas pendientes.')
-                                ->danger()
-                                ->send();
-                            
-                            return;
-                        }
-                       
-                        $record->delete();
-                    }),
-                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

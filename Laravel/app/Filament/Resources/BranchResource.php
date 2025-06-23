@@ -169,7 +169,12 @@ class BranchResource extends Resource
                         }
                         
                         $record->delete();
+                        $record->products()->delete();
                     }),
+                Tables\Actions\RestoreAction::make()
+                    ->label('Restaurar')
+                    ->color('danger')
+                    ->disabled(),
             ])
             ->bulkActions([
                 //Tables\Actions\BulkActionGroup::make([
