@@ -62,6 +62,7 @@ class FooterElementResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 IconColumn::make('icon')->label('Icono'),
                 TextColumn::make('link')->label('Link'),

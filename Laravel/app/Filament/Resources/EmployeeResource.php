@@ -2,14 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\PersonAdvancedForm;
+use App\Filament\Forms\PersonForm;
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Models\Employee;
+use App\Models\Person;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -29,63 +36,66 @@ class EmployeeResource extends Resource
     protected static ?string $navigationGroup = 'Cuentas';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Select::make('person_id')
-                    ->label('Email')
-                    ->relationship(name: 'person', titleAttribute: 'email')
-                    ->preload()
-                    ->required()
-                    ->placeholder('Ingrese un correo')
-                    ->searchable()
-                    ->createOptionForm([
-                        TextInput::make('first_name')
-                            ->label('Nombre')
-                            ->required(),
-                        TextInput::make('last_name')
-                            ->label('Apellido')
-                            ->required(),
-                        TextInput::make('email')
-                            ->label('Correo Electrónico')
-                            ->required()
-                            ->unique(ignoreRecord: Employee::class)
-                            ->email(),
-                        DatePicker::make('birth_date')
-                            ->label('Fecha de Nacimiento')
-                            ->required()
-                            ->displayFormat('d/m/Y')
-                            ->maxDate(now()->subYears(18))
-                            ->date(),
-                        Select::make('government_id_type_id')
-                            ->label('Tipo de documento')
-                            ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
-                            ->required()
-                            ->default(1),
-                        TextInput::make('government_id_number')
-                            ->label('Número de documento')
-                            ->unique(modifyRuleUsing: function (Unique $rule, Get $get) {
-                                return $rule->where('government_id_type_id', $get('government_id_type_id'));
-                            })
-                            ->required()
-                            ->minLength(3)
-                            ->maxLength(255)
-                            ->string(),
-                    ]),
-                TextInput::make('password')
-                    ->label('Contraseña')
-                    ->password()
-                    ->revealable()
-                    ->placeholder(fn (?string $operation): string => $operation === 'create' ? 'Ingresa una contraseña' : 'Deja en blanco para no cambiar la contraseña')
-                    ->default('')
-                    ->maxLength(255)
-                    ->minLength(3)
-                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state))
-                    ->required(fn (string $operation): bool => $operation === 'create'),
-            ]);
+        return $form->schema(
+            PersonAdvancedForm::getSchema(
+                type: PersonAdvancedForm::TYPE_EMPLOYEE,
+                additionalFields: [
+                    TextInput::make('password')
+                        ->label('Contraseña')
+                        ->password()
+                        ->revealable()
+                        ->placeholder('Ingresa una contraseña')
+                        ->maxLength(255)
+                        ->minLength(3)
+                        ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                        ->dehydrated(fn (?string $state): bool => filled($state))
+                        ->required(fn (Get $get) =>
+                            !empty($get('email_search')) &&
+                            $get('relation_exists') === false
+                        ),
+                ]
+            )
+        );
+    }
+    
+    protected static function getNewPersonFields(): array
+    {
+        return [
+            TextInput::make('person_data.first_name')
+                ->label('Nombre')
+                ->required()
+                ->minLength(3)
+                ->maxLength(255),
+            TextInput::make('person_data.last_name')
+                ->label('Apellido')
+                ->required()
+                ->minLength(3)
+                ->maxLength(255),
+            DatePicker::make('person_data.birth_date')
+                ->label('Fecha de Nacimiento')
+                ->required()
+                ->displayFormat('d/m/Y')
+                ->maxDate(now()->subYears(18)),
+            Select::make('person_data.government_id_type_id')
+                ->label('Tipo de documento')
+                ->relationship('governmentIdType', 'name', fn ($query) => $query->orderBy('id'))
+                ->required()
+                ->default(1),
+            TextInput::make('person_data.government_id_number')
+                ->label('Número de documento')
+                ->required()
+                ->unique(
+                    table: 'people',
+                    modifyRuleUsing: function (Unique $rule, Get $get) {
+                        return $rule->where('government_id_type_id', $get('person_data.government_id_type_id'));
+                    }
+                )
+                ->minLength(3)
+                ->maxLength(255),
+        ];
     }
 
     /**
@@ -94,6 +104,8 @@ class EmployeeResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
+            ->searchPlaceholder('Buscar por correo')
             ->columns([
                 Tables\Columns\TextColumn::make('person.first_name')
                     ->label('Nombre'),
@@ -117,43 +129,7 @@ class EmployeeResource extends Resource
                     ->form([
                         Fieldset::make('Datos personales')
                             ->relationship('person')
-                            ->schema([
-                                TextInput::make('email')
-                                    ->columnSpan(2)
-                                    ->label('Correo Electrónico')
-                                    ->required()
-                                    ->minLength(3)
-                                    ->maxLength(255)
-                                    ->string(),
-                                TextInput::make('first_name')
-                                    ->label('Nombre')
-                                    ->required()
-                                    ->minLength(3)
-                                    ->maxLength(255)
-                                    ->string(),
-                                TextInput::make('last_name')
-                                    ->label('Apellido')
-                                    ->required()
-                                    ->minLength(3)
-                                    ->maxLength(255)
-                                    ->string(),
-                                DatePicker::make('birth_date')
-                                    ->label('Fecha de Nacimiento')
-                                    ->required()
-                                    ->displayFormat('d/m/Y')
-                                    ->date(),
-                                Select::make('government_id_type_id')
-                                    ->label('Tipo de documento')
-                                    ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
-                                    ->required()
-                                    ->default(1),
-                                TextInput::make('government_id_number')
-                                    ->label('Número de documento')
-                                    ->required()
-                                    ->minLength(3)
-                                    ->maxLength(255)
-                                    ->string(),
-                            ]),
+                            ->schema(PersonForm::getFormFields()),
                         TextInput::make('password')
                             ->label('Contraseña')
                             ->password()
@@ -182,7 +158,7 @@ class EmployeeResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])->withTrashed();
     }
 
     public static function getRelations(): array
@@ -196,8 +172,8 @@ class EmployeeResource extends Resource
     {
         return [
             'index'  => Pages\ListEmployees::route('/'),
-            'create' => Pages\CreateEmployee::route('/create'),
-            'edit'   => Pages\EditEmployee::route('/{record}/edit'),
+            //'create' => Pages\CreateEmployee::route('/create'),
+            //'edit'   => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }
 

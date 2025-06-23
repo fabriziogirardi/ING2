@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\ProductResource\RelationManagers;
 
+use App\Models\Branch;
+use App\Models\BranchProduct;
+use App\Models\Reservation;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
@@ -47,6 +51,10 @@ class BranchesRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
+                    ->label('Agregar stock')  // Cambia el texto del botón
+                    ->modalHeading('Agregar stock a sucursal')  // Opcional: cambia el título del modal
+                    ->modalSubmitActionLabel('Agregar')  // Cambia el texto del botón de envío
+                    ->attachAnother(false)
                     ->preloadRecordSelect()
                     ->form(fn (AttachAction $action): array => [
                         $action->getRecordSelect()->searchable(false),
@@ -57,7 +65,24 @@ class BranchesRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DetachAction::make()
+                    ->action(function (Branch $record, array $data) {
+                        if (Reservation::where('branch_product_id', $record->pivot_id)
+                            ->where('start_date', ">=", now()->format('Y-m-d'))
+                            ->whereDoesntHave('retired')
+                            ->exists()
+                        ) {
+                            Notification::make()
+                                ->title('No se puede eliminar')
+                                ->body('No se puede eliminar el stock de esta sucursal porque tiene reservas pendientes.')
+                                ->danger()
+                                ->send();
+                            
+                            return;
+                        }
+                       
+                        $record->delete();
+                    }),
                 // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

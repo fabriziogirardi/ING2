@@ -29,7 +29,7 @@ class ManagerPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            // ->topNavigation()
+             //->topNavigation()
             ->brandLogo(asset('logotipo.png'))
             ->homeUrl('/')
             ->id('manager')

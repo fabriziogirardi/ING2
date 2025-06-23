@@ -59,6 +59,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Branch::class)
             ->withPivot('id', 'quantity')
+            ->wherePivot('deleted_at', null)
             ->using(BranchProduct::class)
             ->as('stock');
     }

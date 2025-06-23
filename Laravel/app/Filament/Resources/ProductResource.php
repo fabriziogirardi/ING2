@@ -7,6 +7,7 @@ use App\Filament\Resources\ProductResource\RelationManagers\BranchesRelationMana
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBrand;
+use App\Models\Reservation;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -14,11 +15,14 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 
 class ProductResource extends Resource
@@ -45,7 +49,7 @@ class ProductResource extends Resource
                     ->required()
                     ->dehydrated(false)
                     ->options(ProductBrand::pluck('name', 'id'))
-                    ->afterStateUpdated(function (Set $set, Get $get) {
+                    ->afterStateUpdated(function (Set $set) {
                         $set('product_model_id', null);
                     })
                     ->placeholder('Selecciona una marca')
@@ -116,31 +120,54 @@ class ProductResource extends Resource
                     ->required(),
             ]);
     }
-
+    
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nombre del producto'),
+                    ->label('Nombre del producto')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('product_model.product_brand.name')
-                    ->label('Marca'),
+                    ->label('Marca')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('product_model.name')
-                    ->label('Modelo'),
+                    ->label('Modelo')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('price')
                     ->label('Precio')
-                    ->money('ARS', 0, 'es'),
+                    ->money('ARS', 0, 'es')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('min_days')
-                    ->label('Días mínimos'),
+                    ->label('Días mínimos')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('categories.fully_qualified_name')
                     ->label('Categorías')
-                    ->badge(),
+                    ->limit(25)
+                    ->badge()
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 ImageColumn::make('images_json')
                     ->label('Imágenes')
                     ->circular()
                     ->size(50)
                     ->stacked()
-                    ->limit(3)
+                    ->limit()
                     ->limitedRemainingText(),
             ])
             ->filters([
@@ -148,6 +175,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->trashed())
                     ->form([
                         TextInput::make('name')
                             ->columnSpan(2)
@@ -204,6 +232,36 @@ class ProductResource extends Resource
                             )
                             ->reorderable(),
                     ]),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function (Product $record) {
+                        $hasPendingReservations = Reservation::whereRelation("branch_product", "product_id", $record->id)
+                            ->where(function (Builder $q) {
+                                $q->where(function (Builder $subQ) {
+                                    // Reservas futuras (no retiradas y end_date >= hoy)
+                                    $subQ->whereDoesntHave("retired")
+                                        ->where("end_date", ">=", now()->format("Y-m-d"));
+                                })->orWhere(function (Builder $subQ) {
+                                    // Retiradas pero no devueltas
+                                    $subQ->whereHas("retired")->whereDoesntHave("returned");
+                                });
+                            })
+                            ->exists();
+                        
+                        if ($hasPendingReservations) {
+                            Notification::make()
+                                ->title('No se puede eliminar el producto')
+                                ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de este producto.')
+                                ->danger()
+                                ->send();
+                            
+                            return;
+                        }
+                        
+                        $record->delete();
+                    })
+                    ->requiresConfirmation()
+                    ->hidden(fn ($record) => $record->trashed()),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
@@ -218,6 +276,14 @@ class ProductResource extends Resource
             BranchesRelationManager::class,
         ];
     }
+    
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ])->withTrashed();
+    }
 
     public static function getPages(): array
     {
@@ -230,6 +296,8 @@ class ProductResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        /** @var Product $model */
+        $model = static::getModel();
+        return $model::count();
     }
 }

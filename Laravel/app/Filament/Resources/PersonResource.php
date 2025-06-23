@@ -71,6 +71,7 @@ class PersonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('first_name')
                     ->label('Nombre'),
@@ -101,6 +102,14 @@ class PersonResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+                IconColumn::make('manager_exists')
+                    ->exists('manager')
+                    ->boolean()
+                    ->label('Gerente')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
             ])
             ->filters([
                 //
@@ -109,9 +118,9 @@ class PersonResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                //]),
             ]);
     }
 
@@ -127,8 +136,8 @@ class PersonResource extends Resource
     {
         return [
             'index'  => Pages\ListPeople::route('/'),
-            'create' => Pages\CreatePerson::route('/create'),
-            'edit'   => Pages\EditPerson::route('/{record}/edit'),
+            //'create' => Pages\CreatePerson::route('/create'),
+            //'edit'   => Pages\EditPerson::route('/{record}/edit'),
         ];
     }
 }
