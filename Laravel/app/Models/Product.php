@@ -27,7 +27,14 @@ class Product extends Model
     {
         parent::boot();
         
+        static::deleting(function (Product $instance) {
+            $instance->branch_products()->each(function (BranchProduct $branchProduct) {
+                $branchProduct->delete();
+            });
+        });
+        
         static::restoring(function (Product $instance) {
+            $instance->branch_products()->withTrashed()->restore();
             $productModel = $instance->product_model()->withTrashed()->first();
             if ($productModel) {
                 $productModel->restore();

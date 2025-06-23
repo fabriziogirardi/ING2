@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BranchResource\Pages;
 use App\Models\Branch;
+use App\Models\BranchProduct;
 use App\Models\Reservation;
 use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
@@ -130,19 +131,29 @@ class BranchResource extends Resource
             ->recordUrl(null)
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nombre'),
+                    ->label('Nombre')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('address')
                     ->label('Dirección')
-                    ->limit(60),
+                    ->limit(60)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
                 TextColumn::make('description')
                     ->label('Descripción')
-                    ->limit(50),
+                    ->limit(50)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : ''
+                    ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn (Branch $record) => $record->trashed()),
                 Tables\Actions\DeleteAction::make()
                     ->action(function (Branch $record) {
                         $hasPendingReservations = Reservation::whereRelation("branch_product", "branch_id", $record->id)
@@ -168,13 +179,16 @@ class BranchResource extends Resource
                             return;
                         }
                         
+                        $branch_products = BranchProduct::where("branch_id", $record->id)->get();
+                        $branch_products->map(function (BranchProduct $branch_product) {
+                            $branch_product->delete();
+                        });
+                        
                         $record->delete();
-                        $record->products()->delete();
                     }),
                 Tables\Actions\RestoreAction::make()
                     ->label('Restaurar')
-                    ->color('danger')
-                    ->disabled(),
+                    ->color('danger'),
             ])
             ->bulkActions([
                 //Tables\Actions\BulkActionGroup::make([
