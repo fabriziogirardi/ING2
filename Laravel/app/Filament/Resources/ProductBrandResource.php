@@ -18,7 +18,7 @@ class ProductBrandResource extends Resource
 {
     protected static ?string $model = ProductBrand::class;
 
-    protected static ?string $modelLabel = 'Marcas de maquinarias';
+    protected static ?string $modelLabel = 'marca de maquinaria';
 
     protected static ?string $navigationGroup = 'Maquinarias';
 
