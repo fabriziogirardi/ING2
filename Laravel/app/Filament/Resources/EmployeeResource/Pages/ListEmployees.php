@@ -4,7 +4,7 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Forms\PersonAdvancedForm;
 use App\Filament\Resources\EmployeeResource;
-use App\Models\Customer;
+use App\Models\Employee;
 use Filament\Actions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
@@ -71,7 +71,7 @@ class ListEmployees extends ListRecords
                     try {
                         $personId = PersonAdvancedForm::getOrCreatePersonId($data, PersonAdvancedForm::TYPE_EMPLOYEE);
 
-                        return Customer::create([
+                        return Employee::create([
                             'person_id' => $personId,
                         ]);
                     } catch (\Exception $e) {
@@ -79,7 +79,7 @@ class ListEmployees extends ListRecords
                         if (str_starts_with($e->getMessage(), 'RESTORED:')) {
                             $customerId = (int) str_replace('RESTORED:', '', $e->getMessage());
 
-                            return Customer::find($customerId);
+                            return Employee::find($customerId);
                         }
                         throw $e;
                     }
