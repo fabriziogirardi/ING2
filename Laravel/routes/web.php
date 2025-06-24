@@ -4,6 +4,7 @@ use App\Facades\GoogleMaps;
 use App\Http\Controllers\BinanceController;
 use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\RecoverPasswordController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
@@ -166,6 +167,10 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
     Route::post('/login', [CustomerLoginController::class, 'loginAttempt'])
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::get('/recover-password', [RecoverPasswordController::class, 'show'])
+        ->name('recover-password')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::post('/recover-password', [RecoverPasswordController::class, 'store'])
+        ->name('recover-password.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/payment/test', function () {
