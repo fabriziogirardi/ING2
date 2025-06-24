@@ -74,7 +74,7 @@ class ListEmployees extends ListRecords
 
                         return Employee::create([
                             'person_id' => $personId,
-                            'password' => Hash::make($data['password']),
+                            'password'  => Hash::make($data['password']),
                         ]);
                     } catch (\Exception $e) {
                         // Si es una restauración, extraer el ID y retornar el registro restaurado
