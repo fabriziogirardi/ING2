@@ -10,7 +10,7 @@
                     {{ request()->routeIs('forum.discussions.create') ? 'Iniciar Discusión' : 'Guardar Cambios' }}
                 </span>
             </button>
-            <x-elements.link-button href="{{ route('forum.discussions.show', ['discussion' => $discussion->id]) }}" class="ml-2" type="danger">
+            <x-elements.link-button href="{{ request()->routeIs('forum.discussions.create') ? route('forum.index') : route('forum.discussions.show', ['discussion' => $discussion->id]) }}" class="ml-2" type="danger">
                 <x-slot:text>Cancelar</x-slot:text>
             </x-elements.link-button>
         </div>
