@@ -8,6 +8,9 @@ use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Employee\RetiredReservationController;
+use App\Http\Controllers\Forum\ForumController;
+use App\Http\Controllers\Forum\ForumDiscussionController;
+use App\Http\Controllers\Forum\ForumReplyController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Brand\BrandController;
@@ -215,5 +218,16 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 // region Catálogo
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+// endregion
 
+// region Foro
+Route::group(['middleware' => 'auth:customer,employee,manager'], static function () {
+    Route::group(['prefix' => 'forum', 'as' => 'forum.'], static function () {
+        Route::get('/', [ForumController::class, 'index'])->name('index');
+
+        Route::resource('discussions', ForumDiscussionController::class)->except(['index']);
+
+        Route::resource('reply', ForumReplyController::class)->except(['index', 'show']);
+    });
+});
 // endregion
