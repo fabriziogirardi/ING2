@@ -4,11 +4,12 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Forms\PersonAdvancedForm;
 use App\Filament\Resources\EmployeeResource;
-use App\Models\Customer;
+use App\Models\Employee;
 use Filament\Actions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Hash;
 
 class ListEmployees extends ListRecords
 {
@@ -71,15 +72,16 @@ class ListEmployees extends ListRecords
                     try {
                         $personId = PersonAdvancedForm::getOrCreatePersonId($data, PersonAdvancedForm::TYPE_EMPLOYEE);
 
-                        return Customer::create([
+                        return Employee::create([
                             'person_id' => $personId,
+                            'password'  => Hash::make($data['password']),
                         ]);
                     } catch (\Exception $e) {
                         // Si es una restauración, extraer el ID y retornar el registro restaurado
                         if (str_starts_with($e->getMessage(), 'RESTORED:')) {
                             $customerId = (int) str_replace('RESTORED:', '', $e->getMessage());
 
-                            return Customer::find($customerId);
+                            return Employee::find($customerId);
                         }
                         throw $e;
                     }

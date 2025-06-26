@@ -101,6 +101,7 @@ class EmployeeResource extends Resource
         return $table
             ->recordUrl(null)
             ->searchPlaceholder('Buscar por correo')
+            ->recordClasses(fn ($record) => $record->trashed() ? 'bg-gray-100' : '')
             ->columns([
                 Tables\Columns\TextColumn::make('person.first_name')
                     ->label('Nombre')
