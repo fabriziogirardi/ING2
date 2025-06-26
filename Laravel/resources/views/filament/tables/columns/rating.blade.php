@@ -2,10 +2,10 @@
     $state = $getState();
 @endphp
 
-<div class="flex">
+<div {{ $attributes->merge(['class' => 'flex']) }}>
     @if(blank($state))
         <x-filament-tables::columns.placeholder>
-            Not Rated
+            <i>No disponible</i>
         </x-filament-tables::columns.placeholder>
     @else
         @for($i = 1; $i <= 5; $i++)

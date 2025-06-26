@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -52,6 +53,7 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre'),
@@ -61,12 +63,17 @@ class CategoryResource extends Resource
                 TextColumn::make('children_count')
                     ->label('Subcategorías')
                     ->counts('children'),
+                TextColumn::make('products_count')
+                    ->label('Maquinarias')
+                    ->counts('products'),
                 TextColumn::make('description')
                     ->label('Descripción')
-                    ->limit(50),
+                    ->limit(20)
+                    ->placeholder('Sin descripción'),
                 TextColumn::make('slug')
                     ->label('Slug')
-                    ->limit(50),
+                    ->limit(20)
+                    ->hidden(),
             ])
             ->filters([
                 //
@@ -94,12 +101,41 @@ class CategoryResource extends Resource
                             ->label('Descripción')
                             ->maxLength(255),
                     ]),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function (Category $record) {
+                        if ($record->children()->count() > 0) {
+                            Notification::make()
+                                ->title('No se puede eliminar')
+                                ->body('Esta categoría tiene subcategorías. Por favor, elimina las subcategorías antes de eliminar esta categoría.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        if ($record->products()->count() > 0) {
+                            Notification::make()
+                                ->title('No se puede eliminar')
+                                ->body('Esta categoría tiene maquinarias asociadas. Por favor, elimina las maquinarias antes de eliminar esta categoría.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $record->delete();
+
+                        Notification::make()
+                            ->title('Categoría eliminada')
+                            ->body('La categoría ha sido eliminada correctamente.')
+                            ->success()
+                            ->send();
+                    })->requiresConfirmation(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -113,9 +149,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit'   => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListCategories::route('/'),
+            // 'create' => Pages\CreateCategory::route('/create'),
+            // 'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 

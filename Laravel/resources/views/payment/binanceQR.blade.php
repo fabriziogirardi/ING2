@@ -12,7 +12,7 @@
                     <h2 class="text-2xl font-bold mb-4 text-gray-800">Detalles de pago</h2>
 
                     <p class="text-lg text-gray-700 mb-2">
-                        Producto: <span class="font-semibold">{{ $product->name }}</span>
+                        Maquinaria: <span class="font-semibold">{{ $product->name }}</span>
                     </p>
                     <p class="text-lg text-gray-700 mb-2">
                         Precio por día: <span class="font-semibold">${{ number_format($product->price, 2, ',', '.') }}</span>

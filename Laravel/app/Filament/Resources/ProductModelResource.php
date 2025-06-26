@@ -7,6 +7,7 @@ use App\Models\ProductModel;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,7 +19,7 @@ class ProductModelResource extends Resource
 {
     protected static ?string $model = ProductModel::class;
 
-    protected static ?string $modelLabel = 'Modelos de Maquinarias';
+    protected static ?string $modelLabel = 'modelo de maquinaria';
 
     protected static ?string $navigationGroup = 'Maquinarias';
 
@@ -50,20 +51,37 @@ class ProductModelResource extends Resource
             ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nombre'),
+                    ->label('Nombre')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('product_brand.name')
-                    ->label('Marca'),
+                    ->label('Marca')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
+                Tables\Columns\TextColumn::make('products_count')
+                    ->counts('products')
+                    ->label('Cantidad de maquinarias')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->hidden(fn (ProductModel $record) => $record->trashed())
                     ->form([
                         Select::make('product_brand_id')
                             ->label('Marca')
@@ -83,21 +101,39 @@ class ProductModelResource extends Resource
                             ->minLength(1)
                             ->maxLength(255),
                     ]),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
-                Tables\Actions\RestoreAction::make()->requiresConfirmation(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function (ProductModel $record) {
+                        if ($record->products()->exists()) {
+                            Notification::make()
+                                ->title('No se puede eliminar')
+                                ->body('Este modelo tiene maquinarias asociadas.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $record->delete();
+
+                        Notification::make()
+                            ->title('Modelo eliminado')
+                            ->body('El modelo ha sido eliminado correctamente.')
+                            ->success()
+                            ->send();
+                    })->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-
+            //
         ];
     }
 
@@ -106,7 +142,7 @@ class ProductModelResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])->withTrashed();
     }
 
     public static function getPages(): array

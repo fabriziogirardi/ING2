@@ -2,21 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\PersonAdvancedForm;
+use App\Filament\Forms\PersonForm;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\Customer;
-use Carbon\Carbon;
 use Exception;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Unique;
 
 class CustomerResource extends Resource
 {
@@ -34,64 +36,25 @@ class CustomerResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Select::make('person_id')
-                    ->label('Email')
-                    ->relationship(
-                        name: 'person',
-                        titleAttribute: 'email',
-                        modifyQueryUsing: fn (Builder $query) => $query->doesntHave('customer')
-                    )
-                    ->preload()
-                    ->required()
-                    ->placeholder('Ingrese un correo')
-                    ->searchable()
-                    ->createOptionForm([
-                        TextInput::make('first_name')
-                            ->label('Nombre')
-                            ->required(),
-                        TextInput::make('last_name')
-                            ->label('Apellido')
-                            ->required(),
-                        TextInput::make('email')
-                            ->label('Correo Electrónico')
-                            ->required()
-                            ->email(),
-                        DatePicker::make('birth_date')
-                            ->label('Fecha de Nacimiento')
-                            ->required()
-                            ->displayFormat('d/m/Y')
-                            ->date()
-                            ->maxDate(Carbon::now()->subYears(18)),
-                        Select::make('government_id_type_id')
-                            ->label('Tipo de documento')
-                            ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
-                            ->required()
-                            ->default(1),
-                        TextInput::make('government_id_number')
-                            ->label('Número de documento ')
-                            ->unique(modifyRuleUsing: function (Unique $rule, Get $get) {
-                                return $rule->where('government_id_type_id', $get('government_id_type_id'));
-                            })
-                            ->required()
-                            ->minLength(3)
-                            ->maxLength(255)
-                            ->string(),
-                    ]),
-                TextInput::make('password')
-                    ->label('Contraseña')
-                    ->password()
-                    ->revealable()
-                    ->disabled(fn (string $operation): bool => $operation === 'create')
-                    ->placeholder(fn (string $operation): string => $operation === 'create'
-                        ? 'La contraseña se generará automáticamente y se enviará por correo electrónico'
-                        : 'Deja en blanco para no cambiar la contraseña'
-                    )
-                    ->default('')
-                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state)),
-            ]);
+        return $form->schema(
+            PersonAdvancedForm::getSchema(
+                type: PersonAdvancedForm::TYPE_CUSTOMER,
+                additionalFields: [
+                    TextInput::make('customer_code')
+                        ->label('Código de Cliente')
+                        ->placeholder('Código único del cliente')
+                        ->maxLength(50)
+                        ->unique(Customer::class, 'customer_code')
+                        ->required(fn (Get $get) => ! empty($get('email_search')) &&
+                            $get('relation_exists') === false
+                        ),
+                    Textarea::make('notes')
+                        ->label('Notas')
+                        ->placeholder('Notas adicionales sobre el cliente')
+                        ->maxLength(1000),
+                ]
+            )
+        );
     }
 
     /**
@@ -100,33 +63,88 @@ class CustomerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
+            ->searchPlaceholder('Buscar por correo')
+            ->recordClasses(fn ($record) => $record->trashed() ? 'bg-gray-100' : '')
             ->columns([
                 Tables\Columns\TextColumn::make('person.first_name')
-                    ->label('Nombre'),
+                    ->label('Nombre')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('person.last_name')
-                    ->label('Apellido'),
+                    ->label('Apellido')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('person.email')
                     ->label('Correo Electrónico')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\ViewColumn::make('rating')
-                    ->view('filament.tables.columns.rating'),
+                    ->view('filament.tables.columns.rating')
+                    ->state(fn ($record) => $record->trashed() ? null : $record->rating)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'hidden' : '',
+                    ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                //                Tables\Actions\EditAction::make()
-                //                    ->disabled()
-                //                    ->extraAttributes(['class' => 'cursor-not-allowed pointer-events-auto hover:no-underline']),
-
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
-                // Tables\Actions\RestoreAction::make()->requiresConfirmation(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->trashed())
+                    ->form([
+                        Fieldset::make('Datos personales')
+                            ->relationship('person')
+                            ->schema(PersonForm::getFormFields()),
+                        TextInput::make('password')
+                            ->label('Contraseña')
+                            ->password()
+                            ->revealable()
+                            ->placeholder('Para mantener la contraseña actual, dejar este campo en blanco.')
+                            ->default('')
+                            ->maxLength(255)
+                            ->minLength(3)
+                            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                            ->dehydrated(fn (?string $state): bool => filled($state)),
+                    ]),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Bloquear cuenta')
+                    ->icon('heroicon-o-lock-closed')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Estás seguro de que querés bloquear esta cuenta?')
+                    ->modalDescription('Esta acción impedirá el acceso del usuario hasta que se desbloquee.')
+                    ->modalSubmitActionLabel('Sí, bloquear cuenta')
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Cuenta bloqueada')
+                            ->body('El usuario ya no podrá iniciar sesión.')
+                            ->success(),
+                    ),
+                Tables\Actions\RestoreAction::make()
+                    ->label('Reanudar cuenta')
+                    ->icon('heroicon-o-lock-open')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Querés reanudar el acceso a esta cuenta?')
+                    ->modalDescription('El usuario podrá volver a iniciar sesión normalmente.')
+                    ->modalSubmitActionLabel('Sí, reanudar cuenta')
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Cuenta reanudada')
+                            ->body('El usuario ahora puede iniciar sesión nuevamente.')
+                            ->success(),
+                    ),
             ])
             ->bulkActions([
-                //                Tables\Actions\BulkActionGroup::make([
-                //                    Tables\Actions\DeleteBulkAction::make(),
-                //                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -136,11 +154,19 @@ class CustomerResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ])->withTrashed();
+    }
+
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListCustomers::route('/'),
-            'create' => Pages\CreateCustomer::route('/create'),
+            'index' => Pages\ListCustomers::route('/'),
+            // 'create' => Pages\CreateCustomer::route('/create'),
             // 'edit'   => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }

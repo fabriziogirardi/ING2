@@ -11,7 +11,7 @@ class ListProductBrands extends ListRecords
 {
     protected static string $resource = ProductBrandResource::class;
 
-    protected static ?string $title = 'Marcas de Maquinarias';
+    protected static ?string $title = 'Marcas de maquinarias';
 
     protected function getHeaderActions(): array
     {

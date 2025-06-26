@@ -6,7 +6,6 @@ use App\Filament\Resources\PersonResource\Pages;
 use App\Filament\Resources\PersonResource\RelationManagers\CustomerRelationManager;
 use App\Filament\Resources\PersonResource\RelationManagers\EmployeeRelationManager;
 use App\Models\Person;
-use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -55,8 +54,8 @@ class PersonResource extends Resource
                     ->label('Fecha de Nacimiento')
                     ->required()
                     ->displayFormat('d/m/Y')
-                    ->date()
-                    ->maxDate(Carbon::now()->subYears(18)),
+                    ->maxDate(now()->subYears(18))
+                    ->date(),
                 Select::make('government_id_type_id')
                     ->label('Tipo de documento')
                     ->relationship('government_id_type', 'name', fn ($query) => $query->orderBy('id'))
@@ -74,6 +73,7 @@ class PersonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('first_name')
                     ->label('Nombre'),
@@ -104,6 +104,14 @@ class PersonResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+                IconColumn::make('manager_exists')
+                    ->exists('manager')
+                    ->boolean()
+                    ->label('Gerente')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
             ])
             ->filters([
                 //
@@ -112,9 +120,9 @@ class PersonResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                //                Tables\Actions\BulkActionGroup::make([
-                //                    Tables\Actions\DeleteBulkAction::make(),
-                //                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -129,9 +137,9 @@ class PersonResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPeople::route('/'),
-            'create' => Pages\CreatePerson::route('/create'),
-            'edit'   => Pages\EditPerson::route('/{record}/edit'),
+            'index' => Pages\ListPeople::route('/'),
+            // 'create' => Pages\CreatePerson::route('/create'),
+            // 'edit'   => Pages\EditPerson::route('/{record}/edit'),
         ];
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -17,7 +18,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class Person extends Model
 {
     /** @use HasFactory<\Database\Factories\PersonFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $with = ['government_id_type'];
 

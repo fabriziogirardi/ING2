@@ -22,6 +22,30 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, softDeletes;
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (Product $instance) {
+            $instance->branch_products()->each(function (BranchProduct $branchProduct) {
+                $branchProduct->delete();
+            });
+        });
+
+        static::restoring(function (Product $instance) {
+            $productModel = $instance->product_model()->withTrashed()->first();
+            if ($productModel) {
+                $productModel->restore();
+
+                // Verificar y restaurar product_brand
+                $productBrand = $productModel->product_brand()->withTrashed()->first();
+                if ($productBrand) {
+                    $productBrand->restore();
+                }
+            }
+        });
+    }
+
     protected $fillable = [
         'name',
         'description',
@@ -58,6 +82,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Branch::class)
             ->withPivot('id', 'quantity')
+            ->wherePivot('deleted_at', null)
             ->using(BranchProduct::class)
             ->as('stock');
     }
