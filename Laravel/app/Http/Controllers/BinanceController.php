@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BranchProduct;
+use App\Models\Customer;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -31,13 +32,19 @@ class BinanceController extends Controller
 
     public function confirmPayment(Request $request)
     {
+        $customer = Customer::whereRelation('person', 'email', $request->customer_email)->first();
+
+        if (! $customer) {
+            return back()->withErrors(['customer_email' => 'El correo no corresponde a ningún cliente registrado.'])->withInput();
+        }
+
         $code = Str::of(Str::random(8))->upper();
 
         $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
         $end_date   = Carbon::parse($request->end_date)->format('Y-m-d');
 
         Reservation::create([
-            'customer_id'       => auth('employee')->id(),
+            'customer_id'       => $customer->id,
             'branch_product_id' => $request->branch_product_id,
             'code'              => $code,
             'start_date'        => $start_date,

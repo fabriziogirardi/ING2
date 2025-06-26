@@ -77,6 +77,7 @@ class ProductResource extends Resource
                     ->numeric()
                     ->minValue(0)
                     ->maxValue(999999.99)
+                    ->default(0)
                     ->step(0.01),
                 TextInput::make('min_days')
                     ->label('Días mínimos de alquiler')

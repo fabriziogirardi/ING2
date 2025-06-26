@@ -21,4 +21,5 @@ return [
     'select_date_end'                  => 'Select end date',
     'to'                               => 'to',
     'search'                           => 'Search',
+    'days_to_reserve'                  => 'Cantidad de dias a reservar: ',
 ];

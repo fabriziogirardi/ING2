@@ -26,7 +26,7 @@
                             />
                         </div>
                         <x-forms.error-description message="{{ $errors->has('credentials') ? $errors->first('credentials') : '' }}" class="sm:col-span-2" />
-                        <x-elements.link-text-small href="#" text="{{ __('customer/auth.forgot_password') }}" />
+                        <x-elements.link-text-small href="{{ route('customer.recover-password') }}" text="{{ __('customer/auth.forgot_password') }}" />
                         <div class="flex items-center">
                             <x-forms.submit text="{{ __('customer/auth.login_button') }}" icon-left="fa-solid fa-right-to-bracket" submit="true" full-width="true" />
                         </div>

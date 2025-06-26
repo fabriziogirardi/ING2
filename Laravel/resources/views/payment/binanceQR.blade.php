@@ -33,6 +33,22 @@
                         <input type="hidden" name="start_date" value="{{ request()->start_date }}">
                         <input type="hidden" name="end_date" value="{{ request()->end_date }}">
 
+                        <div class="mb-4">
+                            <label for="customer_email" class="block text-gray-700 font-semibold mb-2">Correo del cliente</label>
+                            <input type="email" name="customer_email" id="customer_email" required
+                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                   placeholder="cliente@ejemplo.com">
+                            @if ($errors->any())
+                                <div class="mb-4">
+                                    <ul class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="flex justify-center">
                             <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
                                 Confirmar pago
