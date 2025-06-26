@@ -50,17 +50,6 @@ class ListReservations extends Component implements HasForms, HasTable
             ->filters([
                 // ...
             ])
-            ->actions([
-                DeleteAction::make()
-                    ->label(fn ($record) => $record->retired_exists || $record->returned_exists || $record->start_date > now() ? 'No se puede cancelar' : 'Cancelar reserva')
-                    ->disabled(fn ($record) => $record->retired_exists || $record->returned_exists || $record->start_date > now()),
-                Action::make('restore')
-                    ->label('Cancelada')
-                    ->link()
-                    ->hidden(fn ($record) => ! $record->trashed())
-                    ->color('danger')
-                    ->disabled(),
-            ])
             ->bulkActions([
                 // ...
             ]);

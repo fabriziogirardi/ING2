@@ -7,6 +7,7 @@ use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginControlle
 use App\Http\Controllers\Customer\RecoverPasswordController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
+use App\Http\Controllers\Employee\CancelPolicyController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Employee\RetiredReservationController;
 use App\Http\Controllers\Forum\ForumController;
@@ -158,6 +159,10 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
         Route::post('/reservation/retire', [RetiredReservationController::class, 'store'])
             ->name('reservation.retire.post');
+
+        Route::view('/cancel-reservation', 'employee.cancel-reservation.input-code')->name('cancel-reservation');
+        Route::post('/cancel-reservation/show', [CancelPolicyController::class, 'show'])->name('cancel-reservation.show');
+        Route::post('/cancel-reservation/partial', [CancelPolicyController::class, 'handlePartial'])->name('cancel-reservation.partial');
 
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);

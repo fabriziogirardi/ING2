@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             ProductModelSeeder::class,
             CategorySeeder::class,
             FooterElementSeeder::class,
+            CancelPolicySeeder::class,
         ]);
     }
 }
