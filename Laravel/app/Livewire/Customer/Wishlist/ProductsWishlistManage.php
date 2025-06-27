@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Customer\Wishlist;
 
-use App\Models\WishlistItem;
+use App\Models\WishlistProduct;
 use App\Models\WishlistSublist;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -13,7 +13,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class ItemswishlistManage extends Component implements HasForms, HasTable
+class ProductsWishlistManage extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
@@ -28,7 +28,7 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
     {
         return $table
             ->query(
-                WishlistItem::where('wishlist_sublist_id', $this->subwishlist->id)
+                WishlistProduct::where('wishlist_sublist_id', $this->subwishlist->id)
                     ->whereHas('product')
             )
             ->columns([
@@ -71,16 +71,16 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(fn (WishlistItem $record) => $record->delete()),
+                    ->action(fn (WishlistProduct $record) => $record->delete()),
             ]);
     }
 
-    protected function isReservable(WishlistItem $record): bool
+    protected function isReservable(WishlistProduct $record): bool
     {
         return $this->getUnavailabilityReason($record) === null;
     }
 
-    protected function getUnavailabilityReason(WishlistItem $record): ?string
+    protected function getUnavailabilityReason(WishlistProduct $record): ?string
     {
         $start_date = $record->start_date;
         $end_date   = $record->end_date;
@@ -112,6 +112,6 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
 
     public function render()
     {
-        return view('livewire.wishlist.itemswishlist');
+        return view('livewire.wishlist.productswishlist');
     }
 }

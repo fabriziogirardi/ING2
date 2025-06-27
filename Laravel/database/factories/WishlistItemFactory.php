@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Product;
-use App\Models\WishlistItem;
+use App\Models\WishlistProduct;
 use App\Models\WishlistSublist;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WishlistItemFactory extends Factory
 {
-    protected $model = WishlistItem::class;
+    protected $model = WishlistProduct::class;
 
     public function definition()
     {

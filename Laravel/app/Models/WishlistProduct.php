@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WishlistItem extends Model
+class WishlistProduct extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'wishlist_sublist_id',
+        'wishlist_id',
         'product_id',
         'start_date',
         'end_date',
@@ -21,13 +21,15 @@ class WishlistItem extends Model
         'end_date'   => 'date',
     ];
 
-    public function sublist()
+    public function wishlist()
     {
-        return $this->belongsTo(WishlistSublist::class, 'wishlist_sublist_id');
+        return $this->belongsTo(Wishlist::class, 'wishlist_id');
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+
+
 }
