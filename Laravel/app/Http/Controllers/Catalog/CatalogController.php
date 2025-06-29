@@ -23,8 +23,7 @@ class CatalogController extends Controller
 
         $products = $service->getProductsWithAvailability();
 
-
-        $wishlist   = '';
+        $wishlist = '';
         if (Auth::getCurrentGuard() === 'customer') {
             $wishlist = \Illuminate\Support\Facades\Auth::guard('customer')->user()
                 ->wishlists()
@@ -33,7 +32,7 @@ class CatalogController extends Controller
 
         return view('catalog.index', [
             'products'   => $products,
-            'wishlists' => $wishlist,
+            'wishlists'  => $wishlist,
             'start_date' => $start_date,
             'end_date'   => $end_date,
         ]);
