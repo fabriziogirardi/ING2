@@ -36,11 +36,12 @@ class ReservationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('customer.person.full_name')
                     ->label('Cliente'),
                 TextColumn::make('branch_product.product.name')
-                    ->label('Producto'),
+                    ->label('Maquinaria'),
                 TextColumn::make('branch_product.branch.name')
                     ->label('Sucursal'),
                 TextColumn::make('start_date')
@@ -75,9 +76,9 @@ class ReservationResource extends Resource
                     ->disabled(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

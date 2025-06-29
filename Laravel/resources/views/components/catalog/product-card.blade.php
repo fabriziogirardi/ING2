@@ -7,13 +7,11 @@
     <div class="pt-6">
         <div class="mb-4 flex items-center justify-between gap-4">
             <span class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 ">DESCUENTO FUTURO</span>
-
             <div class="flex items-center justify-end gap-1">
                 <div id="tooltip-quick-look" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300" data-popper-placement="top">
                     Quick look
                     <div class="tooltip-arrow" data-popper-arrow=""></div>
                 </div>
-
                 @if (Auth::getCurrentGuard() === 'customer')
                     <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" data-tooltip-target="tooltip-add-to-favorites" data-product-id="{{ $product->id }}" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                         <span class="sr-only"> Agregar a lista de deseados </span>
@@ -27,11 +25,8 @@
                     </div>
                 @endif
             </div>
-
         </div>
-
         <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline">{{ $product->name }}</a>
-
         <ul class="mt-2 flex items-center gap-4">
             <li class="flex items-center gap-2">
                 <svg class="h-4 w-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -39,7 +34,6 @@
                 </svg>
                 <p class="text-sm font-medium text-gray-500">Fast Delivery</p>
             </li>
-
             <li class="flex items-center gap-2">
                 <svg class="h-4 w-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 7V6c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1h-1M3 18v-7c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
@@ -47,22 +41,21 @@
                 <p class="text-sm font-medium text-gray-500">Best Price</p>
             </li>
         </ul>
-
         <div class="mt-4 items-center justify-between gap-4">
             @if($productData['has_stock'])
-                    @if($meetsMinDays)
-                        <a href="{{ route('catalog.show', $product) }}" class="inline-flex items-center w-full justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
-                            <i class="fa fa-search me-2 align-middle"></i>
-                            Ver detalles
-                        </a>
-                    @else
-                        <span class="inline-flex items-center w-full justify-center rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-400 border border-gray-300 cursor-not-allowed">
+                @if($meetsMinDays)
+                    <a href="{{ route('catalog.show', $product) }}" class="inline-flex items-center w-full justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
+                        <i class="fa fa-search me-2 align-middle"></i>
+                        Ver detalles
+                    </a>
+                @else
+                    <span class="inline-flex items-center w-full justify-center rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-400 border border-gray-300 cursor-not-allowed">
                         {{ __('catalog/forms.min_days_to_reserve', ['days' => $product['min_days']]) }}
-                        </span>
-                    @endif
+                    </span>
+                @endif
             @else
                 <span class="inline-flex items-center w-full justify-center rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-400 border border-gray-300 cursor-not-allowed">
-                {{ __('catalog/forms.not_available') }}
+                    {{ __('catalog/forms.not_available') }}
                 </span>
             @endif
         </div>

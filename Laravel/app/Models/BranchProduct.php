@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -14,7 +15,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class BranchProduct extends Pivot
 {
-    protected $table = 'branch_product';
+    use SoftDeletes;
 
     protected $fillable = [
         'branch_id',

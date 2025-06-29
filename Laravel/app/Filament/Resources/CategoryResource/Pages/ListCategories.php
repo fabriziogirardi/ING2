@@ -10,10 +10,13 @@ class ListCategories extends ListRecords
 {
     protected static string $resource = CategoryResource::class;
 
-    protected function getHeaderActions(): array
+    public function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Agregar nueva categoría')
+                ->icon('heroicon-o-plus')
+                ->createAnother(false),
         ];
     }
 }

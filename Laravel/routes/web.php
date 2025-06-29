@@ -4,14 +4,19 @@ use App\Facades\GoogleMaps;
 use App\Http\Controllers\BinanceController;
 use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\RecoverPasswordController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
 use App\Http\Controllers\Employee\RetiredReservationController;
+use App\Http\Controllers\Forum\ForumController;
+use App\Http\Controllers\Forum\ForumDiscussionController;
+use App\Http\Controllers\Forum\ForumReplyController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
+use App\Http\Controllers\Manager\ForumSections\ForumSectionController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
 use App\Http\Controllers\Payment\MercadoPagoController;
@@ -51,7 +56,9 @@ Route::get('/la', function () {
     }
 });
 
-Route::view('/newcatalog', 'catalog.index', ['products' => Product::all()])->name('catalog.new');
+Route::get('/newcatalog', function () {
+    return view('catalog.index', ['products' => \App\Models\Product::all()]);
+})->name('catalog.new');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -130,6 +137,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('model/{id}/restore', [ModelController::class, 'restore'])->name('model.restore');
         Route::resource('branch', BranchController::class);
         Route::resource('product', ProductController::class);
+        Route::resource('sections', ForumSectionController::class);
+        Route::post('sections/{id}/restore', [ForumSectionController::class, 'restore'])->name('sections.restore');
     });
 });
 // endregion
@@ -166,6 +175,10 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
     Route::post('/login', [CustomerLoginController::class, 'loginAttempt'])
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::get('/recover-password', [RecoverPasswordController::class, 'show'])
+        ->name('recover-password')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::post('/recover-password', [RecoverPasswordController::class, 'store'])
+        ->name('recover-password.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
         Route::get('/payment/test', function () {
@@ -206,5 +219,16 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
 // region Catálogo
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+// endregion
 
+// region Foro
+Route::group(['middleware' => 'auth:customer,employee,manager'], static function () {
+    Route::group(['prefix' => 'forum', 'as' => 'forum.'], static function () {
+        Route::get('/', [ForumController::class, 'index'])->name('index');
+
+        Route::resource('discussions', ForumDiscussionController::class)->except(['index']);
+
+        Route::resource('reply', ForumReplyController::class)->except(['index', 'show']);
+    });
+});
 // endregion

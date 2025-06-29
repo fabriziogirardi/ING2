@@ -9,7 +9,7 @@
                 {{ __('reservation/forms.mp_payment_heading') }}
             </h5>
             <div class="mb-4">
-                <p><strong>Nombre del producto:</strong> {{ $productName }}</p>
+                <p><strong>Nombre de la maquinaria:</strong> {{ $productName }}</p>
                 <p><strong>Fecha de inicio de la reserva:</strong> {{ $requestData['start_date']}}</p>
                 <p><strong>Fecha de fin de la reserva:</strong> {{ $requestData['end_date']}}</p>
                 <p><strong>Precio Total a pagar:</strong> ${{$requestData['total_amount']}}</p>
