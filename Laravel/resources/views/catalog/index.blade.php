@@ -73,86 +73,73 @@
         </section>
 </section>
 
-@if (Auth::getCurrentGuard() === 'customer')
-    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-100/50 backdrop-blur-sm">
-        <div class="relative p-4 w-full max-w-2xl max-h-full">
-            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                    <h3>Agregar a la lista de deseados</h3>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <div class="p-4 md:p-5 space-y-4">
-                    <form action="{{ route('customer.wishlist-item.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="">
-                        <input type="hidden" name="start_date" value="{{ $start_date }}">
-                        <input type="hidden" name="end_date" value="{{ $end_date }}">
-                        <div class="mb-4">
-                            <label for="wishlist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la lista</label>
-                            <select id="wishlist_id" name="wishlist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="">(Seleccione una lista)</option>
-                                @foreach($wishlists as $list)
-                                    <option value="{{ $list->id }}">{{ $list->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('wishlist_id')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="sublist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la sublista</label>
-                            <select id="sublist_id" name="wishlist_sublist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="">(Seleccione una sublista)</option>
-                            </select>
-                            @error('sublist_id')
-                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                            Agregar producto a Sublista
+<!-- Main modal -->
+    @if (Auth::getCurrentGuard() === 'customer')
+        <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-100/50 backdrop-blur-sm">
+            <div class="relative p-4 w-full max-w-2xl max-h-full">
+                <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                        <h3>Agregar a la lista de deseados</h3>
+                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                            <span class="sr-only">Close modal</span>
                         </button>
-                    </form>
+                    </div>
+                    <div class="p-4 md:p-5 space-y-4">
+                        <form action="{{ route('customer.wishlist-product.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="">
+                            <input type="hidden" name="start_date" value="{{ $start_date }}">
+                            <input type="hidden" name="end_date" value="{{ $end_date }}">
+                            <div class="mb-4">
+                                <label for="wishlist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la lista</label>
+                                <select id="wishlist_id" name="wishlist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">(Seleccione una lista)</option>
+                                    @foreach($wishlists as $list)
+                                        <option value="{{ $list->id }}">{{ $list->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('wishlist_id')
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                Agregar
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        const wishlists = @json($wishlists->mapWithKeys(function($list) {
-    return [
-        $list->id => $list->sublists->map(fn($s) => ['id'=>$s->id,'name'=>$s->name])->toArray()
-    ];
-}));
-
-        document.querySelectorAll('[data-modal-toggle="default-modal"]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const productId = this.getAttribute('data-product-id');
-                document.querySelector('#default-modal input[name="product_id"]').value = productId;
-            });
-        });
-
-        document.getElementById('wishlist_id').addEventListener('change', function() {
-            const subSelect = document.getElementById('sublist_id');
-            const selectedList = this.value;
-            subSelect.innerHTML = '<option value="">(Seleccione una sublista)</option>';
-            if (wishlists[selectedList]) {
-                wishlists[selectedList].forEach(function(s) {
-                    const opt = document.createElement('option');
-                    opt.value = s.id;
-                    opt.text  = s.name;
-                    subSelect.appendChild(opt);
+        <script>
+            document.querySelectorAll('[data-modal-toggle="default-modal"]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    document.querySelector('#default-modal input[name="product_id"]').value = productId;
                 });
-                subSelect.disabled = false;
-            } else {
-                subSelect.disabled = true;
-            }
-        });
-    </script>
-@endif
+            });
+
+            document.getElementById('wishlist_id').addEventListener('change', function() {
+                const subSelect = document.getElementById('sublist_id');
+                const selectedList = this.value;
+                subSelect.innerHTML = '<option value="">(Seleccione una sublista)</option>';
+                if (wishlists[selectedList]) {
+                    wishlists[selectedList].forEach(function(s) {
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.text  = s.name;
+                        subSelect.appendChild(opt);
+                    });
+                    subSelect.disabled = false;
+                } else {
+                    subSelect.disabled = true;
+                }
+            });
+        </script>
+    @endif
+
 
 </x-layouts.app>

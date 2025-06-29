@@ -8,11 +8,9 @@ use App\Models\Wishlist;
 
 class WishlistController extends Controller
 {
-    public function index(Wishlist $wishlist)
+    public function index()
     {
-        $wishlist->load('sublists');
-
-        return view('customer.wishlist.subwishlist-index', ['wishlist' => $wishlist]);
+        return view('customer.wishlist.wishlist-index');
     }
 
     public function store(StoreWishlistRequest $request)
@@ -25,10 +23,18 @@ class WishlistController extends Controller
         return redirect()->back()->with('success', 'Lista creada.');
     }
 
+    public function show(Wishlist $wishlist)
+    {
+        $wishlist->load('products.machine');
+
+        return view('wishlist.show', compact('wishlist'));
+    }
+
+
     public function destroy(Wishlist $wishlist)
     {
-        if ($wishlist->sublists()->exists()) {
-            return redirect()->back()->withErrors('La lista no está vacía.');
+        if ($wishlist->products()->exists()) {
+            return redirect()->back()->withErrors('La lista contiene maquinarias.');
         }
 
         $wishlist->delete();

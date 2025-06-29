@@ -14,13 +14,26 @@ class Wishlist extends Model
         'name',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($sublist) {
+            $sublist->allItems()->delete(); // Delete all items, even if product is missing
+        });
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function sublists()
+    public function allItems()
     {
-        return $this->hasMany(WishlistSublist::class, 'wishlist_id');
+        return $this->hasMany(\App\Models\WishlistProduct::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(WishlistProduct::class)
+            ->whereHas('product');
     }
 }
