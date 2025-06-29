@@ -28,9 +28,7 @@ class ProductCard extends Component
         $branchId      = session('branch_id');
         if (Auth::getCurrentGuard() === 'customer') {
             $this->wishlists = \Illuminate\Support\Facades\Auth::guard('customer')->user()
-                ->wishlists()
-                ->with('sublists:id,wishlist_id,name')
-                ->get(['id', 'name']);
+                ->wishlists()->get(['id', 'name']);
         }
     }
 

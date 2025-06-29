@@ -29,7 +29,7 @@ class WishlistManage extends Component implements HasForms, HasTable
                     ->label('Nombre'),
                 TextColumn::make('products_count')
                     ->counts('products')
-                    ->label('Cantidad de maquinarias'),
+                    ->label('Cantidad de Maquinarias'),
             ])
             ->recordUrl(
                 fn ($record) => route('customer.productslist', ['wishlist' => $record->id])

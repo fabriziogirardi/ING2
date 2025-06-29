@@ -153,7 +153,7 @@
                 </button>
             </div>
             <div class="p-4 md:p-5 space-y-4">
-                <form action="{{ route('customer.wishlist-item.store') }}" method="POST">
+                <form action="{{ route('customer.wishlist-product.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <input type="hidden" name="start_date" value="{{ $start_date }}">
@@ -161,7 +161,7 @@
                     <div class="mb-4">
                         <label for="wishlist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la lista</label>
                         <select id="wishlist_id" name="wishlist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="">-- elige lista --</option>
+                            <option value="">(Seleccione una lista)</option>
                             @foreach($wishlists as $list)
                                 <option value="{{ $list->id }}">{{ $list->name }}</option>
                             @endforeach
@@ -171,54 +171,15 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="sublist_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Selecciona la sublista</label>
-                        <select id="sublist_id" name="wishlist_sublist_id" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="">-- elige sublista --</option>
-                        </select>
-                        @error('sublist_id')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <button
                         type="submit"
                         class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
-                        Agregar producto a Sublista
+                        Agregar
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    // Convertimos la colección PHP en un objeto JS:
-    const wishlists = @json($wishlists->mapWithKeys(function($list) {
-        return [
-            $list->id => $list->sublists->map(fn($s) => ['id'=>$s->id,'name'=>$s->name])->toArray()
-        ];
-    }));
-
-    document.getElementById('wishlist_id').addEventListener('change', function() {
-        const subSelect = document.getElementById('sublist_id');
-        const selectedList = this.value;
-
-        // Reset options
-        subSelect.innerHTML = '<option value="">-- elige sublista --</option>';
-
-        if (wishlists[selectedList]) {
-            wishlists[selectedList].forEach(function(s) {
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.text  = s.name;
-                subSelect.appendChild(opt);
-            });
-            subSelect.disabled = false;
-        } else {
-            subSelect.disabled = true;
-        }
-    });
-</script>
 @endif

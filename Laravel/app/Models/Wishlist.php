@@ -14,6 +14,13 @@ class Wishlist extends Model
         'name',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($sublist) {
+            $sublist->allItems()->delete(); // Delete all items, even if product is missing
+        });
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
