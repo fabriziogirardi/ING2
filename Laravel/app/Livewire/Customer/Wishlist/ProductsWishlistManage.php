@@ -64,8 +64,9 @@ class ProductsWishlistManage extends Component implements HasForms, HasTable
                         if ($this->isReservable($record)) {
                             session([
                                 'start_date' => $record->start_date,
-                                'end_date' => $record->end_date,
+                                'end_date'   => $record->end_date,
                             ]);
+
                             return redirect()->route('catalog.show', ['product' => $record->product_id]);
                         }
                     }),
@@ -89,7 +90,7 @@ class ProductsWishlistManage extends Component implements HasForms, HasTable
         $start_date = $record->start_date;
         $end_date   = $record->end_date;
 
-        $today      = \Carbon\Carbon::today()->toDateString();
+        $today = \Carbon\Carbon::today()->toDateString();
 
         if (\Carbon\Carbon::parse($start_date)->lt(\Carbon\Carbon::parse($today))) {
             return 'La fecha de inicio ya no es válida';

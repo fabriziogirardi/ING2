@@ -30,7 +30,6 @@ class WishlistController extends Controller
         return view('wishlist.show', compact('wishlist'));
     }
 
-
     public function destroy(Wishlist $wishlist)
     {
         if ($wishlist->products()->exists()) {

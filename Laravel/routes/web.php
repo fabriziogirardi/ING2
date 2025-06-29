@@ -23,7 +23,6 @@ use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Http\Controllers\Reservation\ReservationController;
 use App\Http\Controllers\Wishlist\WishlistController;
 use App\Http\Controllers\Wishlist\WishlistProductController;
-use App\Http\Controllers\Wishlist\WishlistSublistController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Product;
