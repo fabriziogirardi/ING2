@@ -47,7 +47,6 @@ class CatalogController extends Controller
         if (Auth::getCurrentGuard() === 'customer') {
             $wishlist = \Illuminate\Support\Facades\Auth::guard('customer')->user()
                 ->wishlists()
-                ->with('sublists:id,wishlist_id,name')
                 ->get(['id', 'name']);
         }
 
