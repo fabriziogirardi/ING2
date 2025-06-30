@@ -55,6 +55,7 @@ class ForumSectionResource extends Resource
                     ->before(function ($record, $action) {
                         if ($record->discussions()->exists()) {
                             $action->failure();
+
                             return false;
                         }
                     }),
