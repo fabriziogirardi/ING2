@@ -21,9 +21,10 @@ class CreateDiscussionManage extends Component implements HasForms
         $data = $this->form->getState();
 
         $discussion = ForumDiscussion::create([
-            'title'       => $data['title'],
-            'content'     => $data['content'],
-            'customer_id' => auth()->id(),
+            'title'            => $data['title'],
+            'content'          => $data['content'],
+            'customer_id'      => auth()->id(),
+            'forum_section_id' => $data['section'],
         ]);
         redirect()->route('forum.discussions.show', ['discussion' => $discussion->id])->with(['toast', 'success', 'message' => 'Discusión creada con éxito.']);
     }

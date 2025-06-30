@@ -22,6 +22,7 @@ class EditDiscussionManage extends Component implements HasForms
         $this->discussion = $discussion;
         $this->title      = $discussion->title;
         $this->content    = $discussion->content;
+        $this->section    = $discussion->forum_section_id;
     }
 
     public function submit(): void
@@ -29,8 +30,9 @@ class EditDiscussionManage extends Component implements HasForms
         $data = $this->form->getState();
 
         $this->discussion->update([
-            'title'   => $data['title'],
-            'content' => $data['content'],
+            'title'            => $data['title'],
+            'content'          => $data['content'],
+            'forum_section_id' => $data['section'],
         ]);
         redirect()->route('forum.discussions.show', ['discussion' => $this->discussion->id])->with(['toast' => 'success', 'message' => 'Discusión actualizada con éxito.']);
     }
