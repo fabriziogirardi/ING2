@@ -92,6 +92,10 @@ class ProductsWishlistManage extends Component implements HasForms, HasTable
 
         $today = \Carbon\Carbon::today()->toDateString();
 
+        if ($record->product && method_exists($record->product, 'trashed') && $record->product->trashed()) {
+            return 'Maquinaria no vigente';
+        }
+
         if (\Carbon\Carbon::parse($start_date)->lt(\Carbon\Carbon::parse($today))) {
             return 'La fecha de inicio ya no es válida';
         }
