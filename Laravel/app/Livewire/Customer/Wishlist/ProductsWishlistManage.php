@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Customer\Wishlist;
 
-use App\Models\WishlistItem;
-use App\Models\WishlistSublist;
+use App\Models\Wishlist;
+use App\Models\WishlistProduct;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
@@ -13,42 +13,42 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class ItemswishlistManage extends Component implements HasForms, HasTable
+class ProductsWishlistManage extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    public WishlistSublist $subwishlist;
+    public Wishlist $wishlist;
 
-    public function mount(WishlistSublist $subwishlist)
+    public function mount(Wishlist $wishlist)
     {
-        $this->subwishlist = $subwishlist;
+        $this->wishlist = $wishlist;
     }
 
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                WishlistItem::where('wishlist_sublist_id', $this->subwishlist->id)
+                WishlistProduct::where('wishlist_id', $this->wishlist->id)
                     ->whereHas('product')
             )
             ->columns([
                 TextColumn::make('product.name')
-                    ->label('Nombre producto'),
+                    ->label('Nombre de Maquinaria'),
                 TextColumn::make('product.price')
                     ->label('Precio por dia'),
                 TextColumn::make('start_date')
                     ->label('Fecha de inicio')
                     ->date('d-m-Y'),
                 TextColumn::make('end_date')
-                    ->label('Fecha de fin')
+                    ->label('Fecha de finalización')
                     ->date('d-m-Y'),
             ])
             ->headerActions([
-                Action::make('back_to_subwishlist')
+                Action::make('back_to_wishlist')
                     ->label('Volver')
                     ->icon('heroicon-m-arrow-left')
                     ->color('info')
-                    ->url(route('customer.subwishlist', ['wishlist' => $this->subwishlist->wishlist_id])),
+                    ->url(route('customer.wishlist.index')),
             ])
             ->actions([
                 Action::make('Reservar')
@@ -76,21 +76,25 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
                     ->iconButton()
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(fn (WishlistItem $record) => $record->delete()),
+                    ->action(fn (WishlistProduct $record) => $record->delete()),
             ]);
     }
 
-    protected function isReservable(WishlistItem $record): bool
+    protected function isReservable(WishlistProduct $record): bool
     {
         return $this->getUnavailabilityReason($record) === null;
     }
 
-    protected function getUnavailabilityReason(WishlistItem $record): ?string
+    protected function getUnavailabilityReason(WishlistProduct $record): ?string
     {
         $start_date = $record->start_date;
         $end_date   = $record->end_date;
 
         $today = \Carbon\Carbon::today()->toDateString();
+
+        if ($record->product && method_exists($record->product, 'trashed') && $record->product->trashed()) {
+            return 'Maquinaria no vigente';
+        }
 
         if (\Carbon\Carbon::parse($start_date)->lt(\Carbon\Carbon::parse($today))) {
             return 'La fecha de inicio ya no es válida';
@@ -118,6 +122,6 @@ class ItemswishlistManage extends Component implements HasForms, HasTable
 
     public function render()
     {
-        return view('livewire.wishlist.itemswishlist');
+        return view('livewire.wishlist.productswishlist');
     }
 }

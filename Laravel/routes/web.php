@@ -23,8 +23,7 @@ use App\Http\Controllers\Manager\Product\ProductController;
 use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Http\Controllers\Reservation\ReservationController;
 use App\Http\Controllers\Wishlist\WishlistController;
-use App\Http\Controllers\Wishlist\WishlistItemController;
-use App\Http\Controllers\Wishlist\WishlistSublistController;
+use App\Http\Controllers\Wishlist\WishlistProductController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Product;
@@ -208,20 +207,11 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         })->name('reservations.failure');
 
         // Wishlist Routes
-        Route::resource('wishlist', WishlistController::class)->except(['index']);
-        Route::resource('wishlist-sublist', WishlistSublistController::class)->except(['index']);
-        Route::resource('wishlist-item', WishlistItemController::class)->except(['index']);
-        Route::view('/wishlist', 'customer.wishlist.wishlist-index')->name('wishlist');
-        Route::get('/wishlist/{wishlist}', [WishlistController::class, 'index'])->name('subwishlist');
-        Route::get('/wishlist/{wishlist}/{subwishlist}', [WishlistItemController::class, 'index'])->name('itemslist');
-
-        // Mostrar el form: pasamos el Machine sobre el que agregaremos el ítem
-        Route::get('/catalog/{product}/{startDate}/{endDate}/wishlist-items/create', [WishlistItemController::class, 'create'])
-            ->name('wishlist-items.create');
-
-        // Procesar el envío
-        Route::post('/wishlist-items', [WishlistItemController::class, 'store'])
-            ->name('wishlist-items.store');
+        Route::resource('wishlist', WishlistController::class);
+        Route::resource('wishlist-product', WishlistProductController::class)->except(['index']);
+        Route::get('/wishlist/{wishlist}', [WishlistProductController::class, 'index'])->name('productslist');
+        Route::post('/wishlist-product', [WishlistProductController::class, 'store'])
+            ->name('wishlist-product.store');
 
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
         Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');

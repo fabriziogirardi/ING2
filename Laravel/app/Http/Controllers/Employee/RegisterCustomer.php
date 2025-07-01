@@ -27,8 +27,8 @@ class RegisterCustomer extends Controller
      */
     public function store(RegisterCustomerRequest $request)
     {
-        $email = $request->validated('email');
-        $govId = $request->validated('government_id_number');
+        $email   = $request->validated('email');
+        $govId   = $request->validated('government_id_number');
         $govType = $request->validated('government_id_type_id');
 
         $personByEmail = Person::where('email', $email)->first();
@@ -48,7 +48,7 @@ class RegisterCustomer extends Controller
         }
 
         $person = $personByEmail ?: $personByGovId;
-        if (!$person) {
+        if (! $person) {
             $person = Person::create([
                 'email'                 => $email,
                 'government_id_number'  => $govId,

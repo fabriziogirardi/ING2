@@ -27,12 +27,12 @@ class WishlistManage extends Component implements HasForms, HasTable
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre'),
-                TextColumn::make('sublists_count')
-                    ->counts('sublists')
-                    ->label('Cantidad de sublistas'),
+                TextColumn::make('products_count')
+                    ->counts('products')
+                    ->label('Cantidad de Maquinarias'),
             ])
             ->recordUrl(
-                fn ($record) => route('customer.subwishlist', ['wishlist' => $record->id])
+                fn ($record) => route('customer.productslist', ['wishlist' => $record->id])
             )
             ->headerActions([
                 CreateAction::make()
@@ -63,7 +63,7 @@ class WishlistManage extends Component implements HasForms, HasTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (Wishlist $record) {
-                        if ($record->sublists()->count() > 0) {
+                        if ($record->products()->count() > 0) {
                             Notification::make()
                                 ->title('No es posible eliminar la lista porque no esta vacia.')
                                 ->warning()

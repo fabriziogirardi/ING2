@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Wishlist extends Model
 {
@@ -19,8 +20,8 @@ class Wishlist extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function sublists()
+    public function products()
     {
-        return $this->hasMany(WishlistSublist::class, 'wishlist_id');
+        return $this->hasMany(WishlistProduct::class);
     }
 }
