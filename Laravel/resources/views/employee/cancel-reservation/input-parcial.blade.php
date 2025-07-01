@@ -8,7 +8,7 @@
 
     <form action="{{ route('employee.cancel-reservation.partial') }}" method="post">
         @csrf
-        <input type="hidden" name="maxValue" value="{{ $maxValue }}">
+        <input type="hidden" name="product" value="{{ $product->id }}">
         <label for="refund_amount">Monto a devolver:</label>
         <input
             type="number"
@@ -20,5 +20,6 @@
         >
         <button type="submit">Enviar</button>
     </form>
+
 
 </x-layouts.app>

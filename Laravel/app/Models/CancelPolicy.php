@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class CancelPolicy extends Model
 {
@@ -14,8 +16,17 @@ class CancelPolicy extends Model
         'requires_amount_input',
     ];
 
-    public function products()
+
+    public function products(): HasManyThrough
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasManyThrough(
+            Product::class,
+            CancelPolicyProduct::class,
+            'cancel_policy_id',
+            'id',
+            'id',
+            'product_id'
+        );
     }
+
 }

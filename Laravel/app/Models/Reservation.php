@@ -24,6 +24,7 @@ class Reservation extends Model
         'customer_id',
         'branch_product_id',
         'code',
+        'total_amount',
         'start_date',
         'end_date',
     ];

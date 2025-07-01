@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -95,6 +96,18 @@ class Product extends Model
     public function branch_products(): HasMany
     {
         return $this->hasMany(BranchProduct::class);
+    }
+
+    public function cancelPolicy(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            CancelPolicy::class,
+            CancelPolicyProduct::class,
+            'product_id', // Llave foránea en cancel_policy_product
+            'id', // Llave primaria en cancel_policies
+            'id', // Llave primaria en products
+            'cancel_policy_id' // Llave foránea en cancel_policy_product
+        );
     }
 
     #[Scope]
