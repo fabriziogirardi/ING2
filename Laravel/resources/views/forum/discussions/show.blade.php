@@ -35,7 +35,7 @@
                     <div>
                         <div class="flex flex-row space-x-4 mt-2">
                             <div>
-                                @if(Auth::getCurrentGuard() === 'customer')
+                                @if(Auth::getCurrentGuard() === 'customer' && $discussion->customer_id === auth()->user()->id)
                                     <x-elements.link-button href="{{ route('forum.discussions.edit', ['discussion' => $discussion->id]) }}">
                                         <x-slot:text>Editar Discusión</x-slot:text>
                                     </x-elements.link-button>

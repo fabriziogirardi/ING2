@@ -33,11 +33,7 @@ class ForumDiscussionController extends Controller
     public function destroy(ForumDiscussion $discussion)
     {
         if (Auth::getCurrentGuard() === 'manager') {
-            if ($discussion->replies()->count() > 0) {
-                return redirect()->back()->with('error', 'Cannot delete discussion with replies.');
-            }
             $discussion->delete();
-
             return redirect()->route('forum.index')->with(['toast' => 'success', 'message' => 'Discusión eliminada con exito.']);
         }
 

@@ -1,6 +1,6 @@
 <div class="container mx-auto bg-gray-100 p-4 rounded-lg shadow-md {{ Auth::getCurrentGuard() === 'manager' ? 'hidden' : '' }}">
     <form wire:submit.prevent="submit">
-        <h1 class="text-2xl font-bold">{{ request()->routeIs('forum.discussions.show') ? 'Responder Discusión' : 'Editar Discusión' }}</h1>
+        <h1 class="text-2xl font-bold">{{ request()->routeIs('forum.discussions.show') ? 'Responder Discusión' : 'Editar Respuesta' }}</h1>
         <div class="grid grid-cols-1 gap-4">
             @livewire('notifications')
             {{ $this->form }}
