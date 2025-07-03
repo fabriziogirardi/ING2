@@ -23,6 +23,30 @@ class CancelPolicyController extends Controller
 
         return view('employee.cancel-reservation.input-code', compact('governmentIdType'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'reservation_id' => 'required|exists:reservations,id',
+            'refund_amount'  => 'required|numeric|min:0',
+        ]);
+
+        $reservation = Reservation::findOrFail($request->input('reservation_id'));
+
+        $product    = $reservation->product;
+        $policy     = $product->cancelPolicy;
+
+        if ($policy) {
+            $reservation->refunds()->create([
+                'reservation_id' => $reservation->id,
+                'amount' => $request->input('refund_amount'),
+            ]);
+        }
+
+        $reservation->delete();
+
+        return redirect('/')->with(['toast' => 'info', 'message' => 'Se ha registrado la devolucion de la reserva']);
+    }
     public function show(CancelReservationRequest $request)
     {
         $code = $request->input('code');
@@ -53,6 +77,7 @@ class CancelPolicyController extends Controller
                 'refund'  => 0,
                 'message' => 'Política del producto: Nula',
                 'product' => $product,
+                'reservation' => $reservation,
             ]);
         }
 
@@ -61,6 +86,7 @@ class CancelPolicyController extends Controller
                 'refund'  => $reservation->total_amount,
                 'message' => 'Política del producto: Completa',
                 'product' => $product,
+                'reservation' => $reservation,
             ]);
         }
 
@@ -68,17 +94,22 @@ class CancelPolicyController extends Controller
             'message'  => 'Política del producto: Parcial',
             'product'  => $product,
             'maxValue' => $reservation->total_amount,
+            'reservation' => $reservation,
         ]);
     }
 
     public function handlePartial(Request $request)
     {
+
         $product = Product::findOrFail($request->get('product'), 'id');
+
+        $reservation = Reservation::findOrFail($request->get('reservation'), 'id');
 
         return view('employee.cancel-reservation.show', [
             'message'  => 'Política del producto: Parcial',
             'product'  => $product,
             'refund' => $request->input('refund_amount'),
+            'reservation' => $reservation,
         ]);
     }
 }

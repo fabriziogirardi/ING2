@@ -1,6 +1,6 @@
 <x-layouts.app x-data>
     <x-slot:title>
-        Login
+        Rembolso de Reserva
     </x-slot:title>
 
     <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
@@ -13,8 +13,14 @@
                 <p><strong>Producto: </strong> {{ $product->name }} </p>
                 <p><strong>Monto a devolver:</strong> ${{ number_format($refund, 2) }}</p>
             </div>
-
-
+            <form class="mt-4 space-y-6 sm:mt-6" action="{{ route('employee.cancel-reservation.store') }}" method="POST" @submit="submit = true">
+                @csrf
+                <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
+                <input type="hidden" name="refund_amount" value="{{ $refund  }}">
+                <div class="flex items-center">
+                    <x-forms.submit text="Confirmar Devolucion" submit="true" full-width="true" />
+                </div>
+            </form>
         </div>
     </div>
 

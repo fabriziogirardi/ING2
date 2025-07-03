@@ -34,9 +34,9 @@ class Reservation extends Model
         'end'   => 'date',
     ];
 
-    public function branch_product(): BelongsTo
+    public function branch_product()
     {
-        return $this->belongsTo(BranchProduct::class);
+        return $this->belongsTo(BranchProduct::class)->withTrashed();
     }
 
     public function product(): BelongsTo
@@ -57,6 +57,11 @@ class Reservation extends Model
     public function returned(): HasOne
     {
         return $this->hasOne(ReturnedReservation::class);
+    }
+
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class, 'reservation_id');
     }
 
     public function duration(): Attribute

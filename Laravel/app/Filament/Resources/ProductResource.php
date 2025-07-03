@@ -250,7 +250,7 @@ class ProductResource extends Resource
 
                         if ($hasPendingReservations) {
                             Notification::make()
-                                ->title('No se puede eliminar ela maquinaria')
+                                ->title('No se puede eliminar la maquinaria')
                                 ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de esta maquinaria.')
                                 ->danger()
                                 ->send();

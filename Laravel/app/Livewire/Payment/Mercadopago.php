@@ -92,8 +92,8 @@ class Mercadopago extends Component
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://439f-2802-8012-f17-a101-e907-1210-86b6-410c.ngrok-free.app'.$linkSuccess,
-                'failure' => 'https://439f-2802-8012-f17-a101-e907-1210-86b6-410c.ngrok-free.app/customer/reservations/failure',
+                'success' => 'https://6bce-181-23-61-61.ngrok-free.app'.$linkSuccess,
+                'failure' => 'https://6bce-181-23-61-61.ngrok-free.app/customer/reservations/failure',
             ],
             'external_reference' => $this->branchProductId,
             'auto_return'        => 'approved',
