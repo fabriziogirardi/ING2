@@ -61,8 +61,8 @@ class MercadoPagoController extends Controller
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://d817-181-23-54-79.ngrok-free.app'.$linkSucess,
-                'failure' => 'https://d817-181-23-54-79.ngrok-free.app/customer/reservations/failure',
+                'success' => 'https://967f-181-23-61-61.ngrok-free.app/'.$linkSucess,
+                'failure' => 'https://967f-181-23-61-61.ngrok-free.app/customer/reservations/failure',
             ],
             'external_reference' => $request->validated('branch_product_id'),
             'auto_return'        => 'approved',

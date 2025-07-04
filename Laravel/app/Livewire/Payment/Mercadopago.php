@@ -60,13 +60,16 @@ class Mercadopago extends Component
 
         $this->totalPrice = $product->price * ($startDate->diffInDays($endDate) + 1);
 
+        $startDate->format('Y-m-d');
+        $endDate->format('Y-m-d');
+
         $linkSuccess = URL::signedRoute(
             'customer.reservation.store',
             [
                 'branch_product_id' => $this->branchProductId,
                 'customer_id'       => auth('customer')->user()->id,
-                'start_date'        => $this->startDate,
-                'end_date'          => $this->endDate,
+                'start_date'        => $startDate,
+                'end_date'          => $endDate,
                 'code'              => $this->code,
                 'total_amount'      => $this->totalPrice,
             ],
@@ -89,8 +92,8 @@ class Mercadopago extends Component
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://d817-181-23-54-79.ngrok-free.app'.$linkSuccess,
-                'failure' => 'https://d817-181-23-54-79.ngrok-free.app/customer/reservations/failure',
+                'success' => 'https://c6ea-181-23-48-189.ngrok-free.app'.$linkSuccess,
+                'failure' => 'https://c6ea-181-23-48-189.ngrok-free.app/customer/reservations/failure',
             ],
             'external_reference' => $this->branchProductId,
             'auto_return'        => 'approved',

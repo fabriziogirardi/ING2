@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\BranchesRelationManager;
+use App\Models\CancelPolicyProduct;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBrand;
@@ -95,6 +96,29 @@ class ProductResource extends Resource
                     ->preload()
                     ->required()
                     ->placeholder('Selecciona una o más categorías'),
+                Select::make('cancel_policy')
+                    ->label('Política de cancelación')
+                    ->options([
+                        'completa' => 'Completa',
+                        'parcial'  => 'Parcial',
+                        'nula'     => 'Nula',
+                    ])
+                    ->selectablePlaceholder(false)
+                    ->afterStateHydrated(function (Select $component, ?string $state, $record) {
+                        if ($state) {
+                            return;
+                        }
+                        $value = match ($record?->cancelPolicy?->id) {
+                            1       => 'completa',
+                            2       => 'parcial',
+                            default => 'nula',
+                        };
+                        $component->state($value);
+                    })
+                    ->required()
+                    ->columnSpan(2)
+                    ->helperText('Selecciona la política de cancelación para este producto.'),
+
                 RichEditor::make('description')
                     ->columnSpan(2)
                     ->label('Descripción')
@@ -163,6 +187,25 @@ class ProductResource extends Resource
                     ->extraAttributes(fn ($record) => [
                         'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
+                TextColumn::make('cancel_policy')
+                    ->label('Política de cancelación')
+                    ->state(function ($record) {
+                        if ($record->cancelPolicy) {
+                            return $record->cancelPolicy->id === 1 ? 'completa' : 'parcial';
+                        }
+
+                        return 'null';
+                    })
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ])
+                    ->formatStateUsing(function ($state) {
+                        return match ($state) {
+                            'completa' => 'Completa',
+                            'parcial'  => 'Parcial',
+                            'null'     => 'Nula'
+                        };
+                    }),
                 ImageColumn::make('images_json')
                     ->label('Imágenes')
                     ->circular()
@@ -209,6 +252,17 @@ class ProductResource extends Resource
                             ->preload()
                             ->required()
                             ->placeholder('Selecciona una o más categorías'),
+                        Select::make('cancel_policy')
+                            ->label('Política de cancelación')
+                            ->options([
+                                'completa' => 'Completa',
+                                'parcial'  => 'Parcial',
+                                'nula'     => 'Nula',
+                            ])
+                            ->placeholder('Selecciona una política de cancelación')
+                            ->required()
+                            ->columnSpan(2)
+                            ->helperText('Selecciona la política de cancelación para este producto.'),
                         RichEditor::make('description')
                             ->columnSpan(2)
                             ->label('Descripción')
@@ -250,7 +304,7 @@ class ProductResource extends Resource
 
                         if ($hasPendingReservations) {
                             Notification::make()
-                                ->title('No se puede eliminar ela maquinaria')
+                                ->title('No se puede eliminar la maquinaria')
                                 ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de esta maquinaria.')
                                 ->danger()
                                 ->send();
@@ -301,5 +355,19 @@ class ProductResource extends Resource
         $model = static::getModel();
 
         return $model::count();
+    }
+
+    public static function afterSave($record, array $data): void
+    {
+        CancelPolicyProduct::where('product_id', $record->id)->delete();
+
+        if (isset($data['cancel_policy']) && $data['cancel_policy'] !== 'nula') {
+            $policyId = $data['cancel_policy'] === 'completa' ? 1 : 2;
+
+            CancelPolicyProduct::create([
+                'product_id'       => $record->id,
+                'cancel_policy_id' => $policyId,
+            ]);
+        }
     }
 }
