@@ -12,8 +12,8 @@ class CancelPolicyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'                    => $this->faker->unique()->word(),
-            'requires_amount_input'   => $this->faker->boolean(),
+            'name'                  => $this->faker->unique()->word(),
+            'requires_amount_input' => $this->faker->boolean(),
         ];
     }
 }

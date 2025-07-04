@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -18,7 +17,7 @@ class CancelPolicyProduct extends Model
 
     protected $fillable = [
         'product_id',
-        'cancel_policy_id'
+        'cancel_policy_id',
     ];
 
     public function cancelPolicy(): BelongsTo
@@ -31,4 +30,3 @@ class CancelPolicyProduct extends Model
         return $this->belongsTo(Product::class);
     }
 }
-

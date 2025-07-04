@@ -21,4 +21,9 @@ class EditProduct extends EditRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function afterSave(): void
+    {
+        ProductResource::afterSave($this->record, $this->data);
+    }
 }

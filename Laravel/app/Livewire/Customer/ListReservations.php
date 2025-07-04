@@ -5,14 +5,11 @@ namespace App\Livewire\Customer;
 use App\Models\Reservation;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Livewire\Component;
 
 class ListReservations extends Component implements HasForms, HasTable
@@ -22,7 +19,7 @@ class ListReservations extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(    Reservation::query()
+            ->query(Reservation::query()
                 ->withTrashed()
                 ->where('customer_id', auth()->id())
                 ->orderByDesc('id'))

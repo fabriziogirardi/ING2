@@ -103,10 +103,10 @@ class Product extends Model
         return $this->hasOneThrough(
             CancelPolicy::class,
             CancelPolicyProduct::class,
-            'product_id', // Llave foránea en cancel_policy_product
-            'id', // Llave primaria en cancel_policies
-            'id', // Llave primaria en products
-            'cancel_policy_id' // Llave foránea en cancel_policy_product
+            'product_id',
+            'id',
+            'id',
+            'cancel_policy_id'
         );
     }
 
