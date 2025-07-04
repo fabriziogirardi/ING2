@@ -17,6 +17,9 @@
                     <li>
                         <a href="{{ route('employee.reservation.retire') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Entregar Maquinaria</a>
                     </li>
+                    <li>
+                        <a href="{{ route('employee.reservation.return') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Devolver Maquinaria</a>
+                    </li>
                 </ul>
                 <div class="py-2">
                     <a href="{{ route('employee.logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 dark:hover:bg-red-600 dark:text-red-400 dark:hover:text-white">

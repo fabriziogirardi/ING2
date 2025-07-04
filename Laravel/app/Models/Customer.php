@@ -16,6 +16,9 @@ use Illuminate\Support\Str;
 /**
  * @mixin \Illuminate\Database\Query\Builder
  * @mixin \Illuminate\Database\Eloquent\Builder
+ *
+ * @property float $rating
+ * @property int $reservations_count
  */
 class Customer extends Authenticatable
 {
@@ -25,6 +28,8 @@ class Customer extends Authenticatable
     protected $fillable = [
         'person_id',
         'password',
+        'rating',
+        'reservations_count',
     ];
 
     protected $hidden = [
@@ -80,6 +85,11 @@ class Customer extends Authenticatable
     public function wishlists(): HasMany
     {
         return $this->HasMany(Wishlist::class);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->HasMany(Reservation::class);
     }
 
     public function scopeFindByGovernmentId(Builder $query, string $idNumber, int $idType): Builder

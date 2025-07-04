@@ -8,6 +8,7 @@ use App\Http\Controllers\Customer\RecoverPasswordController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\RegisterCustomer;
+use App\Http\Controllers\Employee\Reservation\ReturnedReservationController;
 use App\Http\Controllers\Employee\RetiredReservationController;
 use App\Http\Controllers\Forum\ForumController;
 use App\Http\Controllers\Forum\ForumDiscussionController;
@@ -157,6 +158,11 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
         Route::post('/reservation/retire', [RetiredReservationController::class, 'store'])
             ->name('reservation.retire.post');
+
+        Route::get('/reservation/return', [ReturnedReservationController::class, 'show'])
+            ->name('reservation.return');
+        Route::post('/reservation/return', [ReturnedReservationController::class, 'store'])
+            ->name('reservation.return.store');
 
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
