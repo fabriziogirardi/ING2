@@ -32,6 +32,7 @@
                         <input type="hidden" name="branch_product_id" value="{{ $branchProductId }}">
                         <input type="hidden" name="start_date" value="{{ request()->start_date }}">
                         <input type="hidden" name="end_date" value="{{ request()->end_date }}">
+                        <input type="hidden" name="total_amount" value="{{ $total }}">
 
                         <div class="mb-4">
                             <label for="customer_email" class="block text-gray-700 font-semibold mb-2">Correo del cliente</label>
