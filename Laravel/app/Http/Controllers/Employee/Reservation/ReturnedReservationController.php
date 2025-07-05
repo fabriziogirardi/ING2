@@ -16,10 +16,9 @@ class ReturnedReservationController extends Controller
 
         $reservation = Reservation::whereRelation('customer.person', 'government_id_number', $validated['government_id_number'])
             ->whereRelation('customer.person', 'government_id_type_id', $validated['government_id_type_id'])
+            ->where('code', $validated['code'])
             ->whereHas('retired')
             ->whereDoesntHave('returned')
-            ->where('code', $validated['code'])
-            ->where('start_date', '>=', now()->startOfDay())
             ->first();
 
         if (! $reservation) {
