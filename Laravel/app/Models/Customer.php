@@ -119,8 +119,6 @@ class Customer extends Authenticatable
                         $query->where('created_at', '>', $lastReservation->created_at)
                             ->whereColumn('created_at', '>', 'reservations.end_date');
                     })
-                    ->orderByDesc('id')
-                    ->take($this->reservations_count)
                     ->exists();
             }
         );
