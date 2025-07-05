@@ -14,11 +14,19 @@ class ReturnedReservationController extends Controller
     {
         $validated = $request->validated();
 
-        $reservation = Reservation::whereRelation('customer.person', 'government_id_number', $validated['government_id_number'])
-            ->whereRelation('customer.person', 'government_id_type_id', $validated['government_id_type_id'])
+        $reservation = Reservation::whereHas('customer', function ($query) use ($validated) {
+            $query->withTrashed()
+                ->whereHas('person', function ($personQuery) use ($validated) {
+                    $personQuery->where('government_id_number', $validated['government_id_number'])
+                        ->where('government_id_type_id', $validated['government_id_type_id']);
+                });
+        })
             ->where('code', $validated['code'])
             ->whereHas('retired')
             ->whereDoesntHave('returned')
+            ->with(['customer' => function ($query) {
+                $query->withTrashed()->with('person');
+            }])
             ->first();
 
         if (! $reservation) {
@@ -30,13 +38,15 @@ class ReturnedReservationController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
-        $this->updateCustomerRating($reservation->customer, $returned->rating);
+        // Solo actualizar el rating si el cliente no está eliminado
+        if (! $reservation->customer->trashed()) {
+            $this->updateCustomerRating($reservation->customer, $returned->rating);
+        }
 
         return redirect()->back()->with([
             'toast'   => 'success',
             'message' => 'Reserva marcada como devuelta',
         ]);
-
     }
 
     public function show(Reservation $reservation)
