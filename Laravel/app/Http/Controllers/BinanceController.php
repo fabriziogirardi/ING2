@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewReservationCreated;
 use App\Models\BranchProduct;
 use App\Models\Customer;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class BinanceController extends Controller
@@ -47,9 +49,17 @@ class BinanceController extends Controller
             'customer_id'       => $customer->id,
             'branch_product_id' => $request->branch_product_id,
             'code'              => $code,
+            'total_amount'      => $request->total_amount,
             'start_date'        => $start_date,
             'end_date'          => $end_date,
         ]);
+
+        Mail::to($customer->person->email)->send(
+            new NewReservationCreated(
+                $code,
+                $start_date,
+            )
+        );
 
         return view('payment.ConfirmBinancePayment', [
             'code' => $code,
