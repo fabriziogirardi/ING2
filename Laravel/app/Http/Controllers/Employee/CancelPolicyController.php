@@ -59,6 +59,10 @@ class CancelPolicyController extends Controller
             return redirect()->back()->withErrors(['error' => 'El codigo ingresado no pertenece a ninguna reserva']);
         }
 
+        if ($reservation->start_date <= now()->toDateString()) {
+            return redirect()->back()->withErrors(['error' => 'No se puede cancelar una reserva que ya ha iniciado o inicia hoy']);
+        }
+
         $customer = $reservation->customer->person;
 
         if (
