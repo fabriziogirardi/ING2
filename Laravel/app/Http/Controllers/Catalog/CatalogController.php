@@ -25,7 +25,7 @@ class CatalogController extends Controller
 
         $wishlist = '';
         if (Auth::getCurrentGuard() === 'customer') {
-            $wishlist = \Illuminate\Support\Facades\Auth::guard('customer')->user()
+            $wishlist = Auth::guard('customer')->user()
                 ->wishlists()
                 ->get(['id', 'name']);
         }
@@ -45,7 +45,7 @@ class CatalogController extends Controller
         $today      = Carbon::today()->format('m/d/Y');
         $wishlist   = '';
         if (Auth::getCurrentGuard() === 'customer') {
-            $wishlist = \Illuminate\Support\Facades\Auth::guard('customer')->user()
+            $wishlist = Auth::guard('customer')->user()
                 ->wishlists()
                 ->get(['id', 'name']);
         }

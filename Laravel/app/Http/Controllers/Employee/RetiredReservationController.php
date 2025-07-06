@@ -36,7 +36,8 @@ class RetiredReservationController extends Controller
             ->whereRelation('customer.person', 'government_id_type_id', $request->validated('government_id_type_id'))
             ->whereDoesntHave('retired')
             ->where('code', $request->validated('code'))
-            ->where('start_date', '>=', now()->startOfDay())
+            ->where('start_date', '<=', now()->startOfDay())
+            ->where('end_date', '>=', now()->startOfDay()->addDay())
             ->first();
 
         if (! $reservation) {

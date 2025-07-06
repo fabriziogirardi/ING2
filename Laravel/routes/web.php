@@ -175,7 +175,6 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
 
         Route::get('/payment', [BinanceController::class, 'showPaymentForm'])->name('payment');
         Route::get('/payment/confirm', [BinanceController::class, 'confirmPayment'])->name('payment_confirm');
-
     });
 });
 // endregion

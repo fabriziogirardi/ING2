@@ -58,7 +58,13 @@ class Mercadopago extends Component
         $startDate = Carbon::parse($this->startDate);
         $endDate   = Carbon::parse($this->endDate);
 
-        $this->totalPrice = $product->price * ($startDate->diffInDays($endDate) + 1);
+        $customer   = auth('customer')->user();
+        $hasPenalty = $customer && $customer->has_penalization;
+
+        $days      = $startDate->diffInDays($endDate) + 1;
+        $basePrice = $product->price * $days;
+
+        $this->totalPrice = $hasPenalty ? round($basePrice * 1.1, 2) : $basePrice;
 
         $startDate->format('Y-m-d');
         $endDate->format('Y-m-d');
