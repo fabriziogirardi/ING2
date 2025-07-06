@@ -60,7 +60,12 @@
                     <h1
                         class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
                     >
-                        {{ __('catalog/forms.days_to_reserve') }} {{ \Carbon\Carbon::parse($start_date)->diffInDays(\Carbon\Carbon::parse($end_date)) + 1 }}
+                        Fecha de Inicio: {{ $start_date }}
+                    </h1>
+                    <h1
+                        class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
+                    >
+                        Fecha de Fin: {{ $end_date }}
                     </h1>
                 </div>
 

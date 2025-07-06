@@ -58,6 +58,7 @@ class ReservationController extends Controller
             'customer_id'       => $customer_id->id,
             'branch_product_id' => $branch_product_id->id,
             'code'              => $code,
+            'total_amount'      => $total_amount,
             'start_date'        => $start_date,
             'end_date'          => $end_date,
         ]);

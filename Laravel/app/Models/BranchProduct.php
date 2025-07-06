@@ -32,9 +32,9 @@ class BranchProduct extends Pivot
         return $this->HasMany(Reservation::class, 'branch_product_id', 'id');
     }
 
-    public function product(): BelongsTo
+    public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function branch(): BelongsTo
