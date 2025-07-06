@@ -9,7 +9,7 @@ return [
     'mp_payment_label_unit_price'     => 'Precio a pagar',
     'title_sucess_slot'               => 'Pago Exitoso',
     'title_sucess'                    => 'El pago fue realizado con exito!',
-    'text_sucess'                     => 'Se envio el codigo de resera a su correo electronico, guardelo y uselo para retirar su maquinaria!',
+    'text_sucess'                     => 'Se envio el codigo de reserva a su correo electronico, guardelo y uselo para retirar su maquinaria!',
     'title_failure_slot'              => 'Pago Fallido',
     'title_failure'                   => 'Ocurrio un error!',
     'text_failure'                    => 'Ocurrio un error en el pago, revise los datos ingresados y vuelva a intentarlo!',

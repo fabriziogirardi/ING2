@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
 use App\Http\Controllers\Employee\CancelPolicyController;
 use App\Http\Controllers\Employee\RegisterCustomer;
+use App\Http\Controllers\Employee\Reservation\ReturnedReservationController;
 use App\Http\Controllers\Employee\RetiredReservationController;
 use App\Http\Controllers\Forum\ForumController;
 use App\Http\Controllers\Forum\ForumDiscussionController;
@@ -164,12 +165,16 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
         Route::post('/cancel-reservation/store', [CancelPolicyController::class, 'store'])->name('cancel-reservation.store');
         Route::post('/cancel-reservation/partial', [CancelPolicyController::class, 'handlePartial'])->name('cancel-reservation.partial');
 
+        Route::get('/reservation/return', [ReturnedReservationController::class, 'show'])
+            ->name('reservation.return');
+        Route::post('/reservation/return', [ReturnedReservationController::class, 'store'])
+            ->name('reservation.return.store');
+
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
 
         Route::get('/payment', [BinanceController::class, 'showPaymentForm'])->name('payment');
         Route::get('/payment/confirm', [BinanceController::class, 'confirmPayment'])->name('payment_confirm');
-
     });
 });
 // endregion

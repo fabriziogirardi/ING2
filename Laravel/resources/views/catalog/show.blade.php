@@ -50,10 +50,19 @@
                     {{ $product->name }}
                 </h1>
                 <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
-                    <p
-                        class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white"
-                    >
-                        ${{ $product->price }} <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
+                    @php
+                        $customer = Auth::guard('customer')->user();
+                        $hasPenalty = $customer && $customer->has_penalization;
+                        $price = $product->price;
+                        $finalPrice = $hasPenalty ? round($price * 1.1, 2) : $price;
+                    @endphp
+
+                    <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
+                        ${{ $finalPrice }}
+                        <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
+                        @if($hasPenalty)
+                            <span class="ml-2 text-xs text-red-600 font-semibold">(10% recargo por devolución tardía)</span>
+                        @endif
                     </p>
                 </div>
                 <div>
@@ -116,6 +125,21 @@
                                         <i class="fa-solid fa-file-signature mr-2"></i>
                                         {{ __('catalog/forms.rent_in_person') }}
                                     </button>
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="customer_email" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Correo del cliente
+                                    </label>
+                                    <input type="email"
+                                           name="customer_email"
+                                           id="customer_email"
+                                           required
+                                           class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm w-full sm:w-64"
+                                           placeholder="cliente@ejemplo.com"
+                                           value="{{ old('customer_email') }}">
+                                    @error('customer_email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
                                 </div>
                             </form>
                     @endif
@@ -188,3 +212,35 @@
     </div>
 </div>
 @endif
+
+
+
+<script>
+    function selectBranch(branchId, branchName) {
+        // Seleccionar el radio button
+        document.getElementById('branch_' + branchId).checked = true;
+
+        // Actualizar el texto del dropdown
+        document.getElementById('selectedBranchText').textContent = branchName;
+
+        // Cerrar el dropdown
+        document.getElementById('dropdown').classList.add('hidden');
+    }
+
+    // Manejar el toggle del dropdown
+    document.getElementById('dropdownDefaultButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        const dropdown = document.getElementById('dropdown');
+        dropdown.classList.toggle('hidden');
+    });
+
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('dropdown');
+        const button = document.getElementById('dropdownDefaultButton');
+
+        if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>

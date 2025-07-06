@@ -134,6 +134,11 @@ class CustomerResource extends Resource
                     ->modalHeading('¿Querés reanudar el acceso a esta cuenta?')
                     ->modalDescription('El usuario podrá volver a iniciar sesión normalmente.')
                     ->modalSubmitActionLabel('Sí, reanudar cuenta')
+                    ->after(function ($record) {
+                        $record->rating             = 3.00;
+                        $record->reservations_count = 0;
+                        $record->save();
+                    })
                     ->successNotification(
                         Notification::make()
                             ->title('Cuenta reanudada')

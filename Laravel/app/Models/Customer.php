@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mail\NewCustomerCreated;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,15 +17,24 @@ use Illuminate\Support\Str;
 /**
  * @mixin \Illuminate\Database\Query\Builder
  * @mixin \Illuminate\Database\Eloquent\Builder
+ *
+ * @property float $rating
+ * @property int $reservations_count
  */
 class Customer extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory, SoftDeletes;
 
+    protected $appends = [
+        'has_penalization',
+    ];
+
     protected $fillable = [
         'person_id',
         'password',
+        'rating',
+        'reservations_count',
     ];
 
     protected $hidden = [
@@ -82,10 +92,35 @@ class Customer extends Authenticatable
         return $this->HasMany(Wishlist::class);
     }
 
+    public function reservations(): HasMany
+    {
+        return $this->HasMany(Reservation::class);
+    }
+
     public function scopeFindByGovernmentId(Builder $query, string $idNumber, int $idType): Builder
     {
         return $query->withTrashed()
             ->whereRelation('person', 'government_id_number', $idNumber)
             ->whereRelation('person.government_id_type', 'id', $idType);
+    }
+
+    public function hasPenalization(): Attribute
+    {
+        return Attribute::make(
+            get: function (): bool {
+                $lastReservation = $this->reservations()->latest()->first();
+
+                if (! $lastReservation) {
+                    return false;
+                }
+
+                return $this->reservations()
+                    ->whereHas('returned', function ($query) use ($lastReservation) {
+                        $query->where('created_at', '>', $lastReservation->created_at)
+                            ->whereColumn('created_at', '>', 'reservations.end_date');
+                    })
+                    ->exists();
+            }
+        );
     }
 }

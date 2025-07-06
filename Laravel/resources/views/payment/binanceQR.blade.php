@@ -12,6 +12,9 @@
                     <h2 class="text-2xl font-bold mb-4 text-gray-800">Detalles de pago</h2>
 
                     <p class="text-lg text-gray-700 mb-2">
+                        Cliente: <span class="font-semibold">{{ $customer->person->full_name }}</span>
+                    </p>
+                    <p class="text-lg text-gray-700 mb-2">
                         Maquinaria: <span class="font-semibold">{{ $product->name }}</span>
                     </p>
                     <p class="text-lg text-gray-700 mb-2">
@@ -20,9 +23,28 @@
                     <p class="text-lg text-gray-700 mb-2">
                         Cantidad de días: <span class="font-semibold">{{ $days }}</span>
                     </p>
-                    <p class="text-xl text-blue-600 font-bold mt-4">
-                        Total a pagar: ${{ number_format($total, 2, ',', '.') }}
-                    </p>
+
+                    {{-- Mostrar desglose del precio --}}
+                    <div class="border-t pt-4 mt-4">
+                        <p class="text-lg text-gray-700 mb-2">
+                            Subtotal: <span class="font-semibold">${{ number_format($baseTotal, 2, ',', '.') }}</span>
+                        </p>
+
+                        @if($hasPenalization)
+                            <p class="text-lg text-red-600 mb-2">
+                                Recargo por penalización (10%): <span class="font-semibold">${{ number_format($finalTotal - $baseTotal, 2, ',', '.') }}</span>
+                            </p>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                                <p class="text-sm text-yellow-800">
+                                    <strong>Nota:</strong> Se aplicó un recargo del 10% debido a devoluciones tardías.
+                                </p>
+                            </div>
+                        @endif
+
+                        <p class="text-xl text-blue-600 font-bold mt-4">
+                            Total a pagar: ${{ number_format($finalTotal, 2, ',', '.') }}
+                        </p>
+                    </div>
 
                     <hr class="my-4 border-gray-300 opacity-60">
                     <p class="text-base text-gray-400 mb-2">
@@ -32,23 +54,14 @@
                         <input type="hidden" name="branch_product_id" value="{{ $branchProductId }}">
                         <input type="hidden" name="start_date" value="{{ request()->start_date }}">
                         <input type="hidden" name="end_date" value="{{ request()->end_date }}">
-                        <input type="hidden" name="total_amount" value="{{ $total }}">
+                        <input type="hidden" name="customer_email" value="{{ $customer->person->email }}">
 
-                        <div class="mb-4">
-                            <label for="customer_email" class="block text-gray-700 font-semibold mb-2">Correo del cliente</label>
-                            <input type="email" name="customer_email" id="customer_email" required
-                                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                   placeholder="cliente@ejemplo.com">
-                            @if ($errors->any())
-                                <div class="mb-4">
-                                    <ul class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                        </div>
+{{--                        <div class="mb-4">--}}
+{{--                            <label for="customer_email_display" class="block text-gray-700 font-semibold mb-2">Correo del cliente</label>--}}
+{{--                            <input type="email" name="customer_email_display" id="customer_email_display"--}}
+{{--                                   value="{{ $customer->person->email }}" readonly--}}
+{{--                                   class="w-full px-4 py-2 border rounded-lg bg-gray-100 focus:outline-none">--}}
+{{--                        </div>--}}
 
                         <div class="flex justify-center">
                             <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
