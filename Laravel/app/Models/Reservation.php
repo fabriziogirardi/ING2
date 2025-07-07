@@ -44,9 +44,9 @@ class Reservation extends Model
         return $this->branch_product->product();
     }
 
-    public function customer(): BelongsTo
+    public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class)->withTrashed();
     }
 
     public function retired(): HasOne
