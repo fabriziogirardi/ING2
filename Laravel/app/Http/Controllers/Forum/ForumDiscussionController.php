@@ -34,6 +34,7 @@ class ForumDiscussionController extends Controller
     {
         if (Auth::getCurrentGuard() === 'manager') {
             $discussion->delete();
+
             return redirect()->route('forum.index')->with(['toast' => 'success', 'message' => 'Discusión eliminada con exito.']);
         }
 
