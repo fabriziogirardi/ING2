@@ -36,7 +36,7 @@ class CancelPolicyController extends Controller
         $policy  = $product->cancelPolicy;
 
         if ($policy) {
-            $reservation->refunds()->create([
+            $reservation->refund()->create([
                 'reservation_id' => $reservation->id,
                 'amount'         => $request->input('refund_amount'),
             ]);

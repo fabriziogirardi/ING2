@@ -19,6 +19,6 @@ class Refund extends Model
 
     public function reservation()
     {
-        return $this->HasOne(Reservation::class, 'reservation_id')->withTrashed();
+        return $this->belongsTo(Reservation::class, 'reservation_id')->withTrashed();
     }
 }
