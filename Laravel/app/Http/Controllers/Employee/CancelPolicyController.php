@@ -56,14 +56,20 @@ class CancelPolicyController extends Controller
         $reservation = Reservation::where('code', $code)->first();
 
         if (! $reservation) {
-            return redirect()->back()->withErrors(['error' => 'El codigo ingresado no pertenece a ninguna reserva']);
+            return redirect()->back()->withErrors(['error' => 'El codigo ingresado no pertenece a ninguna reserva o la misma ya fue cancelada']);
         }
 
         if ($reservation->start_date <= now()->toDateString()) {
             return redirect()->back()->withErrors(['error' => 'No se puede cancelar una reserva que ya ha iniciado o inicia hoy']);
         }
 
-        $customer = $reservation->customer->person;
+        $customer = $reservation->customer;
+
+        if (method_exists($customer, 'trashed') && $customer->trashed()) {
+            return redirect()->back()->withErrors(['error' => 'El cliente con ese documento de identidad esta bloqueado']);
+        }
+
+        $customer = $customer->person;
 
         if (
             ! $customer ||
