@@ -50,6 +50,10 @@ class RetiredReservationController extends Controller
             return redirect()->back()->withErrors(['error' => 'Aun no puede retirarse la maquinaria, la reserva inicia la fecha ' . $reservation->start_date]);
         }
 
+        if ($reservation->end_date < now()->toDateString()) {
+            return redirect()->back()->withErrors(['error' => 'La reserva ya ha expirado, no puede retirarse la maquinaria']);
+        }
+
         $customer = $reservation->customer;
 
         if (method_exists($customer, 'trashed') && $customer->trashed()) {
