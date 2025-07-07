@@ -39,6 +39,6 @@ class BranchProduct extends Pivot
 
     public function branch(): BelongsTo
     {
-        return $this->belongsTo(Branch::class);
+        return $this->belongsTo(Branch::class)->withTrashed();
     }
 }

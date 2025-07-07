@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -59,9 +60,21 @@ class Reservation extends Model
         return $this->hasOne(ReturnedReservation::class);
     }
 
-    public function refunds()
+    public function refund(): HasOne
     {
-        return $this->hasMany(Refund::class, 'reservation_id');
+        return $this->hasOne(Refund::class, 'reservation_id');
+    }
+
+    public function branch(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Branch::class,
+            BranchProduct::class,
+            'id',
+            'id',
+            'branch_product_id',
+            'branch_id'
+        );
     }
 
     public function duration(): Attribute
