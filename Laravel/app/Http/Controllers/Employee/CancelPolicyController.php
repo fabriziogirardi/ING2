@@ -53,10 +53,14 @@ class CancelPolicyController extends Controller
         $government_id_type_id = $request->input('government_id_type_id');
         $government_id_number  = $request->input('government_id_number');
 
-        $reservation = Reservation::where('code', $code)->first();
+        $reservation = Reservation::withTrashed()->where('code', $code)->first();
 
         if (! $reservation) {
-            return redirect()->back()->withErrors(['error' => 'El codigo ingresado no pertenece a ninguna reserva o la misma ya fue cancelada']);
+            return redirect()->back()->withErrors(['error' => 'El codigo ingresado no pertenece a ninguna reserva']);
+        }
+
+        if ($reservation->trashed()) {
+            return redirect()->back()->withErrors(['error' => 'La reserva ya fue cancelada']);
         }
 
         if ($reservation->start_date <= now()->toDateString()) {
