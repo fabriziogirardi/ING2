@@ -48,20 +48,6 @@ class StatisticsOverview extends ChartWidget
                         'font'    => ['size' => 14],
                     ],
                 ],
-
-                // Subtítulo con totales
-                'subtitle' => [
-                    'display' => true,
-                    'text'    => sprintf(
-                        'Ventas: $%s   |   Devoluciones: $%s | Ganancia Total: $%s',
-                        number_format($totals['revenue'], 0, ',', '.'),
-                        number_format($totals['refunds'], 0, ',', '.'),
-                        number_format($totals['net_revenue'], 0, ',', '.')
-                    ),
-                    'font'     => ['size' => 24],
-                    'position' => 'bottom',
-                    'padding'  => ['top' => 6],
-                ],
             ],
 
             'maintainAspectRatio' => false,
