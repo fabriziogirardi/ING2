@@ -15,9 +15,10 @@ trait ReplyManage
                     ->required()
                     ->hiddenLabel()
                     ->placeholder('Escribe aquí el contenido de la respuesta')
-                    ->extraAttributes(['class' => 'overflow-y-auto'])
+                    ->extraAttributes(['class' => 'maw-h-32'])
                     ->minLength(1)
                     ->maxLength(1000),
-            ]);
+            ])
+            ->columns(1);
     }
 }

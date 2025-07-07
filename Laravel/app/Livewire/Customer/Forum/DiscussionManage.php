@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Customer\Forum;
 
+use App\Models\ForumSection;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -11,6 +13,8 @@ trait DiscussionManage
     public $title = '';
 
     public $content = '';
+
+    public $section = '';
 
     public function discussionform(Form $form): Form
     {
@@ -26,9 +30,21 @@ trait DiscussionManage
                     ->required()
                     ->label('Cuerpo de la discusión')
                     ->placeholder('Escribe aquí el contenido de la discusión')
-                    ->extraAttributes(['class' => 'overflow-y-auto'])
+                    ->extraAttributes([
+                        'class' => 'max-h-64 overflow-y-auto w-full',
+                    ])
                     ->minLength(1),
+                Select::make('section')
+                    ->label('Sección')
+                    ->placeholder('Selecciona una sección')
+                    ->options(
+                        ForumSection::all()->pluck('name', 'id')->mapWithKeys(
+                            fn ($name, $id) => [$id => ucfirst($name)]
+                        )->toArray()
+                    )
+                    ->required(),
             ])
+            ->columns(1)
             ->statePath('');
     }
 }

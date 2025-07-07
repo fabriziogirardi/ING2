@@ -6,6 +6,7 @@ use App\Filament\Resources\ForumSectionResource\Pages;
 use App\Models\ForumSection;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -37,12 +38,27 @@ class ForumSectionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Nombre'),
+                Tables\Columns\TextColumn::make('discussions_count')->label('N° de Discusiones')
+                    ->counts('discussions'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation()
-                    ->successNotificationTitle(__('manager/section.deleted')),
+                    ->successNotificationTitle(__('manager/section.deleted'))
+                    ->failureNotification(
+                        Notification::make()
+                            ->title('No se puede eliminar')
+                            ->body('Esta sección del foro tiene discusiones asociadas.')
+                            ->danger(),
+                    )
+                    ->before(function ($record, $action) {
+                        if ($record->discussions()->exists()) {
+                            $action->failure();
+
+                            return false;
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
