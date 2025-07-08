@@ -88,7 +88,7 @@ class BinanceController extends Controller
         $end_date   = Carbon::parse($request->end_date)->format('Y-m-d');
 
         $code = session('reservation_code');
-        if (!$code) {
+        if (! $code) {
             return back()->withErrors(['error' => 'Invalid or expired reservation code.']);
         }
         session()->forget('reservation_code');
@@ -111,10 +111,14 @@ class BinanceController extends Controller
             'end_date'          => $end_date,
         ]);
 
+        $method = 'Binance';
+
         Mail::to($customer->person->email)->send(
             new NewReservationCreated(
                 $code,
                 $start_date,
+                $finalTotal,
+                $method,
             )
         );
 

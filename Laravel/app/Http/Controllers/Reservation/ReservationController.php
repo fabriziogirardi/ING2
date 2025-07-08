@@ -58,6 +58,8 @@ class ReservationController extends Controller
 
         $user = auth()->user();
 
+        $method = 'Mercado Pago';
+
         Reservation::create([
             'customer_id'       => $customer_id->id,
             'branch_product_id' => $branch_product_id->id,
@@ -71,6 +73,8 @@ class ReservationController extends Controller
             new NewReservationCreated(
                 $code,
                 $request->start_date,
+                $total_amount,
+                $method,
             )
         );
 

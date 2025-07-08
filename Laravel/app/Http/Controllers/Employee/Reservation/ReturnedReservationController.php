@@ -23,7 +23,7 @@ class ReturnedReservationController extends Controller
             ->with('person')
             ->first();
 
-        if (!$customer) {
+        if (! $customer) {
             return redirect()->back()->withErrors([
                 'government_id_number' => 'No se encontró un cliente con el documento proporcionado.',
             ]);
@@ -37,14 +37,14 @@ class ReturnedReservationController extends Controller
             }])
             ->first();
 
-        if (!$reservation) {
+        if (! $reservation) {
             return redirect()->back()->withErrors([
                 'code' => 'El código ingresado no pertenece al cliente indicado.',
             ]);
         }
 
         // 3. Verificar que la reserva fue retirada
-        if (!$reservation->retired) {
+        if (! $reservation->retired) {
             return redirect()->back()->withErrors([
                 'code' => 'Esta reserva aún no ha sido retirada. No se puede marcar como devuelta.',
             ]);
@@ -65,7 +65,7 @@ class ReturnedReservationController extends Controller
             ]);
 
             // Solo actualizar el rating si el cliente no está eliminado
-            if (!$reservation->customer->trashed()) {
+            if (! $reservation->customer->trashed()) {
                 $this->updateCustomerRating($reservation->customer, $returned->rating);
             }
 

@@ -19,10 +19,12 @@ class NewReservationCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(string $code, string $start_date)
+    public function __construct(string $code, string $start_date, float $total_amount, string $method)
     {
-        $this->code       = $code;
-        $this->start_date = $start_date;
+        $this->code         = $code;
+        $this->start_date   = $start_date;
+        $this->total_amount = $total_amount;
+        $this->method       = $method;
     }
 
     /**
@@ -43,8 +45,10 @@ class NewReservationCreated extends Mailable
         return new Content(
             markdown: 'mail.new-reservation-created',
             with: [
-                'code'       => $this->code,
-                'start_date' => $this->start_date,
+                'code'         => $this->code,
+                'start_date'   => $this->start_date,
+                'total_amount' => $this->total_amount,
+                'method'       => $this->method,
             ],
         );
     }
