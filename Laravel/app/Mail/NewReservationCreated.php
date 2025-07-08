@@ -22,7 +22,7 @@ class NewReservationCreated extends Mailable
     public function __construct(string $code, string $start_date, float $total_amount, string $method)
     {
         $this->code         = $code;
-        $this->start_date   = $start_date;
+        $this->start_date   = (new \DateTime($start_date))->format('Y-m-d');
         $this->total_amount = $total_amount;
         $this->method       = $method;
     }
