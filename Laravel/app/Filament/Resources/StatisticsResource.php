@@ -17,10 +17,9 @@ class StatisticsResource extends Resource
     protected static ?string $model = Reservation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
-
-    protected static ?string $navigationLabel = 'Estadísticas';
-
-    protected static ?string $pluralLabel = 'Estadísticas';
+    protected static ?string $navigationGroup = 'Estadísticas';
+    protected static ?string $navigationLabel = 'Ganancias';
+    protected static ?string $pluralLabel = 'Ganancias';
 
     public static function form(Form $form): Form
     {
@@ -35,46 +34,35 @@ class StatisticsResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
-                    ->label('Código de Reserva')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Código de Reserva'),
 
                 Tables\Columns\TextColumn::make('customer.person.full_name')
-                    ->label('Cliente')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Cliente'),
 
                 Tables\Columns\TextColumn::make('branch.name')
-                    ->label('Sucursal')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Sucursal'),
 
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Monto Total')
-                    ->money('ARS')
-                    ->sortable(),
+                    ->money('ARS'),
 
                 Tables\Columns\TextColumn::make('total_refunds')
                     ->label('Monto devuelto')
                     ->money('ARS')
-                    ->getStateUsing(fn (Reservation $record) => $record->refund?->amount ?? 0)
-                    ->sortable(),
+                    ->getStateUsing(fn (Reservation $record) => $record->refund?->amount ?? 0),
 
                 Tables\Columns\TextColumn::make('net_revenue')
                     ->label('Ganancia Neta')
                     ->money('ARS')
-                    ->getStateUsing(fn (Reservation $record) => max(0, $record->total_amount - ($record->refund?->amount ?? 0)))
-                    ->sortable(),
+                    ->getStateUsing(fn (Reservation $record) => max(0, $record->total_amount - ($record->refund?->amount ?? 0))),
 
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Fecha Inicio')
-                    ->date()
-                    ->sortable(),
+                    ->date(),
 
                 Tables\Columns\TextColumn::make('end_date')
                     ->label('Fecha Fin')
-                    ->date()
-                    ->sortable(),
+                    ->date(),
             ])
             ->filters([
                 Tables\Filters\Filter::make('date_range')
@@ -116,6 +104,21 @@ class StatisticsResource extends Resource
         return [
             'index' => Pages\ListStatistics::route('/'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return false;
     }
 
     public static function getEloquentQuery(): Builder
