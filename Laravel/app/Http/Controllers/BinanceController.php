@@ -43,6 +43,13 @@ class BinanceController extends Controller
         $hasPenalization = $customer->has_penalization;
         $finalTotal      = $hasPenalization ? $baseTotal * 1.10 : $baseTotal;
 
+        $code = Str::of(Str::random(8))->upper();
+
+        while (Reservation::where('code', $code)->exists()) {
+            $code = Str::of(Str::random(8))->upper();
+        }
+        session(['reservation_code' => $code]);
+
         return view('payment.binanceQR', [
             'product'         => $branchProduct->product,
             'branchProductId' => $branchProduct->id,
@@ -77,10 +84,23 @@ class BinanceController extends Controller
         $hasPenalization = $customer->has_penalization;
         $finalTotal      = $hasPenalization ? $baseTotal * 1.10 : $baseTotal;
 
-        $code = Str::of(Str::random(8))->upper();
-
         $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
         $end_date   = Carbon::parse($request->end_date)->format('Y-m-d');
+
+        $code = session('reservation_code');
+        if (!$code) {
+            return back()->withErrors(['error' => 'Invalid or expired reservation code.']);
+        }
+        session()->forget('reservation_code');
+
+        if (Reservation::where('code', $code)->exists()) {
+            return view('payment.ConfirmBinancePayment', [
+                'code'            => $code,
+                'baseTotal'       => $baseTotal,
+                'finalTotal'      => $finalTotal,
+                'hasPenalization' => $hasPenalization,
+            ]);
+        }
 
         Reservation::create([
             'customer_id'       => $customer->id,
