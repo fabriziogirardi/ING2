@@ -21,7 +21,6 @@ use App\Http\Controllers\Manager\Employee\EmployeeController;
 use App\Http\Controllers\Manager\ForumSections\ForumSectionController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
-use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Http\Controllers\Reservation\ReservationController;
 use App\Http\Controllers\Wishlist\WishlistController;
 use App\Http\Controllers\Wishlist\WishlistProductController;
@@ -191,17 +190,11 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('recover-password.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
-        Route::get('/payment/test', function () {
-            return view('payment.test-payment');
-        });
-
         Route::get('/reset-password', [ResetPasswordController::class, 'show'])
             ->name('password.reset');
 
         Route::post('/reset-password', [ResetPasswordController::class, 'store'])
             ->name('password.reset.post');
-
-        Route::get('/payment', [MercadoPagoController::class, 'show'])->name('payment');
 
         Route::resource('reservation', ReservationController::class)->except(['store']);
 
