@@ -47,7 +47,7 @@ class RetiredReservationController extends Controller
         }
 
         if ($reservation->start_date > now()->toDateString()) {
-            return redirect()->back()->withErrors(['error' => 'Aun no puede retirarse la maquinaria, la reserva inicia la fecha ' . $reservation->start_date]);
+            return redirect()->back()->withErrors(['error' => 'Aun no puede retirarse la maquinaria, la reserva inicia la fecha '.$reservation->start_date]);
         }
 
         $customer = $reservation->customer;
