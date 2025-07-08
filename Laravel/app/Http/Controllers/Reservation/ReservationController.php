@@ -52,6 +52,10 @@ class ReservationController extends Controller
             $code = Str::of(Str::random(8))->upper();
         }
 
+        if (Reservation::where('code', $code)->exists()) {
+            return view('payment.success')->with('success', __('reservation/reservation.created'));
+        }
+
         $user = auth()->user();
 
         Reservation::create([
