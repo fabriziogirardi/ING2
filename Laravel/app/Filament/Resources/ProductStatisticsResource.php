@@ -118,9 +118,7 @@ class ProductStatisticsResource extends Resource
             ->actions([])
             ->bulkActions([])
             ->striped()
-            ->poll('30s')
             ->defaultSort('reservations_count', 'desc')
-            ->persistFiltersInSession()
             ->headerActions([]);
     }
 

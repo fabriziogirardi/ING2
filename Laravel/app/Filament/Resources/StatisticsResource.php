@@ -88,6 +88,7 @@ class StatisticsResource extends Resource
                     ->multiple(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->poll('30s')
             ->striped();
     }
 
