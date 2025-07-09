@@ -13,7 +13,14 @@ class ListProductStatistics extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\Action::make('reload')
+                ->label('Aplicar filtros')
+                ->color('gray')
+                ->button()
+                ->action(fn () => null)
+                ->extraAttributes([
+                    'x-on:click' => 'window.location.reload()',
+                ]),
         ];
     }
 }
