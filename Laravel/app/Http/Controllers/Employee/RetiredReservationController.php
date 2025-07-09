@@ -62,7 +62,9 @@ class RetiredReservationController extends Controller
         }
 
         if ($reservation->end_date < now()->toDateString()) {
-            return redirect()->back()->withErrors(['error' => 'La reserva ya caducó, la fecha límite de retiro era '.$reservation->end_date]);
+            $reservation->delete();
+
+            return redirect()->back()->withErrors(['error' => 'La reserva ya caducó por la tanto la reserva fue cancelada, la fecha límite de retiro era '.$reservation->end_date]);
         }
 
         $customer = $reservation->customer;
