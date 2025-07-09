@@ -41,23 +41,25 @@
                 <p class="text-sm font-medium text-gray-500">Best Price</p>
             </li>
         </ul>
-        <div class="mt-4 items-center justify-between gap-4">
-            @if($productData['has_stock'])
-                @if($meetsMinDays)
-                    <a href="{{ route('catalog.show', $product) }}" class="inline-flex items-center w-full justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
-                        <i class="fa fa-search me-2 align-middle"></i>
-                        Ver detalles
-                    </a>
-                @else
-                    <span class="inline-flex items-center w-full justify-center rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-400 border border-gray-300 cursor-not-allowed">
-                        {{ __('catalog/forms.min_days_to_reserve', ['days' => $product['min_days']]) }}
-                    </span>
-                @endif
+    @if(Auth::getCurrentGuard() === 'employee' || Auth::getCurrentGuard() === 'customer')
+    <div class="mt-4 items-center justify-between gap-4">
+        @if($productData['has_stock'])
+            @if($meetsMinDays)
+                <a href="{{ route('catalog.show', $product) }}" class="inline-flex items-center w-full justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
+                    <i class="fa fa-search me-2 align-middle"></i>
+                    Ver detalles
+                </a>
             @else
                 <span class="inline-flex items-center w-full justify-center rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-400 border border-gray-300 cursor-not-allowed">
-                    {{ __('catalog/forms.not_available') }}
+                    {{ __('catalog/forms.min_days_to_reserve', ['days' => $product['min_days']]) }}
                 </span>
             @endif
-        </div>
+        @else
+            <span class="inline-flex items-center w-full justify-center rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-400 border border-gray-300 cursor-not-allowed">
+                {{ __('catalog/forms.not_available') }}
+            </span>
+        @endif
+    </div>
+    @endif
     </div>
 </div>
