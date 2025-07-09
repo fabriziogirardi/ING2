@@ -137,6 +137,8 @@ class ProductStatisticsResource extends Resource
         // Aplicar withCount con filtros desde el inicio
         $query->withCount([
             'reservations as reservations_count' => function ($reservationQuery) use ($startDate, $endDate, $branchId) {
+                $reservationQuery->withTrashed();
+
                 if ($startDate) {
                     $reservationQuery->where('start_date', '>=', $startDate);
                 }
