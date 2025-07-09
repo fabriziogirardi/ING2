@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Employee\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\Auth\LoginRequest;
 use App\Models\Branch;
+use App\Models\Employee;
+use App\Models\Person;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +26,30 @@ class LoginController extends Controller
 
     public function loginAttempt(LoginRequest $request): RedirectResponse
     {
-        if (! Auth::guard('employee')->attempt(['email' => $request->validated('email'), 'password' => $request->validated('password')])) {
+        $credentials = [
+            'email'    => $request->validated('email'),
+            'password' => $request->validated('password'),
+        ];
+
+        $employee = Person::where('email', $credentials['email'])->first();
+
+        if (! $employee) {
             return redirect()->back()->withErrors([
-                'credentials' => __('employee/auth.incorrect_credentials'),
+                'email' => 'No existe una persona registrada con ese email en el sistema',
+            ]);
+        }
+
+        $employee = Employee::where('person_id', $employee->id)->first();
+
+        if (! $employee) {
+            return redirect()->back()->withErrors([
+                'email' => 'La persona registrada con ese email no tiene una cuenta de empleado',
+            ]);
+        }
+
+        if (! Auth::guard('employee')->attempt($credentials)) {
+            return redirect()->back()->withErrors([
+                'credentials' => 'Contraseña incorrecta',
             ]);
         }
 

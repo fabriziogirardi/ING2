@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Customer\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\Auth\LoginRequest;
+use App\Models\Customer;
+use App\Models\Person;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +19,30 @@ class LoginController extends Controller
 
     public function loginAttempt(LoginRequest $request)
     {
-        if (! Auth::guard('customer')->attempt(['email' => $request->validated('email'), 'password' => $request->validated('password')])) {
+        $credentials = [
+            'email'    => $request->validated('email'),
+            'password' => $request->validated('password'),
+        ];
+
+        $customer = Person::where('email', $credentials['email'])->first();
+
+        if (! $customer) {
             return redirect()->back()->withErrors([
-                'credentials' => __('customer/auth.incorrect_credentials'),
+                'email' => 'No existe una persona registrada con ese email en el sistema',
+            ]);
+        }
+
+        $customer = Customer::where('person_id', $customer->id)->first();
+
+        if (! $customer) {
+            return redirect()->back()->withErrors([
+                'email' => 'La persona registrada con ese email no tiene una cuenta de cliente',
+            ]);
+        }
+
+        if (! Auth::guard('customer')->attempt($credentials)) {
+            return redirect()->back()->withErrors([
+                'credentials' => 'Contraseña incorrecta',
             ]);
         }
 
