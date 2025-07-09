@@ -28,7 +28,7 @@ class LoginController extends Controller
     public function loginAttempt(LoginRequest $request): RedirectResponse
     {
         $credentials = [
-            'email' => $request->validated('email'),
+            'email'    => $request->validated('email'),
             'password' => $request->validated('password'),
         ];
 

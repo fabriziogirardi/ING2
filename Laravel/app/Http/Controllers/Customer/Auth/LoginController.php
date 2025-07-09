@@ -20,7 +20,7 @@ class LoginController extends Controller
     public function loginAttempt(LoginRequest $request)
     {
         $credentials = [
-            'email' => $request->validated('email'),
+            'email'    => $request->validated('email'),
             'password' => $request->validated('password'),
         ];
 
