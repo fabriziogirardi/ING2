@@ -14,6 +14,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 
 class ProductStatisticsResource extends Resource
 {
@@ -72,43 +73,17 @@ class ProductStatisticsResource extends Resource
                     ->form([
                         Forms\Components\DatePicker::make('start_date')
                             ->label('Fecha Inicio')
-                            ->placeholder('Seleccionar fecha inicio'),
+                            ->placeholder('Seleccionar fecha inicio')
+                            ->default(static::getFilterValue('date_range', 'start_date'))
+                            ->live(),
                         Forms\Components\DatePicker::make('end_date')
                             ->label('Fecha Fin')
-                            ->placeholder('Seleccionar fecha fin'),
+                            ->placeholder('Seleccionar fecha fin')
+                            ->default(static::getFilterValue('date_range', 'end_date'))
+                            ->live(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        $startDate = $data['start_date'] ?? null;
-                        $endDate = $data['end_date'] ?? null;
-
-                        // Obtener el filtro de sucursal desde la URL
-                        $branchId = request()->get('tableFilters.branch_id.value');
-
-                        // Aplicar withCount con los filtros correspondientes
-                        $query->withCount([
-                            'reservations as reservations_count' => function ($reservationQuery) use ($startDate, $endDate, $branchId) {
-                                if ($startDate) {
-                                    $reservationQuery->where('start_date', '>=', $startDate);
-                                }
-                                if ($endDate) {
-                                    $reservationQuery->where('end_date', '<=', $endDate);
-                                }
-                                if ($branchId) {
-                                    $reservationQuery->whereHas('branch_product', function ($q) use ($branchId) {
-                                        $q->where('branch_id', $branchId);
-                                    });
-                                }
-                            }
-                        ]);
-
-                        // Filtrar productos que pertenecen a la sucursal (si está seleccionada)
-                        if ($branchId) {
-                            $query->whereHas('branches', function ($q) use ($branchId) {
-                                $q->where('branches.id', $branchId);
-                            });
-                        }
-
-                        return $query->orderBy('reservations_count', 'desc');
+                        return $query;
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
@@ -128,38 +103,9 @@ class ProductStatisticsResource extends Resource
                     ->label('Sucursal')
                     ->options(Branch::pluck('name', 'id')->toArray())
                     ->preload()
+                    ->default(static::getFilterValue('branch_id', 'value'))
                     ->query(function (Builder $query, array $data): Builder {
-                        $branchId = $data['value'] ?? null;
-
-                        // Obtener los filtros de fecha desde la URL
-                        $startDate = request()->get('tableFilters.date_range.start_date');
-                        $endDate = request()->get('tableFilters.date_range.end_date');
-
-                        // Aplicar withCount con los filtros correspondientes
-                        $query->withCount([
-                            'reservations as reservations_count' => function ($reservationQuery) use ($startDate, $endDate, $branchId) {
-                                if ($startDate) {
-                                    $reservationQuery->where('start_date', '>=', $startDate);
-                                }
-                                if ($endDate) {
-                                    $reservationQuery->where('end_date', '<=', $endDate);
-                                }
-                                if ($branchId) {
-                                    $reservationQuery->whereHas('branch_product', function ($q) use ($branchId) {
-                                        $q->where('branch_id', $branchId);
-                                    });
-                                }
-                            }
-                        ]);
-
-                        // Filtrar productos que pertenecen a la sucursal (si está seleccionada)
-                        if ($branchId) {
-                            $query->whereHas('branches', function ($q) use ($branchId) {
-                                $q->where('branches.id', $branchId);
-                            });
-                        }
-
-                        return $query->orderBy('reservations_count', 'desc');
+                        return $query;
                     })
                     ->indicateUsing(function (array $data): array {
                         if ($data['value'] ?? null) {
@@ -168,20 +114,64 @@ class ProductStatisticsResource extends Resource
                         }
                         return [];
                     }),
-                ])
-                ->actions([])
-                ->bulkActions([])
-                ->striped()
-                ->poll('30s')
-                ->defaultSort('reservations_count', 'desc');
+            ])
+            ->actions([])
+            ->bulkActions([])
+            ->striped()
+            ->poll('30s')
+            ->defaultSort('reservations_count', 'desc')
+            ->persistFiltersInSession()
+            ->headerActions([]);
     }
 
     public static function getBaseQuery(): Builder
     {
-        return Product::query()
-            ->withCount('reservations as reservations_count')
+        // Obtener filtros desde la request
+        $filters = request()->get('tableFilters', []);
+        $startDate = $filters['date_range']['start_date'] ?? null;
+        $endDate = $filters['date_range']['end_date'] ?? null;
+        $branchId = $filters['branch_id']['value'] ?? null;
+
+        $query = Product::query();
+
+        // Aplicar withCount con filtros desde el inicio
+        $query->withCount([
+            'reservations as reservations_count' => function ($reservationQuery) use ($startDate, $endDate, $branchId) {
+                if ($startDate) {
+                    $reservationQuery->where('start_date', '>=', $startDate);
+                }
+                if ($endDate) {
+                    $reservationQuery->where('end_date', '<=', $endDate);
+                }
+                if ($branchId) {
+                    $reservationQuery->whereHas('branch_product', function ($q) use ($branchId) {
+                        $q->where('branch_id', $branchId);
+                    });
+                }
+            }
+        ]);
+
+        // Filtrar productos que pertenecen a la sucursal (si está seleccionada)
+        if ($branchId) {
+            $query->whereHas('branches', function ($q) use ($branchId) {
+                $q->where('branches.id', $branchId);
+            });
+        }
+
+        return $query
             ->with(['product_model.brand', 'categories'])
             ->orderBy('reservations_count', 'desc');
+    }
+
+    private static function getFilterValue(string $filterName, string $key = null): mixed
+    {
+        $filters = request()->get('tableFilters', []);
+
+        if ($key) {
+            return $filters[$filterName][$key] ?? null;
+        }
+
+        return $filters[$filterName] ?? null;
     }
 
     public static function getRelations(): array
