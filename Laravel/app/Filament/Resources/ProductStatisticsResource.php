@@ -179,11 +179,9 @@ class ProductStatisticsResource extends Resource
     public static function getBaseQuery(): Builder
     {
         return Product::query()
-            ->withCount([
-                'reservations as reservations_count' => function ($query) {
-                    $query->select(\DB::raw('count(*)'));
-                }
-            ]);
+            ->withCount('reservations as reservations_count')
+            ->with(['product_model.brand', 'categories'])
+            ->orderBy('reservations_count', 'desc');
     }
 
     public static function getRelations(): array
