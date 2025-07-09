@@ -17,8 +17,11 @@ class StatisticsResource extends Resource
     protected static ?string $model = Reservation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
+
     protected static ?string $navigationGroup = 'Estadísticas';
+
     protected static ?string $navigationLabel = 'Ganancias';
+
     protected static ?string $pluralLabel = 'Ganancias';
 
     public static function form(Form $form): Form

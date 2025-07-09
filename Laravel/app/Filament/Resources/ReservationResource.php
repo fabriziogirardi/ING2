@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReservationResource\Pages;
-use App\Models\Branch;
 use App\Models\Reservation;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -79,11 +78,9 @@ class ReservationResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['start_date'], fn (Builder $query, $date) =>
-                            $query->whereDate('start_date', '>=', $date)
+                            ->when($data['start_date'], fn (Builder $query, $date) => $query->whereDate('start_date', '>=', $date)
                             )
-                            ->when($data['end_date'], fn (Builder $query, $date) =>
-                            $query->whereDate('end_date', '<=', $date)
+                            ->when($data['end_date'], fn (Builder $query, $date) => $query->whereDate('end_date', '<=', $date)
                             );
                     }),
 
@@ -93,13 +90,12 @@ class ReservationResource extends Resource
                     ->preload()
                     ->multiple(),
 
-
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Estado')
                     ->options([
-                        'pending' => 'Pendiente',
-                        'retired' => 'Retirada',
-                        'returned' => 'Devuelta',
+                        'pending'   => 'Pendiente',
+                        'retired'   => 'Retirada',
+                        'returned'  => 'Devuelta',
                         'cancelled' => 'Cancelada',
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -117,7 +113,7 @@ class ReservationResource extends Resource
                             'returned' => $query->whereHas('returned')
                                 ->whereNull('deleted_at'),
                             'cancelled' => $query->onlyTrashed(),
-                            default => $query,
+                            default     => $query,
                         };
                     }),
 

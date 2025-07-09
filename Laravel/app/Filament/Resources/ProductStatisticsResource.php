@@ -3,8 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductStatisticsResource\Pages;
-use App\Models\Product;
 use App\Models\Branch;
+use App\Models\Product;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,17 +14,19 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\HtmlString;
 
 class ProductStatisticsResource extends Resource
 {
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
     protected static ?string $navigationGroup = 'Estadísticas';
+
     protected static ?string $navigationLabel = 'Top Maquinarias Más Vendidas';
 
     protected static ?string $modelLabel = 'Top Maquinarias Más Vendidas';
+
     protected static ?string $pluralModelLabel = 'Top Maquinarias Más Vendidas';
 
     public static function form(Form $form): Form
@@ -41,7 +43,8 @@ class ProductStatisticsResource extends Resource
                     ->label('Imagen')
                     ->getStateUsing(function (Product $record) {
                         $images = $record->images_json ?? [];
-                        return !empty($images) ? $images[0] : null;
+
+                        return ! empty($images) ? $images[0] : null;
                     })
                     ->defaultImageUrl('/images/no-image.png')
                     ->height(60)
@@ -89,11 +92,11 @@ class ProductStatisticsResource extends Resource
                         $indicators = [];
 
                         if ($data['start_date'] ?? null) {
-                            $indicators[] = 'Desde: ' . Carbon::parse($data['start_date'])->format('d/m/Y');
+                            $indicators[] = 'Desde: '.Carbon::parse($data['start_date'])->format('d/m/Y');
                         }
 
                         if ($data['end_date'] ?? null) {
-                            $indicators[] = 'Hasta: ' . Carbon::parse($data['end_date'])->format('d/m/Y');
+                            $indicators[] = 'Hasta: '.Carbon::parse($data['end_date'])->format('d/m/Y');
                         }
 
                         return $indicators;
@@ -110,8 +113,10 @@ class ProductStatisticsResource extends Resource
                     ->indicateUsing(function (array $data): array {
                         if ($data['value'] ?? null) {
                             $branchName = Branch::find($data['value'])?->name;
-                            return $branchName ? ['Sucursal: ' . $branchName] : [];
+
+                            return $branchName ? ['Sucursal: '.$branchName] : [];
                         }
+
                         return [];
                     }),
             ])
@@ -125,10 +130,10 @@ class ProductStatisticsResource extends Resource
     public static function getBaseQuery(): Builder
     {
         // Obtener filtros desde la request
-        $filters = request()->get('tableFilters', []);
+        $filters   = request()->get('tableFilters', []);
         $startDate = $filters['date_range']['start_date'] ?? null;
-        $endDate = $filters['date_range']['end_date'] ?? null;
-        $branchId = $filters['branch_id']['value'] ?? null;
+        $endDate   = $filters['date_range']['end_date'] ?? null;
+        $branchId  = $filters['branch_id']['value'] ?? null;
 
         $query = Product::query();
 
@@ -148,7 +153,7 @@ class ProductStatisticsResource extends Resource
                         $q->where('branch_id', $branchId);
                     });
                 }
-            }
+            },
         ]);
 
         // Filtrar productos que pertenecen a la sucursal (si está seleccionada)
@@ -163,7 +168,7 @@ class ProductStatisticsResource extends Resource
             ->orderBy('reservations_count', 'desc');
     }
 
-    private static function getFilterValue(string $filterName, string $key = null): mixed
+    private static function getFilterValue(string $filterName, ?string $key = null): mixed
     {
         $filters = request()->get('tableFilters', []);
 
