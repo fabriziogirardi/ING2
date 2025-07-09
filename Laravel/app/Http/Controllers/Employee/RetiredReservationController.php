@@ -32,6 +32,7 @@ class RetiredReservationController extends Controller
      */
     public function store(StoreRetiredReservationRequest $request)
     {
+
         $code                  = $request->input('code');
         $government_id_type_id = $request->input('government_id_type_id');
         $government_id_number  = $request->input('government_id_number');
@@ -44,6 +45,16 @@ class RetiredReservationController extends Controller
 
         if ($reservation->retired) {
             return redirect()->back()->withErrors(['error' => 'La reserva ya fue retirada']);
+        }
+
+        $branch = $reservation->branch;
+
+        if (
+            $branch->id != session('branch_id')
+        ) {
+            $branchName = $branch->name ?? 'desconocida';
+
+            return redirect()->back()->withErrors(['error' => 'La reserva fue realizada en otra sucursal: '.$branchName]);
         }
 
         if ($reservation->start_date > now()->toDateString()) {

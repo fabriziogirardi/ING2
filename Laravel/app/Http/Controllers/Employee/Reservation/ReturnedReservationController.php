@@ -50,6 +50,17 @@ class ReturnedReservationController extends Controller
             ]);
         }
 
+        // 3.1 Verificar que la reserva pertenece a la sucursal actual
+        $branch = $reservation->branch;
+
+        if (
+            $branch->id != session('branch_id')
+        ) {
+            $branchName = $branch->name ?? 'desconocida';
+
+            return redirect()->back()->withErrors(['error' => 'La reserva fue realizada en otra sucursal: '.$branchName]);
+        }
+
         // 4. Verificar que la reserva no fue devuelta
         if ($reservation->returned) {
             return redirect()->back()->withErrors([
