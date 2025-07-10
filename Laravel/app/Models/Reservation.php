@@ -31,21 +31,21 @@ class Reservation extends Model
     ];
 
     protected $casts = [
-        'start' => 'date',
-        'end'   => 'date',
+        'start_date' => 'date',
+        'end_date'   => 'date',
     ];
 
-    public function branch_product()
+    public function branch_product(): BelongsTo
     {
         return $this->belongsTo(BranchProduct::class)->withTrashed();
     }
 
     public function product(): BelongsTo
     {
-        return $this->branch_product->product();
+        return $this->branch_product->product()->withTrashed();
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class)->withTrashed();
     }

@@ -6,8 +6,10 @@ use App\Filament\Forms\PersonAdvancedForm;
 use App\Filament\Forms\PersonForm;
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Models\Employee;
+use App\Models\GovernmentIdType;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -31,7 +33,7 @@ class EmployeeResource extends Resource
 
     protected static ?string $navigationGroup = 'Cuentas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
     public static function form(Form $form): Form
     {
@@ -100,6 +102,7 @@ class EmployeeResource extends Resource
     {
         return $table
             ->recordUrl(null)
+            ->recordAction('view')
             ->searchPlaceholder('Buscar por correo')
             ->recordClasses(fn ($record) => $record->trashed() ? 'bg-gray-100' : '')
             ->columns([
@@ -136,6 +139,39 @@ class EmployeeResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make('view')
+                    ->label(false)
+                    ->icon(false)
+                    ->color('gray')
+                    ->form([
+                        Fieldset::make('Datos personales')
+                            ->relationship('person')
+                            ->schema([
+                                Placeholder::make('first_name')
+                                    ->label('Nombre')
+                                    ->content(fn (Get $get) => $get('first_name') ?? 'No especificado'),
+                                Placeholder::make('last_name')
+                                    ->label('Apellido')
+                                    ->content(fn (Get $get) => $get('last_name') ?? 'No especificado'),
+                                Placeholder::make('email')
+                                    ->label('Correo Electrónico')
+                                    ->content(fn (Get $get) => $get('email') ?? 'No especificado'),
+                                Placeholder::make('birth_date')
+                                    ->label('Fecha de Nacimiento')
+                                    ->content(fn (Get $get) => $get('birth_date')
+                                        ? \Carbon\Carbon::parse($get('birth_date'))->format('d/m/Y')
+                                        : 'No especificada'),
+                                Placeholder::make('government_id_type_name')
+                                    ->label('Tipo de documento')
+                                    ->content(fn (Get $get) => GovernmentIdType::find($get('government_id_type_id'))?->name ?? 'No especificado'),
+                                Placeholder::make('government_id_number')
+                                    ->label('Número de documento')
+                                    ->content(fn (Get $get) => $get('government_id_number') ?? 'No especificado'),
+                            ]),
+                    ])
+                    ->modalHeading('Ver Empleado')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Cerrar'),
                 Tables\Actions\EditAction::make()
                     ->hidden(fn ($record) => $record->trashed())
                     ->form([
@@ -217,6 +253,8 @@ class EmployeeResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        /** @var \Illuminate\Database\Eloquent\Builder $model */
+        $model = static::getModel();
+        return $model::count() > 0 ? (string) $model::count() : null;
     }
 }

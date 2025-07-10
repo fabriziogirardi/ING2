@@ -35,6 +35,18 @@ class CustomAuthServiceProvider extends ServiceProvider
             });
         });
 
+        Auth::macro('currentUser', function () {
+            $guards = array_keys(config('auth.guards'));
+
+            foreach ($guards as $guard) {
+                if (Auth::guard($guard)->check()) {
+                    return Auth::guard($guard)->user();
+                }
+            }
+
+            return null;
+        });
+
         Authenticate::redirectUsing(static function (Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthenticated.'], 401);

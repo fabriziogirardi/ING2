@@ -24,7 +24,7 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationGroup = 'Maquinarias';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
     public static function form(Form $form): Form
     {
@@ -160,7 +160,9 @@ class CategoryResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        /** @var \Illuminate\Database\Eloquent\Builder $model */
+        $model = static::getModel();
+        return $model::count() > 0 ? (string) $model::count() : null;
     }
 
     public static function getEloquentQuery(): Builder

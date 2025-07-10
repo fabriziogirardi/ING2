@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\BranchesRelationManager;
+use App\Models\Branch;
+use App\Models\BranchProduct;
 use App\Models\CancelPolicyProduct;
 use App\Models\Category;
 use App\Models\Product;
@@ -21,6 +23,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -36,7 +39,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationGroup = 'Maquinarias';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     public static function form(Form $form): Form
     {
@@ -153,9 +156,11 @@ class ProductResource extends Resource
     {
         return $table
             ->recordUrl(null)
+            ->recordClasses(fn ($record) => $record->trashed() ? 'bg-gray-100' : '')
             ->columns([
                 TextColumn::make('name')
                     ->label('Nombre de la maquinaria')
+                    ->searchable()
                     ->extraAttributes(fn ($record) => [
                         'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
                     ]),
@@ -206,6 +211,21 @@ class ProductResource extends Resource
                             'null'     => 'Nula'
                         };
                     }),
+                TextColumn::make('branches_with_stock')
+                    ->label('Sucursales con Stock')
+                    ->badge()
+                    ->separator(',')
+                    ->getStateUsing(function (Product $record) {
+                        return BranchProduct::with('branch')
+                            ->where('product_id', 2)
+                            ->where('quantity', '>', 0)
+                            ->get()
+                            ->pluck('branch.name');
+                    })
+                    ->color('success')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 ImageColumn::make('images_json')
                     ->label('Imágenes')
                     ->circular()
@@ -215,7 +235,20 @@ class ProductResource extends Resource
                     ->limitedRemainingText(),
             ])
             ->filters([
-                //
+                SelectFilter::make('branches_with_stock')
+                    ->label('Sucursales con Stock')
+                    ->options(fn () => Branch::pluck('name', 'id'))
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (empty($data['value'])) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('branch_products', function ($subQuery) use ($data) {
+                            $subQuery->where('branch_id', $data['value'])
+                                ->where('quantity', '>', 0);
+                        });
+                    })
+                    ->placeholder('Todas las sucursales'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

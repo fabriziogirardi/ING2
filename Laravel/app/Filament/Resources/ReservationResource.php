@@ -10,9 +10,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class ReservationResource extends Resource
 {
@@ -24,7 +26,7 @@ class ReservationResource extends Resource
 
     protected static ?string $navigationLabel = 'Reservas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function form(Form $form): Form
     {
@@ -38,13 +40,46 @@ class ReservationResource extends Resource
     {
         return $table
             ->recordUrl(null)
+            ->recordClasses(fn (Reservation $record): string => ! $record->returned && $record->end_date->toDateString() < now()->toDateString()
+                    ? 'bg-yellow-100'
+                    : ''
+            )
             ->columns([
                 TextColumn::make('customer.person.full_name')
-                    ->label('Cliente'),
+                    ->label('Cliente')
+                    ->formatStateUsing(function ($state, $record) {
+                        return new HtmlString(
+                            e($state)." <span class='text-gray-500'><em>({$record->customer->person->email})</em></span>"
+                        );
+                    })
+                    ->searchable(['first_name', 'last_name']),
                 TextColumn::make('branch_product.product.name')
-                    ->label('Maquinaria'),
+                    ->label('Maquinaria')
+                    ->formatStateUsing(function ($state, $record) {
+                        $product = $record->branch_product->product;
+
+                        if ($product->trashed()) {
+                            return new HtmlString(
+                                '<span class="text-gray-500">'.e($state).' <em>(Eliminado)</em></span>'
+                            );
+                        }
+
+                        return $state;
+                    })
+                    ->searchable(),
                 TextColumn::make('branch_product.branch.name')
-                    ->label('Sucursal'),
+                    ->label('Sucursal')
+                    ->formatStateUsing(function ($state, $record) {
+                        $branch = $record->branch_product->branch;
+
+                        if ($branch->trashed()) {
+                            return new HtmlString(
+                                '<span class="text-gray-500">'.e($state).' <em>(Cerrada)</em></span>'
+                            );
+                        }
+
+                        return $state;
+                    }),
                 TextColumn::make('start_date')
                     ->dateTime('d/m/Y')
                     ->label('Fecha de Inicio'),
@@ -53,11 +88,13 @@ class ReservationResource extends Resource
                     ->label('Fecha de Fin'),
                 IconColumn::make('retired_exists')
                     ->exists('retired')
+                    ->tooltip(fn ($record) => $record->retired ? 'Retirada: '.$record->retired->created_at->format('d/m/Y H:i') : null)
                     ->boolean()
                     ->alignCenter()
                     ->label('Retirada'),
                 IconColumn::make('returned_exists')
                     ->exists('returned')
+                    ->tooltip(fn ($record) => $record->returned ? 'Devuelta: '.$record->returned->created_at->format('d/m/Y H:i') : null)
                     ->boolean()
                     ->alignCenter()
                     ->label('Devuelta'),
@@ -66,6 +103,12 @@ class ReservationResource extends Resource
                     ->getStateUsing(fn ($record) => $record->trashed())
                     ->alignCenter()
                     ->label('Cancelada'),
+                ViewColumn::make('returned.rating')
+                    ->label('Valoración')
+                    ->view('filament.tables.columns.rating')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'hidden' : '',
+                    ]),
             ])
             ->filters([
                 Tables\Filters\Filter::make('date_range')
