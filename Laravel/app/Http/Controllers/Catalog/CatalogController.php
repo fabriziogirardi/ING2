@@ -44,10 +44,13 @@ class CatalogController extends Controller
         $end_date   = session('end_date') ?? now()->addDays(3)->toDateString();
         $today      = Carbon::today()->format('m/d/Y');
         $wishlist   = '';
+        $coupon     = '';
         if (Auth::getCurrentGuard() === 'customer') {
             $wishlist = Auth::guard('customer')->user()
                 ->wishlists()
                 ->get(['id', 'name']);
+            $customer = Auth::guard('customer')->user();
+            $coupon   = $customer?->coupon;
         }
 
         return view('catalog.show', [
@@ -57,6 +60,7 @@ class CatalogController extends Controller
             'end_date'            => $end_date,
             'today'               => $today,
             'wishlists'           => $wishlist,
+            'coupon'              => $coupon,
         ]);
     }
 }

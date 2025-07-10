@@ -78,6 +78,12 @@ class ReservationController extends Controller
             )
         );
 
+        $coupon = $user?->coupon;
+
+        if ($coupon) {
+            $user->coupon()->delete();
+        }
+
         return view('payment.success')->with('success', __('reservation/reservation.created'));
     }
 

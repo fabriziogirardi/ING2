@@ -158,6 +158,7 @@ class ProductModelResource extends Resource
     {
         /** @var \Illuminate\Database\Eloquent\Builder $model */
         $model = static::getModel();
+
         return $model::count() > 0 ? (string) $model::count() : null;
     }
 }
