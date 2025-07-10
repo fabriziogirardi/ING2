@@ -17,6 +17,8 @@ class ProductCard extends Component
 
     public $wishlists;
 
+    public $coupon;
+
     public function __construct(
         public array $productData,
         public string $startDate,
@@ -30,6 +32,8 @@ class ProductCard extends Component
             $this->wishlists = \Illuminate\Support\Facades\Auth::guard('customer')->user()
                 ->wishlists()->get(['id', 'name']);
         }
+        $customer     = Auth::guard('customer')->user();
+        $this->coupon = $customer?->coupon;
     }
 
     /**

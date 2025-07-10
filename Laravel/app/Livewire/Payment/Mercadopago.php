@@ -64,6 +64,11 @@ class Mercadopago extends Component
         $days      = $startDate->diffInDays($endDate) + 1;
         $basePrice = $product->price * $days;
 
+        $coupon = $customer?->coupon;
+        if ($coupon) {
+            $basePrice -= $basePrice * ($coupon->discount_percentage / 100);
+        }
+
         $this->totalPrice = $hasPenalty ? round($basePrice * 1.1, 2) : $basePrice;
 
         $startDate->format('Y-m-d');
