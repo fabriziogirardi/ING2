@@ -25,7 +25,7 @@ class ProductModelResource extends Resource
 
     protected static ?string $navigationLabel = 'Modelos';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     public static function form(Form $form): Form
     {
@@ -156,6 +156,8 @@ class ProductModelResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        /** @var \Illuminate\Database\Eloquent\Builder $model */
+        $model = static::getModel();
+        return $model::count() > 0 ? (string) $model::count() : null;
     }
 }

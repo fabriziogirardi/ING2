@@ -20,7 +20,7 @@ class Branch extends Model
     /** @use HasFactory<\Database\Factories\BranchFactory> */
     use HasFactory, SoftDeletes;
 
-    public static function boot()
+    public static function boot(): void
     {
         parent::boot();
 
