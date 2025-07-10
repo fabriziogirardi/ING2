@@ -98,8 +98,8 @@ class Mercadopago extends Component
                 ],
             ],
             'back_urls' => [
-                'success' => 'https://c6ea-181-23-48-189.ngrok-free.app'.$linkSuccess,
-                'failure' => 'https://c6ea-181-23-48-189.ngrok-free.app/customer/reservations/failure',
+                'success' => 'https://alkilar.com.ar'.$linkSuccess,
+                'failure' => 'https://alkilar.com.ar/customer/reservations/failure',
             ],
             'external_reference' => $this->branchProductId,
             'auto_return'        => 'approved',
