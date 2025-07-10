@@ -39,6 +39,13 @@ class BinanceController extends Controller
         // Calcular el total base
         $baseTotal = $branchProduct->product->price * $days;
 
+        $coupon         = $customer?->coupon;
+        $discountAmount = 0;
+        if ($coupon) {
+            $discountAmount = $branchProduct->product->price * $days * ($coupon->discount_percentage / 100);
+            $baseTotal -= $discountAmount;
+        }
+
         // Aplicar recargo por penalización si corresponde
         $hasPenalization = $customer->has_penalization;
         $finalTotal      = $hasPenalization ? $baseTotal * 1.10 : $baseTotal;
@@ -61,6 +68,7 @@ class BinanceController extends Controller
             'end'             => $end,
             'customer'        => $customer,
             'hasPenalization' => $hasPenalization,
+            'discountAmount'  => $discountAmount,
         ]);
     }
 
@@ -79,6 +87,11 @@ class BinanceController extends Controller
 
         $branchProduct = BranchProduct::findOrFail($request->branch_product_id);
         $baseTotal     = $branchProduct->product->price * $days;
+
+        $coupon = $customer?->coupon;
+        if ($coupon) {
+            $baseTotal -= $baseTotal * ($coupon->discount_percentage / 100);
+        }
 
         // Verificar si el cliente tiene penalización y aplicar recargo del 10%
         $hasPenalization = $customer->has_penalization;
@@ -121,6 +134,10 @@ class BinanceController extends Controller
                 $method,
             )
         );
+
+        if ($coupon) {
+            $customer->coupon()->delete();
+        }
 
         return view('payment.ConfirmBinancePayment', [
             'code'            => $code,

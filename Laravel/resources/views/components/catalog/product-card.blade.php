@@ -6,13 +6,22 @@
     </div>
     <div class="pt-6">
         <div class="mb-4 flex items-center justify-between gap-4">
-            <span class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 ">DESCUENTO FUTURO</span>
+            @if ($coupon)
+                <span class="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ">
+                    {{ $coupon->discount_percentage }}% {{ __('Descuento') }}
+                </span>
+            @endif
             <div class="flex items-center justify-end gap-1">
                 <div id="tooltip-quick-look" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300" data-popper-placement="top">
                     Quick look
                     <div class="tooltip-arrow" data-popper-arrow=""></div>
                 </div>
-                @if (Auth::getCurrentGuard() === 'customer')
+            </div>
+        </div>
+        <div class="flex items-center justify-between">
+            <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline">{{ $product->name }}</a>
+            @if (Auth::getCurrentGuard() === 'customer')
+                <div class="relative flex items-center">
                     <button type="button" data-modal-target="default-modal" data-modal-toggle="default-modal" data-tooltip-target="tooltip-add-to-favorites" data-product-id="{{ $product->id }}" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900">
                         <span class="sr-only"> Agregar a lista de deseados </span>
                         <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -23,24 +32,19 @@
                         Agregar a lista de deseados
                         <div class="tooltip-arrow" data-popper-arrow=""></div>
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </div>
-        <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline">{{ $product->name }}</a>
-        <ul class="mt-2 flex items-center gap-4">
-            <li class="flex items-center gap-2">
-                <svg class="h-4 w-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-                </svg>
-                <p class="text-sm font-medium text-gray-500">Fast Delivery</p>
-            </li>
-            <li class="flex items-center gap-2">
-                <svg class="h-4 w-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 7V6c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1h-1M3 18v-7c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                </svg>
-                <p class="text-sm font-medium text-gray-500">Best Price</p>
-            </li>
-        </ul>
+        <div class="mt-2 flex flex-wrap gap-2">
+            @foreach($product->categories as $category)
+                <div class="flex items-center gap-1 bg-primary-50 rounded px-2 py-0.5 mb-1 max-w-full">
+                    <svg class="h-3 w-3 text-primary-500 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="currentColor" />
+                    </svg>
+                    <span class="text-xs font-medium text-gray-700 truncate">{{ $category->name }}</span>
+                </div>
+            @endforeach
+        </div>
     @if(Auth::getCurrentGuard() === 'employee' || Auth::getCurrentGuard() === 'customer')
     <div class="mt-4 items-center justify-between gap-4">
         @if($productData['has_stock'])

@@ -23,6 +23,11 @@
                     <p class="text-lg text-gray-700 mb-2">
                         Cantidad de días: <span class="font-semibold">{{ $days }}</span>
                     </p>
+                    @if(isset($discountAmount) && $discountAmount > 0)
+                        <p class="text-lg text-green-600 mb-2">
+                            Descuento aplicado: <span class="font-semibold">- ${{ number_format($discountAmount, 2, ',', '.') }}</span>
+                        </p>
+                    @endif
 
                     {{-- Mostrar desglose del precio --}}
                     <div class="border-t pt-4 mt-4">

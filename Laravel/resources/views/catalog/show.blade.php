@@ -55,11 +55,22 @@
                         $hasPenalty = $customer && $customer->has_penalization;
                         $price = $product->price;
                         $finalPrice = $hasPenalty ? round($price * 1.1, 2) : $price;
+                        $coupon = $customer?->coupon;
+                        $discountedPrice = $coupon ? round($finalPrice * (1 - $coupon->discount_percentage / 100), 2) : $finalPrice;
                     @endphp
 
                     <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
-                        ${{ $finalPrice }}
-                        <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
+                        @if ($coupon)
+                            <span class="line-through text-gray-400 mr-2">${{ $finalPrice }}</span>
+                            <span class="text-3xl text-green-700 font-bold">${{ $discountedPrice }}</span>
+                            <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
+                            <span class="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 ">
+                            {{ $coupon->discount_percentage }}% {{ __('Descuento') }}
+                        </span>
+                        @else
+                            ${{ $finalPrice }}
+                            <span class="text-base font-normal text-gray-500 dark:text-gray-400">/ {{ __('catalog/forms.per_day') }}</span>
+                        @endif
                         @if($hasPenalty)
                             <span class="ml-2 text-xs text-red-600 font-semibold">(10% recargo por devolución tardía)</span>
                         @endif

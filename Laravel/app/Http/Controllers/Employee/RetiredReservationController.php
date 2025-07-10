@@ -57,7 +57,7 @@ class RetiredReservationController extends Controller
             return redirect()->back()->withErrors(['error' => 'La reserva fue realizada en otra sucursal: '.$branchName]);
         }
 
-        if ($reservation->start_date > now()->toDateString()) {
+        if ($reservation->start_date > now()) {
             return redirect()->back()->withErrors(['error' => 'Aun no puede retirarse la maquinaria, la reserva inicia la fecha '.$reservation->start_date]);
         }
 
