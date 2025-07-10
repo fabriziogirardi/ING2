@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Employee;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Employee\StoreReturnedReservationRequest;
-use App\Http\Requests\UpdateReturnedReservationRequest;
-use App\Models\ReturnedReservation;
+use App\Http\Requests\StoreCouponRequest;
+use App\Http\Requests\UpdateCouponRequest;
+use App\Models\Coupon;
 
-class ReturnedReservationController extends Controller
+class CouponController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +27,7 @@ class ReturnedReservationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReturnedReservationRequest $request)
+    public function store(StoreCouponRequest $request)
     {
         //
     }
@@ -36,7 +35,7 @@ class ReturnedReservationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ReturnedReservation $reservationReturned)
+    public function show(Coupon $coupon)
     {
         //
     }
@@ -44,7 +43,7 @@ class ReturnedReservationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ReturnedReservation $reservationReturned)
+    public function edit(Coupon $coupon)
     {
         //
     }
@@ -52,7 +51,7 @@ class ReturnedReservationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReturnedReservationRequest $request, ReturnedReservation $reservationReturned)
+    public function update(UpdateCouponRequest $request, Coupon $coupon)
     {
         //
     }
@@ -60,7 +59,7 @@ class ReturnedReservationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ReturnedReservation $reservationReturned)
+    public function destroy(Coupon $coupon)
     {
         //
     }

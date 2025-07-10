@@ -27,15 +27,37 @@ class RegisterCustomer extends Controller
      */
     public function store(RegisterCustomerRequest $request)
     {
-        $person = Person::firstOrCreate([
-            'email'                 => $request->validated('email'),
-            'government_id_number'  => $request->validated('government_id_number'),
-            'government_id_type_id' => $request->validated('government_id_type_id'),
-        ], [
-            'first_name' => $request->validated('first_name'),
-            'last_name'  => $request->validated('last_name'),
-            'birth_date' => $request->validated('birth_date'),
-        ]);
+        $email   = $request->validated('email');
+        $govId   = $request->validated('government_id_number');
+        $govType = $request->validated('government_id_type_id');
+
+        $personByEmail = Person::where('email', $email)->first();
+        $personByGovId = Person::where('government_id_number', $govId)
+            ->where('government_id_type_id', $govType)
+            ->first();
+
+        // If email exists but DNI/type does not match, error
+        if ($personByEmail &&
+            ($personByEmail->government_id_number !== $govId || $personByEmail->government_id_type_id != $govType)) {
+            return back()->withErrors(['email' => 'Las credenciales ingresadas no son iguales a la persona existente.']);
+        }
+
+        // If DNI/type exists but email does not match, error
+        if ($personByGovId && $personByGovId->email !== $email) {
+            return back()->withErrors(['government_id_number' => 'Las credenciales ingresadas no son iguales a la persona existente.']);
+        }
+
+        $person = $personByEmail ?: $personByGovId;
+        if (! $person) {
+            $person = Person::create([
+                'email'                 => $email,
+                'government_id_number'  => $govId,
+                'government_id_type_id' => $govType,
+                'first_name'            => $request->validated('first_name'),
+                'last_name'             => $request->validated('last_name'),
+                'birth_date'            => $request->validated('birth_date'),
+            ]);
+        }
 
         $password = Str::random(8);
 
@@ -53,7 +75,7 @@ class RegisterCustomer extends Controller
             )
         );
 
-        return redirect('/')->with('success', __('customer/auth.register_success'));
+        return redirect('/')->with(['toast' => 'success', 'message' => 'Cliente registrado']);
     }
 
     /**

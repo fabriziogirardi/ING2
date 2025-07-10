@@ -11,7 +11,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Guava\FilamentIconPicker\Forms\IconPicker;
-use Guava\FilamentIconPicker\Layout;
 use Guava\FilamentIconPicker\Tables\IconColumn;
 
 class FooterElementResource extends Resource
@@ -62,6 +61,7 @@ class FooterElementResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 IconColumn::make('icon')->label('Icono'),
                 TextColumn::make('link')->label('Link'),
@@ -71,11 +71,10 @@ class FooterElementResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 

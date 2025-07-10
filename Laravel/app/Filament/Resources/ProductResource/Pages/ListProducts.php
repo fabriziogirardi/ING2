@@ -24,10 +24,10 @@ class ListProducts extends ListRecords
             Actions\CreateAction::make()
                 ->createAnother(false)
                 ->form([
-                    Select::make('model.product_brand_id')
+                    Select::make('product_model.product_brand_id')
                         ->columnSpan(2)
                         ->label('Marca')
-                        ->relationship('model.brand', 'name')
+                        ->relationship('product_model.brand', 'name')
                         ->required()
                         ->dehydrated(false)
                         ->options(ProductBrand::pluck('name', 'id'))
@@ -39,13 +39,13 @@ class ListProducts extends ListRecords
                     Select::make('product_model_id')
                         ->columnSpan(2)
                         ->label('Modelo')
-                        ->relationship('model', 'name')
+                        ->relationship('product_model', 'name')
                         ->required()
-                        ->placeholder(fn (Get $get): string => $get('model.product_brand_id') ? 'Selecciona un modelo' : 'Selecciona una marca primero')
-                        ->options(fn (Get $get): Collection => ProductBrand::find($get('model.product_brand_id'))?->models->pluck('name', 'id') ?? collect()),
+                        ->placeholder(fn (Get $get): string => $get('product_model.product_brand_id') ? 'Selecciona un modelo' : 'Selecciona una marca primero')
+                        ->options(fn (Get $get): Collection => ProductBrand::find($get('product_model.product_brand_id'))?->product_models->pluck('name', 'id') ?? collect()),
                     TextInput::make('name')
                         ->columnSpan(2)
-                        ->label('Nombre del producto')
+                        ->label('Nombre de la maquinaria')
                         ->required()
                         ->unique(ignoreRecord: true, modifyRuleUsing: function ($rule, callable $get) {
                             return $rule->where('product_model_id', $get('product_model_id'));
@@ -93,6 +93,7 @@ class ListProducts extends ListRecords
                         ->label('Imágenes')
                         ->multiple()
                         ->image()
+                        ->required()
                         ->panelLayout(
                             'grid'
                         )

@@ -6,22 +6,25 @@ use App\Filament\Resources\ProductBrandResource\Pages;
 use App\Models\ProductBrand;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductBrandResource extends Resource
 {
     protected static ?string $model = ProductBrand::class;
 
-    protected static ?string $modelLabel = 'Marcas de productos';
+    protected static ?string $modelLabel = 'marca de maquinaria';
 
-    protected static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationGroup = 'Maquinarias';
 
     protected static ?string $navigationLabel = 'Marcas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     public static function form(Form $form): Form
     {
@@ -31,22 +34,33 @@ class ProductBrandResource extends Resource
             ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()
                     ->sortable()
-                    ->label('Nombre de la marca'),
+                    ->label('Nombre de la marca')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 Tables\Columns\TextColumn::make('product_models_count')
                     ->counts('product_models')
-                    ->label('Cantidad de modelos'),
+                    ->label('Cantidad de modelos')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 EditAction::make()
+                    ->hidden(fn (ProductBrand $record) => $record->trashed())
                     ->form([
                         TextInput::make('name')
                             ->label('Nombre de la marca')
@@ -55,12 +69,31 @@ class ProductBrandResource extends Resource
                             ->maxLength(255),
                     ]),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation(),
+                    ->action(function (ProductBrand $record) {
+                        if ($record->product_models()->exists()) {
+                            Notification::make()
+                                ->title('No se puede eliminar')
+                                ->body('Esta marca tiene modelos asociados.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $record->delete();
+
+                        Notification::make()
+                            ->title('Marca eliminada')
+                            ->body('La marca ha sido eliminada correctamente.')
+                            ->success()
+                            ->send();
+                    })->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -69,6 +102,14 @@ class ProductBrandResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ])->withTrashed();
     }
 
     public static function getPages(): array
@@ -82,6 +123,9 @@ class ProductBrandResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        /** @var \Illuminate\Database\Eloquent\Builder $model */
+        $model = static::getModel();
+
+        return $model::count();
     }
 }

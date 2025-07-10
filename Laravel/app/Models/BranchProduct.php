@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -14,7 +15,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  */
 class BranchProduct extends Pivot
 {
-    protected $table = 'branch_product';
+    use SoftDeletes;
 
     protected $fillable = [
         'branch_id',
@@ -31,13 +32,13 @@ class BranchProduct extends Pivot
         return $this->HasMany(Reservation::class, 'branch_product_id', 'id');
     }
 
-    public function product(): BelongsTo
+    public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function branch(): BelongsTo
     {
-        return $this->belongsTo(Branch::class);
+        return $this->belongsTo(Branch::class)->withTrashed();
     }
 }

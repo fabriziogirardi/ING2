@@ -52,12 +52,19 @@ class ReservationController extends Controller
             $code = Str::of(Str::random(8))->upper();
         }
 
+        if (Reservation::where('code', $code)->exists()) {
+            return view('payment.success')->with('success', __('reservation/reservation.created'));
+        }
+
         $user = auth()->user();
+
+        $method = 'Mercado Pago';
 
         Reservation::create([
             'customer_id'       => $customer_id->id,
             'branch_product_id' => $branch_product_id->id,
             'code'              => $code,
+            'total_amount'      => $total_amount,
             'start_date'        => $start_date,
             'end_date'          => $end_date,
         ]);
@@ -66,6 +73,8 @@ class ReservationController extends Controller
             new NewReservationCreated(
                 $code,
                 $request->start_date,
+                $total_amount,
+                $method,
             )
         );
 

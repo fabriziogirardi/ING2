@@ -22,6 +22,7 @@
                                 :options="$governmentIdType"
                                 :old="old('government_id_type_id')"
                                 placeholder="Seleccionar tipo de documento"
+                                required
                             />
                             <x-forms.input.text name="government_id_number" id="government_id_number" label="Número de Documento"
                                                 placeholder="12345678" required type="text"

@@ -1,14 +1,13 @@
 <x-mail::message>
-# Introduction
+    # Token de acceso temporal
 
-The body of your message.
+    Utiliza el siguiente token para ingresar a tu cuenta de manager:
 
-    {{ $token->token }}
+    Token Temporal: {{ $token->token }}
 
-<x-mail::button :url="''">
-Button Text
-</x-mail::button>
+    Este token sera solo valido por los siguientes 2 minutos.
 
-Thanks,<br>
-{{ config('app.name') }}
+    Gracias,
+    {{ config('app.name') }}
 </x-mail::message>
+

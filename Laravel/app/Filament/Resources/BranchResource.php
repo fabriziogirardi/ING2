@@ -4,7 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BranchResource\Pages;
 use App\Models\Branch;
-use Cheesegrits\FilamentGoogleMaps\Columns\MapColumn;
+use App\Models\BranchProduct;
+use App\Models\Reservation;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
@@ -12,10 +13,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Http;
 
 class BranchResource extends Resource
@@ -30,8 +34,9 @@ class BranchResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
-    public static function form(Form $form): Form
-    {
+    public static function form(
+        Form $form,
+    ): Form {
         return $form
             ->schema([
                 TextInput::make('name')
@@ -94,7 +99,6 @@ class BranchResource extends Resource
                                 }
                             }
                         }
-
                     }),
                 Hidden::make('default_location'),
                 Hidden::make('place_id'),
@@ -117,30 +121,76 @@ class BranchResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
-    {
+    public static function table(
+        Table $table,
+    ): Table {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nombre'),
+                    ->label('Nombre')
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 TextColumn::make('address')
                     ->label('Dirección')
-                    ->limit(60),
+                    ->limit(60)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
                 TextColumn::make('description')
                     ->label('Descripción')
-                    ->limit(50),
+                    ->limit(50)
+                    ->extraAttributes(fn ($record) => [
+                        'class' => $record->trashed() ? 'line-through text-gray-500 opacity-50' : '',
+                    ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn (Branch $record) => $record->trashed()),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function (Branch $record) {
+                        $hasPendingReservations = Reservation::whereRelation('branch_product', 'branch_id', $record->id)
+                            ->where(function (Builder $q) {
+                                $q->where(function (Builder $subQ) {
+                                    // Reservas futuras (no retiradas y end_date >= hoy)
+                                    $subQ->whereDoesntHave('retired')
+                                        ->where('end_date', '>=', now()->format('Y-m-d'));
+                                })->orWhere(function (Builder $subQ) {
+                                    // Retiradas pero no devueltas
+                                    $subQ->whereHas('retired')->whereDoesntHave('returned');
+                                });
+                            })
+                            ->exists();
+
+                        if ($hasPendingReservations) {
+                            Notification::make()
+                                ->title('No se puede eliminar la sucursal')
+                                ->body('Existen reservas activas o retiradas y no devueltas que impiden la eliminación de esta sucursal.')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        // $branch_products = BranchProduct::where("branch_id", $record->id)->get();
+                        // $branch_products->map(function (BranchProduct $branch_product) {
+                        //    $branch_product->delete();
+                        // });
+
+                        $record->delete();
+                    }),
+                Tables\Actions\RestoreAction::make()
+                    ->label('Restaurar')
+                    ->color('danger'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //    Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -149,6 +199,14 @@ class BranchResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ])->withTrashed();
     }
 
     public static function getPages(): array

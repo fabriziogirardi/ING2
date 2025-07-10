@@ -1,22 +1,33 @@
 <?php
 
 use App\Facades\GoogleMaps;
+use App\Http\Controllers\BinanceController;
+use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Customer\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\Customer\RecoverPasswordController;
 use App\Http\Controllers\Customer\ResetPasswordController;
 use App\Http\Controllers\Employee\Auth\LoginController as EmployeeLoginController;
+use App\Http\Controllers\Employee\CancelPolicyController;
 use App\Http\Controllers\Employee\RegisterCustomer;
+use App\Http\Controllers\Employee\Reservation\ReturnedReservationController;
 use App\Http\Controllers\Employee\RetiredReservationController;
+use App\Http\Controllers\Forum\ForumController;
+use App\Http\Controllers\Forum\ForumDiscussionController;
+use App\Http\Controllers\Forum\ForumReplyController;
 use App\Http\Controllers\Manager\Auth\LoginController as ManagerLoginController;
 use App\Http\Controllers\Manager\Branches\BranchController;
 use App\Http\Controllers\Manager\Brand\BrandController;
 use App\Http\Controllers\Manager\Employee\EmployeeController;
+use App\Http\Controllers\Manager\ForumSections\ForumSectionController;
 use App\Http\Controllers\Manager\Model\ModelController;
 use App\Http\Controllers\Manager\Product\ProductController;
-use App\Http\Controllers\Payment\MercadoPagoController;
 use App\Http\Controllers\Reservation\ReservationController;
+use App\Http\Controllers\Wishlist\WishlistController;
+use App\Http\Controllers\Wishlist\WishlistProductController;
 use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\ProductAvailabilityService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static function () {
@@ -26,7 +37,7 @@ Route::get('/', static function () {
 })->name('home');
 
 Route::get('/la', function () {
-    $service  = new \App\Services\ProductAvailabilityService('2025-06-15', '2025-06-20');
+    $service  = new ProductAvailabilityService('2025-06-15', '2025-06-20');
     $products = $service->getProductsWithAvailability();
 
     foreach ($products as $entry) {
@@ -44,6 +55,10 @@ Route::get('/la', function () {
         echo '<br>';
     }
 });
+
+Route::get('/newcatalog', function () {
+    return view('catalog.index', ['products' => \App\Models\Product::all()]);
+})->name('catalog.new');
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/a/a', static function () {
@@ -122,6 +137,8 @@ Route::group(['prefix' => 'manager', 'as' => 'manager.'], static function () {
         Route::get('model/{id}/restore', [ModelController::class, 'restore'])->name('model.restore');
         Route::resource('branch', BranchController::class);
         Route::resource('product', ProductController::class);
+        Route::resource('sections', ForumSectionController::class);
+        Route::post('sections/{id}/restore', [ForumSectionController::class, 'restore'])->name('sections.restore');
     });
 });
 // endregion
@@ -142,8 +159,21 @@ Route::group(['prefix' => 'employee', 'as' => 'employee.'], static function () {
         Route::post('/reservation/retire', [RetiredReservationController::class, 'store'])
             ->name('reservation.retire.post');
 
+        Route::get('/cancel-reservation', [CancelPolicyController::class, 'showInput'])->name('cancel-reservation');
+        Route::post('/cancel-reservation/show', [CancelPolicyController::class, 'show'])->name('cancel-reservation.show');
+        Route::post('/cancel-reservation/store', [CancelPolicyController::class, 'store'])->name('cancel-reservation.store');
+        Route::post('/cancel-reservation/partial', [CancelPolicyController::class, 'handlePartial'])->name('cancel-reservation.partial');
+
+        Route::get('/reservation/return', [ReturnedReservationController::class, 'show'])
+            ->name('reservation.return');
+        Route::post('/reservation/return', [ReturnedReservationController::class, 'store'])
+            ->name('reservation.return.store');
+
         Route::get('/customer', [RegisterCustomer::class, 'create'])->name('register_customer');
         Route::post('/customer', [RegisterCustomer::class, 'store']);
+
+        Route::get('/payment', [BinanceController::class, 'showPaymentForm'])->name('payment');
+        Route::get('/payment/confirm', [BinanceController::class, 'confirmPayment'])->name('payment_confirm');
     });
 });
 // endregion
@@ -154,19 +184,17 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
         ->name('login')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
     Route::post('/login', [CustomerLoginController::class, 'loginAttempt'])
         ->name('login.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::get('/recover-password', [RecoverPasswordController::class, 'show'])
+        ->name('recover-password')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
+    Route::post('/recover-password', [RecoverPasswordController::class, 'store'])
+        ->name('recover-password.post')->middleware(['guest:customer', 'guest:employee', 'guest:manager']);
 
     Route::group(['middleware' => 'auth:customer'], static function () {
-        Route::get('/payment/test', function () {
-            return view('payment.test-payment');
-        });
-
         Route::get('/reset-password', [ResetPasswordController::class, 'show'])
             ->name('password.reset');
 
         Route::post('/reset-password', [ResetPasswordController::class, 'store'])
             ->name('password.reset.post');
-
-        Route::get('/payment', [MercadoPagoController::class, 'show'])->name('payment');
 
         Route::resource('reservation', ReservationController::class)->except(['store']);
 
@@ -177,9 +205,33 @@ Route::group(['prefix' => 'customer', 'as' => 'customer.'], static function () {
             return view('payment.failure');
         })->name('reservations.failure');
 
+        // Wishlist Routes
+        Route::resource('wishlist', WishlistController::class);
+        Route::resource('wishlist-product', WishlistProductController::class)->except(['index']);
+        Route::get('/wishlist/{wishlist}', [WishlistProductController::class, 'index'])->name('productslist');
+        Route::post('/wishlist-product', [WishlistProductController::class, 'store'])
+            ->name('wishlist-product.store');
+
         Route::get('/logout', [CustomerLoginController::class, 'logout'])->name('logout');
         Route::view('/list-reservations', 'customer.list-reservations')->name('list-reservations');
     });
 });
 
+// endregion
+
+// region Catálogo
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+// endregion
+
+// region Foro
+Route::group(['middleware' => 'auth:customer,employee,manager'], static function () {
+    Route::group(['prefix' => 'forum', 'as' => 'forum.'], static function () {
+        Route::get('/', [ForumController::class, 'index'])->name('index');
+
+        Route::resource('discussions', ForumDiscussionController::class)->except(['index']);
+
+        Route::resource('reply', ForumReplyController::class)->except(['index', 'show']);
+    });
+});
 // endregion

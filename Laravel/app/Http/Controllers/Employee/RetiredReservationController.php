@@ -32,20 +32,60 @@ class RetiredReservationController extends Controller
      */
     public function store(StoreRetiredReservationRequest $request)
     {
-        $reservation = Reservation::whereRelation('customer.person', 'government_id_number', $request->validated('government_id_number'))
-            ->whereRelation('customer.person', 'government_id_type_id', $request->validated('government_id_type_id'))
-            ->whereDoesntHave('retired')
-            ->where('code', $request->validated('code'))
-            ->where('start_date', '>=', now()->startOfDay())
-            ->first();
+
+        $code                  = $request->input('code');
+        $government_id_type_id = $request->input('government_id_type_id');
+        $government_id_number  = $request->input('government_id_number');
+
+        $reservation = Reservation::where('code', $code)->first();
 
         if (! $reservation) {
-            return redirect()->back()->withErrors(['error' => 'Datos Incorrectos']);
+            return redirect()->back()->withErrors(['error' => 'El codigo ingresado no pertenece a ninguna reserva activa']);
+        }
+
+        if ($reservation->retired) {
+            return redirect()->back()->withErrors(['error' => 'La reserva ya fue retirada']);
+        }
+
+        $branch = $reservation->branch;
+
+        if (
+            $branch->id != session('branch_id')
+        ) {
+            $branchName = $branch->name ?? 'desconocida';
+
+            return redirect()->back()->withErrors(['error' => 'La reserva fue realizada en otra sucursal: '.$branchName]);
+        }
+
+        if ($reservation->start_date > now()->toDateString()) {
+            return redirect()->back()->withErrors(['error' => 'Aun no puede retirarse la maquinaria, la reserva inicia la fecha '.$reservation->start_date]);
+        }
+
+        if ($reservation->end_date < now()->toDateString()) {
+            $reservation->delete();
+
+            return redirect()->back()->withErrors(['error' => 'La reserva ya caducó por la tanto la reserva fue cancelada, la fecha límite de retiro era '.$reservation->end_date]);
+        }
+
+        $customer = $reservation->customer;
+
+        if (method_exists($customer, 'trashed') && $customer->trashed()) {
+            return redirect()->back()->withErrors(['error' => 'El cliente con ese documento de identidad esta bloqueado']);
+        }
+
+        $customer = $customer->person;
+
+        if (
+            ! $customer ||
+            $customer->government_id_type_id != $government_id_type_id ||
+            $customer->government_id_number != $government_id_number
+        ) {
+            return redirect()->back()->withErrors(['error' => 'La reserva no pertenece al cliente con el documento ingresado']);
         }
 
         $reservation->retired()->create();
 
-        return redirect()->back()->with(['toast' => 'success', 'message' => 'Reserva marcada como retirada']);
+        return redirect('/')->with(['toast' => 'success', 'message' => 'Reserva marcada como retirada']);
     }
 
     /**
