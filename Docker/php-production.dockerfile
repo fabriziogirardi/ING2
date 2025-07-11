@@ -51,9 +51,6 @@ RUN rm -rf /var/cache/apk/*
 
 FROM base AS production
 
-# Make the application files owned by the new user
-RUN chown -R ${USER}:${USER} /var/www/html
-
 # Set permissions for directories
 RUN chmod -R 755 /var/www/html
 RUN chmod -R 776 /var/www/html/storage
