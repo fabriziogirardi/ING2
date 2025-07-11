@@ -39,7 +39,12 @@ RUN apk upgrade &&  \
     libmemcached-dev \
     libmcrypt-dev \
     libxml2-dev \
-    imagemagick-dev
+    imagemagick-dev \
+    icu-dev \
+    autoconf \
+    g++ \
+    make \
+    pkgconf
 
 # Install PHP extensions
 RUN chmod +x /usr/local/bin/install-php-extensions && \
