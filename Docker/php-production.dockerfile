@@ -51,11 +51,6 @@ RUN rm -rf /var/cache/apk/*
 
 FROM base AS production
 
-# Set permissions for directories
-RUN chmod -R 755 /var/www/html
-RUN chmod -R 776 /var/www/html/storage
-RUN chmod -R 776 /var/www/html/bootstrap/cache
-
 USER www-data
 
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
