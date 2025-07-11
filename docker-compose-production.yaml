@@ -22,7 +22,7 @@ services:
     environment:
       TZ: America/Argentina/Buenos_Aires
     volumes:
-      - data-production:/var/www/static
+      - data-production:/var/www/html
     depends_on:
       php:
         condition: service_started
