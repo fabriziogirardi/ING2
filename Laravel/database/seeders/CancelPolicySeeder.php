@@ -9,12 +9,12 @@ class CancelPolicySeeder extends Seeder
 {
     public function run(): void
     {
-        CancelPolicy::factory()->create([
+        CancelPolicy::create([
             'name'                  => 'Completa',
             'requires_amount_input' => false,
         ]);
 
-        CancelPolicy::factory()->create([
+        CancelPolicy::create([
             'name'                  => 'Parcial',
             'requires_amount_input' => true,
         ]);
