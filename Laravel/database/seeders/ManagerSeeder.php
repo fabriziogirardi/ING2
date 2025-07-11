@@ -54,7 +54,7 @@ class ManagerSeeder extends Seeder
             'email'                 => 'neftalitosu@gmail.com',
             'birth_date'            => now()->subYears(30)->format('Y-m-d'),
             'government_id_type_id' => GovernmentIdType::where('name', 'DNI')->first()->id,
-            'government_id_number'  => '32345678',
+            'government_id_number'  => '42345678',
         ])->manager()->create([
             'password' => Hash::make('aguanteluigi'),
         ]);
