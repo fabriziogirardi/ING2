@@ -13,6 +13,10 @@ services:
       context: ./Docker
       dockerfile: nginx.dockerfile
       target: production
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
+        - APP_DOMAIN=${APP_DOMAIN}
     restart: unless-stopped
     container_name: ${APP_NAME}-nginx
     environment:
@@ -36,9 +40,12 @@ services:
       context: ./
       dockerfile: Docker/php-production.dockerfile
       target: production
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-php
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     depends_on:
@@ -46,8 +53,6 @@ services:
         condition: service_started
       redis:
         condition: service_started
-      php-init:
-        condition: service_completed_successfully
     networks:
       ing2-default:
       portfolio_default:
@@ -59,6 +64,9 @@ services:
       context: ./
       dockerfile: Docker/php-production.dockerfile
       target: init
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-php-init
     env_file:
       - .env
@@ -67,10 +75,6 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-      composer-init:
-        condition: service_completed_successfully
-      npm-init:
-        condition: service_completed_successfully
     working_dir: /var/www/html
     networks:
       - ing2-default
@@ -80,9 +84,13 @@ services:
       context: ./
       dockerfile: Docker/composer-production.dockerfile
       target: init
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-composer-init
-    env_file:
-      - .env
+    environment:
+      APP_ENV: ${APP_ENV}
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     working_dir: /var/www/html
@@ -94,9 +102,12 @@ services:
       context: ./
       dockerfile: Docker/node.dockerfile
       target: init
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-npm-init
-    env_file:
-      - .env
+    environment:
+      APP_ENV: ${APP_ENV}
     volumes:
       - data-production:/var/www/html
     working_dir: /var/www/html
@@ -129,7 +140,7 @@ services:
     image: redis:alpine
     container_name: ${APP_NAME}-redis
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -141,9 +152,12 @@ services:
       context: ./Docker
       dockerfile: php-production.dockerfile
       target: clean
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-laravel-cron
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     depends_on:
@@ -159,9 +173,12 @@ services:
       context: ./Docker
       dockerfile: php-production.dockerfile
       target: clean
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-laravel-queue
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     depends_on:
@@ -179,7 +196,7 @@ services:
       target: production
     container_name: ${APP_NAME}-vite-local
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     working_dir: /var/www/html
@@ -191,14 +208,17 @@ services:
       context: ./Docker
       dockerfile: composer-production.dockerfile
       target: base
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-composer
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     working_dir: /var/www/html
     profiles: ["composer"]
-    entrypoint: ['composer', '--ignore-platform-reqs']
+    entrypoint: ['composer']
     networks:
       - ing2-default
 
@@ -207,9 +227,12 @@ services:
       context: ./Docker
       dockerfile: php-production.dockerfile
       target: clean
+      args:
+        - UID=${UID:-0}
+        - GID=${GID:-0}
     container_name: ${APP_NAME}-artisan
     environment:
-      - TZ=America/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     depends_on:
@@ -231,7 +254,8 @@ services:
       - "3001:3001"
       - "5173:5173"
     environment:
-      - TZ=America/Buenos_Aires
+      APP_ENV: ${APP_ENV}
+      TZ: America/Argentina/Buenos_Aires
     volumes:
       - data-production:/var/www/html
     working_dir: /var/www/html
