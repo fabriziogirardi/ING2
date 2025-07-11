@@ -25,9 +25,9 @@ class CustomerStatsWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
 
-            Stat::make('Usuarios Eliminados', Customer::onlyTrashed()->count())
-                ->description('Usuarios eliminados')
-                ->descriptionIcon('heroicon-m-trash')
+            Stat::make('Usuarios Bloqueados', Customer::onlyTrashed()->count())
+                ->description('Usuarios bloqueados')
+                ->descriptionIcon('heroicon-m-lock-closed')
                 ->color('warning'),
         ];
     }
